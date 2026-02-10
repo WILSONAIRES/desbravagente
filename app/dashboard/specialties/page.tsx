@@ -1,3 +1,5 @@
+export const runtime = 'edge'
+
 import { SpecialtiesList } from "@/components/specialties/specialties-list"
 
 export default function SpecialtiesPage() {

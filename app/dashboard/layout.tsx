@@ -1,5 +1,7 @@
 "use client"
 
+export const runtime = 'edge'
+
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { SubscriptionBanner } from "@/components/layout/subscription-banner"

@@ -1,5 +1,7 @@
 "use client"
 
+export const runtime = 'edge'
+
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { SavedContent, storageService } from "@/services/storage-service"
@@ -12,24 +14,24 @@ export default function ContentsPage() {
     const [contents, setContents] = useState<SavedContent[]>([])
 
     useEffect(() => {
-    const loadContents = async () => {
-        const data = await storageService.getAllContent()
-        setContents(data)
-    }
+        const loadContents = async () => {
+            const data = await storageService.getAllContent()
+            setContents(data)
+        }
 
-    loadContents()
-}, [])
+        loadContents()
+    }, [])
 
     const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
+        e.stopPropagation()
 
-    if (confirm("Tem certeza que deseja excluir este conteúdo?")) {
-        await storageService.deleteContent(id)
+        if (confirm("Tem certeza que deseja excluir este conteúdo?")) {
+            await storageService.deleteContent(id)
 
-        const updated = await storageService.getAllContent()
-        setContents(updated)
+            const updated = await storageService.getAllContent()
+            setContents(updated)
+        }
     }
-}
 
 
     return (

@@ -1,5 +1,7 @@
 "use client";
 
+export const runtime = 'edge';
+
 import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { SavedContent, storageService } from "@/services/storage-service";
@@ -19,22 +21,22 @@ function ContentDetailsContent() {
     const router = useRouter();
 
     useEffect(() => {
-    if (!id) return
+        if (!id) return
 
-    const loadContent = async () => {
-        const all = await storageService.getAllContent()
-        const item = all.find(c => c.id === id)
+        const loadContent = async () => {
+            const all = await storageService.getAllContent()
+            const item = all.find(c => c.id === id)
 
-        if (!item) {
-            setNotFound(true)
-            return
+            if (!item) {
+                setNotFound(true)
+                return
+            }
+
+            setContent(item)
         }
 
-        setContent(item)
-    }
-
-    loadContent()
-}, [id]);
+        loadContent()
+    }, [id]);
 
     if (notFound) {
         return (
