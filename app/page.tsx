@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export const runtime = 'edge'
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (
@@ -12,25 +13,24 @@ export default function Home() {
         </h1>
         <p className="text-xl text-muted-foreground">
           Seu assistente inteligente sempre Alerta para servir.
-          Conteúdo alinhado aos manuais oficiais e doutrinas da IASD.
         </p>
 
         <div className="flex flex-wrap gap-4 justify-center mt-8">
           <Link href="/login">
             <Button size="lg" className="w-full sm:w-auto">
-              Entrar
+              Botão Entrar (Teste)
             </Button>
           </Link>
           <Link href="/register">
             <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              Criar Conta
+              Criar Conta (Teste)
             </Button>
           </Link>
         </div>
       </main>
 
       <footer className="mt-16 text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Desbravagente. Para a honra e glória de Deus.
+        © {new Date().getFullYear()} Desbravagente.
       </footer>
     </div>
   );
