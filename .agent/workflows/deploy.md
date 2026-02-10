@@ -18,8 +18,8 @@ O projeto já foi configurado para o Cloudflare. Note as seguintes mudanças:
 ### 3. Configurações de Build
 No momento da criação, use as seguintes configurações:
 - **Framework preset**: `Next.js` (ou deixe em manual se preferir usar o script customizado).
-- **Build command**: `npm run pages:build` (ou o padrão do Cloudflare para Next.js).
-- **Build output directory**: `.vercel/output` (O `@cloudflare/next-on-pages` gera a saída aqui).
+- **Build command**: `npm run pages:build`
+- **Build output directory**: `.open-next/assets` 
 
 ### 4. Variáveis de Ambiente (CRÍTICO)
 No painel do Cloudflare Pages, vá em **Settings** > **Environment variables** e adicione as seguintes:
