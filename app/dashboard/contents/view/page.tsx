@@ -19,20 +19,22 @@ function ContentDetailsContent() {
     const router = useRouter();
 
     useEffect(() => {
-        if (!id) {
-            setNotFound(true);
-            return;
-        }
+    if (!id) return
 
-        const item = storageService.getContentById(id);
+    const loadContent = async () => {
+        const all = await storageService.getAllContent()
+        const item = all.find(c => c.id === id)
 
         if (!item) {
-            setNotFound(true);
-            return;
+            setNotFound(true)
+            return
         }
 
-        setContent(item);
-    }, [id]);
+        setContent(item)
+    }
+
+    loadContent()
+}, [id]);
 
     if (notFound) {
         return (

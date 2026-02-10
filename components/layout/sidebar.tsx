@@ -16,13 +16,23 @@ export function Sidebar({ className }: SidebarProps) {
     const [clubName, setClubName] = useState("Desbravagente")
 
     useEffect(() => {
-        setClubName(storageService.getClubName())
+    const loadClubName = async () => {
+        const name = await storageService.getClubName()
+        setClubName(name)
+    }
 
-        // Listen for storage changes to update name in real-time
-        const handleStorage = () => setClubName(storageService.getClubName())
-        window.addEventListener('storage', handleStorage)
-        return () => window.removeEventListener('storage', handleStorage)
-    }, [])
+    loadClubName()
+
+    const handleStorage = async () => {
+        const name = await storageService.getClubName()
+        setClubName(name)
+    }
+
+    window.addEventListener("storage", handleStorage)
+
+    return () => window.removeEventListener("storage", handleStorage)
+}, [])
+
 
     const filteredNavItems = navItems.filter(item => {
         // @ts-ignore - isAdminOnly might not be in the base type if not updated carefully

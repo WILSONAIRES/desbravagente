@@ -12,16 +12,25 @@ export default function ContentsPage() {
     const [contents, setContents] = useState<SavedContent[]>([])
 
     useEffect(() => {
-        setContents(storageService.getAllContent())
-    }, [])
-
-    const handleDelete = (id: string, e: React.MouseEvent) => {
-        e.preventDefault()
-        if (confirm("Tem certeza que deseja excluir este conteúdo?")) {
-            storageService.deleteContent(id)
-            setContents(storageService.getAllContent())
-        }
+    const loadContents = async () => {
+        const data = await storageService.getAllContent()
+        setContents(data)
     }
+
+    loadContents()
+}, [])
+
+    const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    if (confirm("Tem certeza que deseja excluir este conteúdo?")) {
+        await storageService.deleteContent(id)
+
+        const updated = await storageService.getAllContent()
+        setContents(updated)
+    }
+}
+
 
     return (
         <div className="space-y-6">

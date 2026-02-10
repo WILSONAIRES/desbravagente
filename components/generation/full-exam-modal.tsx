@@ -172,13 +172,13 @@ Formate a prova em Markdown.
                             <Button onClick={() => {
                                 if (result && !result.startsWith("Erro")) {
                                     storageService.saveContent({
-                                        id: crypto.randomUUID(),
-                                        content: result,
-                                        timestamp: new Date(),
-                                        title: `Prova - ${specialtyName}`,
-                                        type: 'specialty',
-                                        requirementId: 'prova-completa'
-                                    })
+									content: result,
+									timestamp: new Date(),
+									title: `Prova - ${specialtyName}`,
+									type: "specialty",
+									requirementId: `full-exam-${specialtyName}`,
+									})
+
                                     onOpenChange(false)
                                     router.refresh()
                                 }
