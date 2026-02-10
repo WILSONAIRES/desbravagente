@@ -4,14 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true
   },
-  typescript: {
-    // Ignora erros de tipo apenas no build para garantir o deploy
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    // Ignora erros de lint apenas no build
-    ignoreDuringBuilds: true,
-  }
+  // O Cloudflare Pages (next-on-pages) gerencia o runtime
+  // Não precisamos forçar configurações experimentais aqui
 };
 
 export default nextConfig;
