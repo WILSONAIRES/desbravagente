@@ -1,7 +1,5 @@
 "use client"
 
-export const runtime = 'edge'
-
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { SavedContent, storageService } from "@/services/storage-service"

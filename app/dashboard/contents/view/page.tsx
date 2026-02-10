@@ -1,7 +1,5 @@
 "use client";
 
-export const runtime = 'edge';
-
 import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { SavedContent, storageService } from "@/services/storage-service";

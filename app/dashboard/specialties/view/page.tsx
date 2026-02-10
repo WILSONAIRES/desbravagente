@@ -1,7 +1,5 @@
 "use client"
 
-export const runtime = 'edge'
-
 import React, { Suspense, useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { specialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"

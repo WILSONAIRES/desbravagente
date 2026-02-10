@@ -1,7 +1,5 @@
 "use client";
 
-export const runtime = 'edge'
-
 import { ClassesList } from "@/components/classes/classes-list"
 
 export default function ClassesPage() {
