@@ -1,0 +1,97 @@
+import { storageService } from "./storage-service"
+
+export interface ContentGenerationRequest {
+    type: 'class' | 'specialty'
+    name: string
+    requirement: string
+    difficulty?: 'easy' | 'medium' | 'hard'
+    outputType: 'explanation' | 'activity' | 'quiz' | 'exam'
+    refinement?: 'simpler' | 'complex'
+}
+
+export interface GeneratedContent {
+    id?: string
+    content: string
+    timestamp: Date
+}
+
+export const aiService = {
+    async generate(request: ContentGenerationRequest): Promise<string> {
+        // Obter configurações do Supabase (prioridade) ou .env
+        const [dbKey, dbProvider, dbModel] = await Promise.all([
+            storageService.getGlobalConfig("ai_api_key"),
+            storageService.getGlobalConfig("ai_provider"),
+            storageService.getGlobalConfig("ai_model")
+        ])
+
+        const apiKey = dbKey || process.env.NEXT_PUBLIC_OPENAI_API_KEY
+        const provider = dbProvider || "groq"
+
+        const defaultModel = provider === "groq" ? "llama-3.3-70b-versatile" :
+            provider === "openai" ? "gpt-4o-mini" : "gemini-2.0-flash"
+        const modelName = dbModel || defaultModel
+
+        if (!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey.length < 5) {
+            console.warn("API Key not found or invalid")
+            return "Chave de API não configurada. Por favor, adicione sua API Key nas configurações do sistema."
+        }
+
+        try {
+            const difficultyMap = {
+                easy: "Fácil (linguagem simples, conceitos básicos)",
+                medium: "Médio (equilíbrio entre teoria e prática)",
+                hard: "Difícil (aprofundamento técnico, questões complexas)"
+            }
+
+            const prompt = `
+Gere um conteúdo do tipo "${request.outputType}" para o seguinte requisito:
+
+Classe/Especialidade: ${request.name}
+Requisito: ${request.requirement}
+${request.difficulty ? `Nível de Dificuldade: ${difficultyMap[request.difficulty]}` : ''}
+${request.refinement === 'simpler' ? 'OBJETIVO: Simplificar ao máximo, usando linguagem lúdica e conceitos fundamentais.' : ''}
+${request.refinement === 'complex' ? 'OBJETIVO: Aprofundar tecnicamente, trazendo detalhes avançados e curiosidades históricas/científicas.' : ''}
+
+Diretrizes:
+1. Seja fiel aos manuais oficiais e doutrinas da IASD.
+2. Use linguagem apropriada para juvenis e adolescentes.
+3. Use formatação Markdown (negrito, listas, títulos) para estruturar a resposta.
+4. Se for 'activity', sugira algo prático e realizável.
+5. Se for 'quiz' ou 'exam', inclua o gabarito no final. Limite a geração a no MÁXIMO 10 questões. NÃO inclua data no cabeçalho. NÃO inclua nome de instrutor.
+6. Ao final de TODO conteúdo gerado, adicione obrigatoriamente o seguinte aviso em itálico e separado por uma linha horizontal: 
+---
+*Este conteúdo foi gerado por uma inteligência artificial e pode conter falhas. Verifique sempre as informações com os manuais oficiais.*
+`
+
+            const response = await fetch("/api/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    apiKey,
+                    modelName,
+                    prompt,
+                    provider,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                console.error("API Error:", data)
+                const errorMsg = data?.error || data?.details?.error?.message || `HTTP ${response.status}`
+                return `Erro da API (${response.status}): ${errorMsg}`
+            }
+
+            if (!data.text) {
+                return "Erro: Resposta vazia da API. Verifique o modelo configurado."
+            }
+
+            return data.text
+        } catch (error) {
+            console.error("Erro na geração:", error)
+            return "Erro ao gerar conteúdo. Verifique sua conexão ou a chave da API."
+        }
+    }
+}

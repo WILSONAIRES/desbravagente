@@ -1,0 +1,25 @@
+"use client"
+
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button"
+import { Menu } from "lucide-react"
+import { Sidebar } from "@/components/layout/sidebar"
+import { useState } from "react"
+
+export function MobileNav() {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                    <Menu />
+                    <span className="sr-only">Toggle Menu</span>
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 bg-sidebar border-r border-border">
+                <Sidebar className="w-full h-full" />
+            </SheetContent>
+        </Sheet>
+    )
+}
