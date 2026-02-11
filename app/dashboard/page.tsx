@@ -49,6 +49,9 @@ export default function DashboardPage() {
             await storageService.saveClubName(tempName.trim())
             setClubName(tempName.trim())
             setIsEditingName(false)
+            // Force reload to ensure consistency
+            const newName = await storageService.getClubName()
+            setClubName(newName)
         }
     }
 
