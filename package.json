@@ -43,6 +43,7 @@
     "@opennextjs/cloudflare": "1.16.4",
     "wrangler": "^4.59.2",
     "esbuild": "^0.25.0",
+    "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
