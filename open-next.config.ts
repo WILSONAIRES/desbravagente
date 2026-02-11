@@ -1,5 +1,4 @@
-export default {
-    default: {
-        runtime: "edge",
-    },
-};
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+
+export default defineCloudflareConfig({
+});
