@@ -15,12 +15,12 @@ export default function Home() {
         <div className="flex flex-wrap gap-4 justify-center mt-8">
           <Link href="/login">
             <Button size="lg" className="w-full sm:w-auto">
-              Botão Entrar (Teste)
+              Entrar
             </Button>
           </Link>
           <Link href="/register">
             <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              Criar Conta (Teste)
+              Criar Conta
             </Button>
           </Link>
         </div>
