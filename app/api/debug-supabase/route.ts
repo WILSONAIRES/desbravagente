@@ -39,10 +39,19 @@ export async function GET(request: NextRequest) {
                 global_config_columns: await supabase.from('global_config').select('id').limit(1).then(r => ({
                     error: r.error,
                     data: r.data
+                })),
+                profiles_count: await supabase.from('profiles').select('id', { count: 'exact', head: true }).then(r => ({
+                    error: r.error,
+                    count: r.count
+                })),
+                all_profiles_test: await supabase.from('profiles').select('email, role').limit(5).then(r => ({
+                    error: r.error,
+                    data: r.data
                 }))
             },
             auth_details: {
                 user_id: user?.id || null,
+                user_email: user?.email || null,
                 user_role: user?.user_metadata?.role || null,
             },
             timestamp: new Date().toISOString()
