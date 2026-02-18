@@ -177,6 +177,18 @@ function MemberProfileContent() {
         setAiModalOpen(true)
     }
 
+    const findSpecialtyInDescription = (description: string) => {
+        const lowerDesc = description.toLowerCase()
+        // Procura por "especialidade de [nome]" ou "especialidade [nome]"
+        // ou apenas nomes de especialidades conhecidas no texto
+        return specialties.find(s => {
+            const nameLower = s.name.toLowerCase()
+            // Remove o código do nome (ex: "AA-001 ")
+            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim()
+            return lowerDesc.includes(nameWithoutCode)
+        })
+    }
+
     const calculateProgress = (progressId: string, type: 'class' | 'specialty') => {
         if (!member) return 0
         const p = member.progress.find(item => item.id === progressId)
@@ -380,12 +392,33 @@ function MemberProfileContent() {
                                                                             </div>
                                                                             <div
                                                                                 className="flex-1 cursor-pointer hover:bg-primary/5 rounded px-1 -mx-1 transition-colors group/text"
-                                                                                onClick={() => openAiModal(req.id, req.description, data.name, 'class')}
                                                                             >
-                                                                                <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
-                                                                                    {req.description}
-                                                                                </span>
-                                                                                <Sparkles className="inline-block ml-1.5 h-3 w-3 text-primary opacity-0 group-hover/text:opacity-40 transition-opacity" />
+                                                                                {(() => {
+                                                                                    const linkedSpecialty = findSpecialtyInDescription(req.description)
+                                                                                    if (linkedSpecialty) {
+                                                                                        return (
+                                                                                            <div className="flex flex-col gap-1">
+                                                                                                <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
+                                                                                                    {req.description}
+                                                                                                </span>
+                                                                                                <Link href={`/dashboard/specialties/view?id=${linkedSpecialty.id}`}>
+                                                                                                    <Badge variant="secondary" className="w-fit text-[10px] h-5 py-0 px-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors">
+                                                                                                        <Award className="mr-1 h-3 w-3" />
+                                                                                                        Ver Especialidade: {linkedSpecialty.name.replace(/^[A-Z]{1,2}-[0-9]{3}\s+/i, '')}
+                                                                                                    </Badge>
+                                                                                                </Link>
+                                                                                            </div>
+                                                                                        )
+                                                                                    }
+                                                                                    return (
+                                                                                        <div onClick={() => openAiModal(req.id, req.description, data.name, 'class')}>
+                                                                                            <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
+                                                                                                {req.description}
+                                                                                            </span>
+                                                                                            <Sparkles className="inline-block ml-1.5 h-3 w-3 text-primary opacity-0 group-hover/text:opacity-40 transition-opacity" />
+                                                                                        </div>
+                                                                                    )
+                                                                                })()}
                                                                             </div>
                                                                         </div>
                                                                     )
@@ -426,12 +459,33 @@ function MemberProfileContent() {
                                                                     </div>
                                                                     <div
                                                                         className="flex-1 cursor-pointer hover:bg-primary/5 rounded px-1 -mx-1 transition-colors group/text"
-                                                                        onClick={() => openAiModal(req.id, req.description, data.name, 'specialty')}
                                                                     >
-                                                                        <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
-                                                                            {req.description}
-                                                                        </span>
-                                                                        <Sparkles className="inline-block ml-1.5 h-3 w-3 text-primary opacity-0 group-hover/text:opacity-40 transition-opacity" />
+                                                                        {(() => {
+                                                                            const linkedSpecialty = findSpecialtyInDescription(req.description)
+                                                                            if (linkedSpecialty) {
+                                                                                return (
+                                                                                    <div className="flex flex-col gap-1">
+                                                                                        <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
+                                                                                            {req.description}
+                                                                                        </span>
+                                                                                        <Link href={`/dashboard/specialties/view?id=${linkedSpecialty.id}`}>
+                                                                                            <Badge variant="secondary" className="w-fit text-[10px] h-5 py-0 px-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors">
+                                                                                                <Award className="mr-1 h-3 w-3" />
+                                                                                                Ver Especialidade: {linkedSpecialty.name.replace(/^[A-Z]{1,2}-[0-9]{3}\s+/i, '')}
+                                                                                            </Badge>
+                                                                                        </Link>
+                                                                                    </div>
+                                                                                )
+                                                                            }
+                                                                            return (
+                                                                                <div onClick={() => openAiModal(req.id, req.description, data.name, 'specialty')}>
+                                                                                    <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
+                                                                                        {req.description}
+                                                                                    </span>
+                                                                                    <Sparkles className="inline-block ml-1.5 h-3 w-3 text-primary opacity-0 group-hover/text:opacity-40 transition-opacity" />
+                                                                                </div>
+                                                                            )
+                                                                        })()}
                                                                     </div>
                                                                 </div>
                                                             )

@@ -250,16 +250,21 @@ export function GenerationModal({
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <div className="bg-muted p-4 rounded-md h-[300px] overflow-y-auto whitespace-pre-wrap text-sm border relative">
-                            {loading && (
-                                <div className="absolute inset-0 bg-muted/50 flex items-center justify-center backdrop-blur-[1px] z-10">
-                                    <div className="flex flex-col items-center gap-2">
-                                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                                        <p className="text-xs font-medium">Processando...</p>
-                                    </div>
-                                </div>
-                            )}
-                            {result}
+                        <div className="space-y-2">
+                            <Label className="text-xs font-semibold text-muted-foreground uppercase px-1">Título do Conteúdo</Label>
+                            <div className="p-3 bg-muted/50 rounded-md border text-sm font-medium">
+                                {expectedTitle}
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label className="text-xs font-semibold text-muted-foreground uppercase px-1">Conteúdo (Revisão Manual)</Label>
+                            <Textarea
+                                value={result}
+                                onChange={(e) => setResult(e.target.value)}
+                                className="min-h-[300px] text-sm leading-relaxed whitespace-pre-wrap font-sans bg-card"
+                                placeholder="Conteúdo da IA aparecerá aqui..."
+                            />
                         </div>
 
                         {/* Refinement Buttons */}
