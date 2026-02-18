@@ -340,5 +340,78 @@ export const storageService = {
         for (const cls of staticClasses) {
             await this.saveClass(cls)
         }
+    },
+
+    // Specialties Management (Supabase)
+    async getSpecialties(): Promise<any[]> {
+        const { data, error } = await supabase
+            .from('pathfinder_specialties')
+            .select('*')
+            .order('name')
+
+        if (error || !data || data.length === 0) return []
+
+        return data.map(s => ({
+            id: s.id,
+            name: s.name,
+            code: s.code,
+            category: s.category,
+            color: s.color,
+            requirements: s.requirements,
+            image: s.image
+        }))
+    },
+
+    async getSpecialtyById(id: string): Promise<any | undefined> {
+        const { data, error } = await supabase
+            .from('pathfinder_specialties')
+            .select('*')
+            .eq('id', id)
+            .maybeSingle()
+
+        if (error || !data) return undefined
+
+        return {
+            id: data.id,
+            name: data.name,
+            code: data.code,
+            category: data.category,
+            color: data.color,
+            requirements: data.requirements,
+            image: data.image
+        }
+    },
+
+    async saveSpecialty(specialty: any): Promise<void> {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error("Usuário não autenticado")
+
+        const { error } = await supabase
+            .from('pathfinder_specialties')
+            .upsert({
+                id: specialty.id,
+                name: specialty.name,
+                code: specialty.code,
+                category: specialty.category,
+                color: specialty.color,
+                requirements: specialty.requirements,
+                image: specialty.image,
+                updated_at: new Date(),
+                updated_by: user.id
+            })
+
+        if (error) {
+            console.error("Error saving specialty:", error)
+            throw error
+        }
+    },
+
+    async migrateSpecialtiesFromStatic(staticSpecialties: any[]): Promise<void> {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        for (const specialty of staticSpecialties) {
+            await this.saveSpecialty(specialty)
+        }
     }
 }

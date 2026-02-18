@@ -2,16 +2,115 @@
 
 import React, { Suspense, useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { specialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"
+import { specialties as staticSpecialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Wand2, FileText } from "lucide-react"
+import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { GenerationModal } from "@/components/generation/generation-modal"
 import { FullExamModal } from "@/components/generation/full-exam-modal"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ActivityStudentManager } from "@/components/club/activity-student-manager"
+import { storageService } from "@/services/storage-service"
+import { supabase } from "@/lib/supabase"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+
+const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, level?: number }) => {
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        onUpdate({ ...requirement, description: e.target.value });
+    };
+
+    const handleToggleGeneration = (checked: boolean) => {
+        onUpdate({ ...requirement, noGeneration: !checked });
+    };
+
+    const handleAddSub = () => {
+        const newId = `${requirement.id}-${Date.now()}`;
+        const updated = {
+            ...requirement,
+            subRequirements: [
+                ...(requirement.subRequirements || []),
+                { id: newId, description: "Novo Sub-item", noGeneration: false, subRequirements: [] }
+            ]
+        };
+        onUpdate(updated);
+    };
+
+    const handleUpdateSub = (subIdx: number, updatedSub: any) => {
+        const newSubs = [...(requirement.subRequirements || [])];
+        newSubs[subIdx] = updatedSub;
+        onUpdate({ ...requirement, subRequirements: newSubs });
+    };
+
+    const handleRemoveSub = (subIdx: number) => {
+        const newSubs = (requirement.subRequirements || []).filter((_: any, i: number) => i !== subIdx);
+        onUpdate({ ...requirement, subRequirements: newSubs });
+    };
+
+    return (
+        <div className={`space-y-3 ${level > 0 ? 'ml-6 pl-4 border-l-2 border-primary/20 bg-primary/5 p-3 rounded-lg' : ''}`}>
+            <div className="flex flex-col gap-3 p-4 border rounded-xl bg-card shadow-sm group/req">
+                <div className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">{requirement.id}</span>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor={`gen-${requirement.id}`} className="text-[10px] uppercase font-bold text-muted-foreground">Conteúdo IA</Label>
+                            <Switch
+                                id={`gen-${requirement.id}`}
+                                checked={!requirement.noGeneration}
+                                onCheckedChange={handleToggleGeneration}
+                                className="scale-75"
+                            />
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive opacity-0 group-hover/req:opacity-100 transition-opacity"
+                            onClick={onRemove}
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+
+                <textarea
+                    className="w-full min-h-[60px] p-3 rounded-lg border bg-background text-sm resize-y focus:ring-1 focus:ring-primary/50 transition-all font-medium"
+                    value={requirement.description}
+                    onChange={handleDescriptionChange}
+                    placeholder="Descreva o requisito..."
+                />
+
+                <div className="flex justify-end">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-[10px] uppercase font-bold h-7 hover:bg-primary/10 text-primary"
+                        onClick={handleAddSub}
+                    >
+                        <Plus className="mr-1 h-3 w-3" />
+                        Adicionar Sub-item
+                    </Button>
+                </div>
+            </div>
+
+            {requirement.subRequirements?.length > 0 && (
+                <div className="space-y-3">
+                    {requirement.subRequirements.map((sub: any, idx: number) => (
+                        <RequirementEditorItem
+                            key={idx}
+                            requirement={sub}
+                            level={level + 1}
+                            onUpdate={(updated) => handleUpdateSub(idx, updated)}
+                            onRemove={() => handleRemoveSub(idx)}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 function SpecialtyDetailsContent() {
     const searchParams = useSearchParams()
@@ -24,22 +123,88 @@ function SpecialtyDetailsContent() {
     const [examModalOpen, setExamModalOpen] = useState(false)
     const [selectedReq, setSelectedReq] = useState<{ id: string, description: string } | null>(null)
     const [activeTab, setActiveTab] = useState("requirements")
+    const [isLoading, setIsLoading] = useState(true)
+    const [isAdmin, setIsAdmin] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [editedRequirements, setEditedRequirements] = useState<any[]>([])
+    const [isSaving, setIsSaving] = useState(false)
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (user) {
+                    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
+                    setIsAdmin(profile?.role === 'admin' || user.email === 'waisilva@gmail.com')
+                }
+            } catch (err) {
+                console.error("Error checking admin status:", err)
+            }
+        }
+        checkAdmin()
+    }, [])
 
     useEffect(() => {
         if (!specialtyId) {
             setNotFound(true)
+            setIsLoading(false)
             return
         }
 
-        const found = specialties.find((s) => s.id === specialtyId)
-        if (!found) {
-            setNotFound(true)
-            return
+        const loadSpecialty = async () => {
+            try {
+                let found = await storageService.getSpecialtyById(specialtyId)
+
+                if (!found) {
+                    found = staticSpecialties.find((s) => s.id === specialtyId)
+                    if (found) {
+                        console.log("Especialidade carregada do estático (ainda não migrada)")
+                    }
+                }
+
+                if (!found) {
+                    setNotFound(true)
+                } else {
+                    setSpecialty(found)
+                    setEditedRequirements(JSON.parse(JSON.stringify(found.requirements || [])))
+                    setCategory(specialtyCategories.find(c => c.id === found.category))
+                }
+            } catch (err) {
+                console.error("Error loading specialty:", err)
+                setNotFound(true)
+            } finally {
+                setIsLoading(false)
+            }
         }
 
-        setSpecialty(found)
-        setCategory(specialtyCategories.find(c => c.id === found.category))
+        loadSpecialty()
     }, [specialtyId])
+
+    const handleSaveRequirements = async () => {
+        if (!specialty) return
+        setIsSaving(true)
+        try {
+            const updated = { ...specialty, requirements: editedRequirements }
+            await storageService.saveSpecialty(updated)
+            setSpecialty(updated)
+            setIsEditing(false)
+            alert("Especialidade atualizada com sucesso!")
+        } catch (err) {
+            console.error(err)
+            alert("Erro ao salvar especialidade.")
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <RefreshCw className="h-8 w-8 animate-spin text-primary opacity-20" />
+                <p className="text-muted-foreground text-sm">Carregando detalhes...</p>
+            </div>
+        )
+    }
 
     if (notFound) {
         return (
@@ -101,7 +266,26 @@ function SpecialtyDetailsContent() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    {specialty.requirements.length > 0 && (
+                    {isAdmin && (
+                        !isEditing ? (
+                            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Editar Requisitos
+                            </Button>
+                        ) : (
+                            <>
+                                <Button variant="outline" size="sm" onClick={() => setIsEditing(false)} disabled={isSaving}>
+                                    <X className="mr-2 h-4 w-4" />
+                                    Cancelar
+                                </Button>
+                                <Button size="sm" onClick={handleSaveRequirements} disabled={isSaving}>
+                                    <Save className="mr-2 h-4 w-4" />
+                                    {isSaving ? "Salvando..." : "Salvar Alterações"}
+                                </Button>
+                            </>
+                        )
+                    )}
+                    {!isEditing && specialty.requirements?.length > 0 && (
                         <Button onClick={() => setExamModalOpen(true)} variant="outline" size="sm">
                             <FileText className="mr-2 h-4 w-4" />
                             Gerar Prova Completa
@@ -117,48 +301,95 @@ function SpecialtyDetailsContent() {
                 </TabsList>
 
                 <TabsContent value="requirements" className="mt-6">
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>Requisitos</CardTitle>
-                            {specialty.requirements.length > 0 && (
-                                <Button onClick={() => setExamModalOpen(true)} variant="default">
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Gerar Prova Completa
-                                </Button>
-                            )}
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {specialty.requirements.length > 0 ? (
-                                specialty.requirements.map((req: { id: string; description: string }) => (
-                                    <div
-                                        key={req.id}
-                                        className="flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-                                    >
-                                        <div className="space-y-1">
-                                            <p className="font-medium text-sm text-muted-foreground">
-                                                {req.id.toUpperCase()}
-                                            </p>
-                                            <p>{req.description}</p>
-                                        </div>
-                                        <Button
-                                            size="sm"
-                                            variant="secondary"
-                                            className="shrink-0"
-                                            onClick={() => handleGenerateContent(req.id, req.description)}
+                    {isEditing ? (
+                        <div className="space-y-6 pb-20">
+                            {editedRequirements.map((req, rIdx) => (
+                                <RequirementEditorItem
+                                    key={rIdx}
+                                    requirement={req}
+                                    onUpdate={(updatedReq: any) => {
+                                        const newReqs = [...editedRequirements];
+                                        newReqs[rIdx] = updatedReq;
+                                        setEditedRequirements(newReqs);
+                                    }}
+                                    onRemove={() => {
+                                        setEditedRequirements(editedRequirements.filter((_, i) => i !== rIdx));
+                                    }}
+                                />
+                            ))}
+                            <Button
+                                variant="outline"
+                                className="w-full h-16 border-2 border-dashed text-muted-foreground hover:text-primary hover:border-primary transition-all bg-card/30"
+                                onClick={() => {
+                                    const newId = `req-${Date.now()}`;
+                                    setEditedRequirements([
+                                        ...editedRequirements,
+                                        { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
+                                    ]);
+                                }}
+                            >
+                                <Plus className="mr-2 h-5 w-5" />
+                                Adicionar Novo Requisito
+                            </Button>
+                        </div>
+                    ) : (
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <CardTitle>Requisitos</CardTitle>
+                                {specialty.requirements?.length > 0 && (
+                                    <Button onClick={() => setExamModalOpen(true)} variant="default">
+                                        <FileText className="mr-2 h-4 w-4" />
+                                        Gerar Prova Completa
+                                    </Button>
+                                )}
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {specialty.requirements?.length > 0 ? (
+                                    specialty.requirements.map((req: any) => (
+                                        <div
+                                            key={req.id}
+                                            className="flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                                         >
-                                            <Wand2 className="mr-2 h-3 w-3" />
-                                            Gerar
-                                        </Button>
+                                            <div className="space-y-1">
+                                                <p className="font-medium text-sm text-muted-foreground uppercase tracking-widest">
+                                                    {req.id}
+                                                </p>
+                                                <p className="text-sm md:text-base leading-relaxed">{req.description}</p>
+
+                                                {req.subRequirements?.length > 0 && (
+                                                    <div className="mt-4 ml-4 pl-4 border-l-2 border-primary/20 space-y-3">
+                                                        {req.subRequirements.map((sub: any) => (
+                                                            <div key={sub.id} className="text-sm">
+                                                                <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-tighter mb-1">{sub.id}</p>
+                                                                <p className="opacity-90">{sub.description}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col gap-2 shrink-0">
+                                                {!req.noGeneration && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        className="shrink-0"
+                                                        onClick={() => handleGenerateContent(req.id, req.description)}
+                                                    >
+                                                        <Sparkles className="mr-2 h-3 w-3" />
+                                                        Gerar
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-8 text-muted-foreground">
+                                        Requisitos ainda não cadastrados para esta especialidade.
                                     </div>
-                                ))
-                            ) : (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    Requisitos ainda não cadastrados para esta especialidade.
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="management" className="mt-6">
@@ -167,6 +398,7 @@ function SpecialtyDetailsContent() {
                         activityName={specialty.name}
                         type="specialty"
                         requirements={specialty.requirements}
+                        onGenerateClick={handleGenerateContent}
                     />
                 </TabsContent>
             </Tabs>
