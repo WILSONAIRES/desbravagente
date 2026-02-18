@@ -30,14 +30,14 @@ export function RequirementsList({ sections, onGenerateClick }: RequirementsList
 
     return (
         <Accordion type="single" collapsible className="w-full">
-            {sections.map((section, index) => (
+            {(sections || []).map((section, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
                     <AccordionTrigger className="text-lg font-semibold">
                         {section.title}
                     </AccordionTrigger>
                     <AccordionContent>
                         <div className="space-y-4 pt-2">
-                            {section.requirements.map((req) => (
+                            {(section.requirements || []).map((req) => (
                                 <RequirementItem
                                     key={req.id}
                                     req={req}
@@ -54,7 +54,8 @@ export function RequirementsList({ sections, onGenerateClick }: RequirementsList
 }
 
 function RequirementItem({ req, onGenerateClick, findSpecialtyInDescription, isSub = false, parentDescription }: any) {
-    const linkedSpecialty = findSpecialtyInDescription(req.description)
+    if (!req) return null
+    const linkedSpecialty = findSpecialtyInDescription(req.description || "")
 
     return (
         <div className="space-y-3">

@@ -197,6 +197,7 @@ export function ActivityStudentManager({
     }
 
     const findSpecialtyInDescription = (description: string) => {
+        if (!description) return null;
         const { specialties } = require("@/data/specialties");
         const lowerDesc = description.toLowerCase()
         return (specialties as any[]).find(s => {
@@ -297,9 +298,10 @@ export function ActivityStudentManager({
                                 {isExpanded && (
                                     <CardContent className="p-0 border-t bg-muted/30">
                                         <div className="divide-y max-h-[300px] overflow-y-auto">
-                                            {requirements.length > 0 && 'title' in requirements[0] ? (
+                                            {(requirements || []).length > 0 && requirements[0] && 'title' in requirements[0] ? (
                                                 <Accordion type="multiple" className="w-full">
                                                     {(requirements as any[]).map((section) => {
+                                                        if (!section) return null;
                                                         const sectionReqIds = (section.requirements || []).map((r: any) => r.id)
                                                         const allDone = sectionReqIds.length > 0 && sectionReqIds.every((id: string) => memberProgress?.requirements.some(r => r.requirementId === id))
 
@@ -348,12 +350,12 @@ export function ActivityStudentManager({
                                                             variant="ghost"
                                                             size="sm"
                                                             className="h-6 px-1.5 text-[9px] uppercase font-bold text-muted-foreground hover:text-primary"
-                                                            onClick={() => toggleBulkRequirements(member.id, requirements.map((r: any) => r.id))}
+                                                            onClick={() => toggleBulkRequirements(member.id, (requirements || []).map((r: any) => r.id))}
                                                         >
-                                                            {requirements.every((req: any) => memberProgress?.requirements.some(r => r.requirementId === req.id)) ? 'Desmarcar Tudo' : 'Marcar Tudo'}
+                                                            {(requirements || []).every((req: any) => memberProgress?.requirements?.some((r: any) => r.requirementId === req.id)) ? 'Desmarcar Tudo' : 'Marcar Tudo'}
                                                         </Button>
                                                     </div>
-                                                    {requirements.map((req: any) => (
+                                                    {(requirements || []).map((req: any) => (
                                                         <StudentRequirementItem
                                                             key={req.id}
                                                             req={req}
@@ -399,8 +401,9 @@ function StudentRequirementItem({
     isSub = false,
     parentDescription
 }: any) {
-    const isDone = memberProgress?.requirements.some((r: any) => r.requirementId === req.id)
-    const linkedSpecialty = findSpecialtyInDescription(req.description)
+    if (!req) return null
+    const isDone = memberProgress?.requirements?.some((r: any) => r.requirementId === req.id)
+    const linkedSpecialty = findSpecialtyInDescription(req.description || "")
 
     return (
         <div className="space-y-3">

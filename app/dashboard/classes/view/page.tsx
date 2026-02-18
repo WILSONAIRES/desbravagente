@@ -61,7 +61,7 @@ function ClassDetailsContent() {
                 setNotFound(true);
             } else {
                 setCurrentClass(found);
-                setEditedSections(JSON.parse(JSON.stringify(found.sections)));
+                setEditedSections(JSON.parse(JSON.stringify(found.sections || [])));
             }
         };
 
