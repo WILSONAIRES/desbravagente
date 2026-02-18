@@ -13,28 +13,125 @@ import { GenerationModal } from "@/components/generation/generation-modal";
 import { storageService } from "@/services/storage-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityStudentManager } from "@/components/club/activity-student-manager";
-import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles, Award } from "lucide-react";
+import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles, Award, Search } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 
-const RequirementEditorItem = ({ requirement, onUpdate, onRemove, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, specialties?: any[], level?: number }) => {
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onUpdate({ ...requirement, description: e.target.value });
+const SpecialtySearchDialog = ({
+    specialties,
+    selectedId,
+    onSelect
+}: {
+    specialties: any[],
+    selectedId?: string,
+    onSelect: (id: string | undefined) => void
+}) => {
+    const [search, setSearch] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+
+    const filtered = specialties.filter(s =>
+        s.name.toLowerCase().includes(search.toLowerCase()) ||
+        s.code?.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const selected = specialties.find(s => s.id === selectedId);
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 text-[11px] justify-start px-2 font-normal w-full max-w-[200px]">
+                    <Award className="mr-2 h-3.5 w-3.5 text-muted-foreground" />
+                    {selected ? (
+                        <span className="truncate">{selected.name}</span>
+                    ) : (
+                        <span className="text-muted-foreground">Vincular Especialidade...</span>
+                    )}
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Vincular Especialidade</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Pesquisar por nome ou código..."
+                            className="pl-9"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            autoFocus
+                        />
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto space-y-1 pr-2">
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start text-sm h-9"
+                            onClick={() => {
+                                onSelect(undefined);
+                                setIsOpen(false);
+                            }}
+                        >
+                            <X className="mr-2 h-4 w-4 text-muted-foreground" />
+                            Nenhuma (Remover vínculo)
+                        </Button>
+                        {filtered.map((s) => (
+                            <Button
+                                key={s.id}
+                                variant={selectedId === s.id ? "secondary" : "ghost"}
+                                className="w-full justify-start text-sm h-9 px-3"
+                                onClick={() => {
+                                    onSelect(s.id);
+                                    setIsOpen(false);
+                                }}
+                            >
+                                <div className="flex items-center gap-2 truncate">
+                                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
+                                    <span className="font-mono text-[10px] text-muted-foreground">{s.code}</span>
+                                    <span className="truncate">{s.name}</span>
+                                </div>
+                            </Button>
+                        ))}
+                        {filtered.length === 0 && (
+                            <div className="text-center py-6 text-sm text-muted-foreground">
+                                Nenhuma especialidade encontrada.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, specialties?: any[], level?: number }) => {
+    const [localDescription, setLocalDescription] = useState(requirement.description);
+
+    // Sync local state when requirement changes from outside (e.g. undo/save)
+    useEffect(() => {
+        setLocalDescription(requirement.description);
+    }, [requirement.description]);
+
+    const handleDescriptionBlur = () => {
+        if (localDescription !== requirement.description) {
+            onUpdate({ ...requirement, description: localDescription });
+        }
     };
 
     const handleToggleGeneration = (checked: boolean) => {
         onUpdate({ ...requirement, noGeneration: !checked });
     };
 
-    const handleSpecialtyChange = (value: string) => {
-        onUpdate({ ...requirement, linkedSpecialtyId: value === "none" ? undefined : value });
+    const handleSpecialtyChange = (id: string | undefined) => {
+        onUpdate({ ...requirement, linkedSpecialtyId: id });
     };
 
     const handleAddSub = () => {
@@ -49,16 +146,16 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, specialties = 
         onUpdate(updated);
     };
 
-    const handleUpdateSub = (subIdx: number, updatedSub: any) => {
+    const handleUpdateSub = React.useCallback((subIdx: number, updatedSub: any) => {
         const newSubs = [...(requirement.subRequirements || [])];
         newSubs[subIdx] = updatedSub;
         onUpdate({ ...requirement, subRequirements: newSubs });
-    };
+    }, [requirement, onUpdate]);
 
-    const handleRemoveSub = (subIdx: number) => {
+    const handleRemoveSub = React.useCallback((subIdx: number) => {
         const newSubs = (requirement.subRequirements || []).filter((_: any, i: number) => i !== subIdx);
         onUpdate({ ...requirement, subRequirements: newSubs });
-    };
+    }, [requirement, onUpdate]);
 
     return (
         <div className={`space-y-3 ${level > 0 ? 'ml-6 pl-4 border-l-2 border-primary/20 bg-primary/5 p-3 rounded-lg' : ''}`}>
@@ -88,28 +185,18 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, specialties = 
 
                 <textarea
                     className="w-full min-h-[60px] p-3 rounded-lg border bg-background text-sm resize-y focus:ring-1 focus:ring-primary/50 transition-all font-medium"
-                    value={requirement.description}
-                    onChange={handleDescriptionChange}
+                    value={localDescription}
+                    onChange={(e) => setLocalDescription(e.target.value)}
+                    onBlur={handleDescriptionBlur}
                     placeholder="Descreva o requisito..."
                 />
 
                 <div className="flex items-center justify-between gap-2 mt-1">
-                    <div className="flex items-center gap-2 flex-1 max-w-[250px]">
-                        <Award className="h-4 w-4 text-muted-foreground" />
-                        <Select value={requirement.linkedSpecialtyId || "none"} onValueChange={handleSpecialtyChange}>
-                            <SelectTrigger className="h-8 text-[11px]">
-                                <SelectValue placeholder="Vincular Especialidade..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="none">Nenhuma especialidade</SelectItem>
-                                {specialties.map((s) => (
-                                    <SelectItem key={s.id} value={s.id}>
-                                        {s.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                    <SpecialtySearchDialog
+                        specialties={specialties}
+                        selectedId={requirement.linkedSpecialtyId}
+                        onSelect={handleSpecialtyChange}
+                    />
 
                     <Button
                         variant="ghost"
@@ -139,7 +226,8 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, specialties = 
             )}
         </div>
     );
-};
+});
+RequirementEditorItem.displayName = "RequirementEditorItem";
 
 function ClassDetailsContent() {
     const searchParams = useSearchParams();
@@ -242,7 +330,27 @@ function ClassDetailsContent() {
         setModalOpen(true);
     };
 
+    const handleUpdateRequirement = React.useCallback((sIdx: number, rIdx: number, updatedReq: any) => {
+        setEditedSections(prev => {
+            const newSections = [...prev];
+            newSections[sIdx].requirements = [...newSections[sIdx].requirements];
+            newSections[sIdx].requirements[rIdx] = updatedReq;
+            return newSections;
+        });
+    }, []);
+
+    const handleRemoveRequirement = React.useCallback((sIdx: number, rIdx: number) => {
+        setEditedSections(prev => {
+            const newSections = [...prev];
+            newSections[sIdx].requirements = newSections[sIdx].requirements.filter((_: any, i: number) => i !== rIdx);
+            return newSections;
+        });
+    }, []);
+
     if (notFound) {
+        // ... existing notFound check ...
+        // (skipping for brevity in the tool call)
+        // actually I need to provide the full content for the replacement range
         return (
             <div className="text-center py-10">
                 <h1 className="text-xl font-bold">Classe não encontrada</h1>
@@ -342,19 +450,11 @@ function ClassDetailsContent() {
                                     <div className="space-y-6 pl-4">
                                         {(section.requirements || []).map((req: any, rIdx: number) => (
                                             <RequirementEditorItem
-                                                key={rIdx}
+                                                key={req.id || rIdx}
                                                 requirement={req}
                                                 specialties={specialties}
-                                                onUpdate={(updatedReq: any) => {
-                                                    const newSections = [...editedSections];
-                                                    newSections[sIdx].requirements[rIdx] = updatedReq;
-                                                    setEditedSections(newSections);
-                                                }}
-                                                onRemove={() => {
-                                                    const newSections = [...editedSections];
-                                                    newSections[sIdx].requirements = newSections[sIdx].requirements.filter((_: any, i: number) => i !== rIdx);
-                                                    setEditedSections(newSections);
-                                                }}
+                                                onUpdate={(updatedReq: any) => handleUpdateRequirement(sIdx, rIdx, updatedReq)}
+                                                onRemove={() => handleRemoveRequirement(sIdx, rIdx)}
                                             />
                                         ))}
 
@@ -363,13 +463,15 @@ function ClassDetailsContent() {
                                             size="sm"
                                             className="w-full border-dashed"
                                             onClick={() => {
-                                                const newSections = [...editedSections];
-                                                const newId = `req-${Date.now()}`;
-                                                newSections[sIdx].requirements = [
-                                                    ...(newSections[sIdx].requirements || []),
-                                                    { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
-                                                ];
-                                                setEditedSections(newSections);
+                                                setEditedSections(prev => {
+                                                    const newSections = [...prev];
+                                                    const newId = `req-${Date.now()}`;
+                                                    newSections[sIdx].requirements = [
+                                                        ...(newSections[sIdx].requirements || []),
+                                                        { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
+                                                    ];
+                                                    return newSections;
+                                                });
                                             }}
                                         >
                                             <Plus className="mr-2 h-4 w-4" />
@@ -420,7 +522,6 @@ function ClassDetailsContent() {
                     requirementDescription={selectedReq.description}
                     className={currentClass.name}
                     parentDescription={selectedParentDesc}
-                    onGenerateClick={handleGenerateContent}
                 />
             )}
         </div>
