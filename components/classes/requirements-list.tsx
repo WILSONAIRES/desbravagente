@@ -20,12 +20,31 @@ interface RequirementsListProps {
 
 export function RequirementsList({ sections, onGenerateClick }: RequirementsListProps) {
     const findSpecialtyInDescription = (description: string) => {
-        const lowerDesc = description.toLowerCase()
-        return specialties.find(s => {
-            const nameLower = s.name.toLowerCase()
-            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim()
-            return lowerDesc.includes(nameWithoutCode)
-        })
+        if (!description) return null;
+        const lowerDesc = description.toLowerCase();
+        const cleanDesc = lowerDesc.replace(/[.,;]/g, ' ');
+
+        return (specialties || []).find(s => {
+            const nameLower = s.name.toLowerCase();
+            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim();
+
+            if (cleanDesc.trim() === nameWithoutCode) return true;
+
+            const prefixes = ["especialidade de ", "especialidade em ", "especialidade de: ", "completar a especialidade "];
+            if (prefixes.some(p => lowerDesc.includes(p + nameWithoutCode))) return true;
+
+            // We only do this if the specialty name is long enough or unique
+            const escapedName = nameWithoutCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`\\b${escapedName}\\b`, 'i');
+
+            // If it's a common word, we require one of the prefixes above
+            const commonWords = ["temperança", "daniel", "saúde", "arte"];
+            if (commonWords.includes(nameWithoutCode)) {
+                return false; // Already handled by prefix check
+            }
+
+            return regex.test(cleanDesc);
+        });
     }
 
     return (

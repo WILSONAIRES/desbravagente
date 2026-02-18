@@ -199,12 +199,28 @@ export function ActivityStudentManager({
 
     const findSpecialtyInDescription = (description: string) => {
         if (!description) return null;
-        const lowerDesc = description.toLowerCase()
+        const lowerDesc = description.toLowerCase();
+        const cleanDesc = lowerDesc.replace(/[.,;]/g, ' ');
+
         return (specialties || []).find(s => {
-            const nameLower = s.name.toLowerCase()
-            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim()
-            return lowerDesc.includes(nameWithoutCode)
-        })
+            const nameLower = s.name.toLowerCase();
+            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim();
+
+            if (cleanDesc.trim() === nameWithoutCode) return true;
+
+            const prefixes = ["especialidade de ", "especialidade em ", "especialidade de: ", "completar a especialidade "];
+            if (prefixes.some(p => lowerDesc.includes(p + nameWithoutCode))) return true;
+
+            const escapedName = nameWithoutCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`\\b${escapedName}\\b`, 'i');
+
+            const commonWords = ["temperança", "daniel", "saúde", "arte"];
+            if (commonWords.includes(nameWithoutCode)) {
+                return false;
+            }
+
+            return regex.test(cleanDesc);
+        });
     }
 
     const filteredAvailable = availableMembers.filter(m =>
