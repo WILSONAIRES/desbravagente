@@ -13,7 +13,7 @@ import { GenerationModal } from "@/components/generation/generation-modal";
 import { storageService } from "@/services/storage-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityStudentManager } from "@/components/club/activity-student-manager";
-import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles, Award, Search } from "lucide-react";
+import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles, Award, Search, ArrowUp, ArrowDown } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -112,7 +112,7 @@ const SpecialtySearchDialog = ({
     );
 };
 
-const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, specialties?: any[], level?: number }) => {
+const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, specialties?: any[], level?: number }) => {
     const [localDescription, setLocalDescription] = useState(requirement.description);
 
     // Sync local state when requirement changes from outside (e.g. undo/save)
@@ -157,6 +157,15 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, spe
         onUpdate({ ...requirement, subRequirements: newSubs });
     }, [requirement, onUpdate]);
 
+    const handleMoveSub = React.useCallback((subIdx: number, direction: 'up' | 'down') => {
+        const newSubs = [...(requirement.subRequirements || [])];
+        const targetIdx = direction === 'up' ? subIdx - 1 : subIdx + 1;
+        if (targetIdx >= 0 && targetIdx < newSubs.length) {
+            [newSubs[subIdx], newSubs[targetIdx]] = [newSubs[targetIdx], newSubs[subIdx]];
+            onUpdate({ ...requirement, subRequirements: newSubs });
+        }
+    }, [requirement, onUpdate]);
+
     return (
         <div className={`space-y-3 ${level > 0 ? 'ml-6 pl-4 border-l-2 border-primary/20 bg-primary/5 p-3 rounded-lg' : ''}`}>
             <div className="flex flex-col gap-3 p-4 border rounded-xl bg-card shadow-sm group/req">
@@ -171,6 +180,28 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, spe
                                 onCheckedChange={handleToggleGeneration}
                                 className="scale-75"
                             />
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden"
+                                onClick={onMoveUp}
+                                disabled={isFirst}
+                                title="Subir"
+                            >
+                                <ArrowUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden"
+                                onClick={onMoveDown}
+                                disabled={isLast}
+                                title="Descer"
+                            >
+                                <ArrowDown className="h-4 w-4" />
+                            </Button>
                         </div>
                         <Button
                             variant="ghost"
@@ -217,9 +248,13 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, spe
                             key={idx}
                             requirement={sub}
                             level={level + 1}
+                            isFirst={idx === 0}
+                            isLast={idx === (requirement.subRequirements || []).length - 1}
                             specialties={specialties}
                             onUpdate={(updated) => handleUpdateSub(idx, updated)}
                             onRemove={() => handleRemoveSub(idx)}
+                            onMoveUp={() => handleMoveSub(idx, 'up')}
+                            onMoveDown={() => handleMoveSub(idx, 'down')}
                         />
                     ))}
                 </div>
@@ -448,13 +483,41 @@ function ClassDetailsContent() {
                                     </div>
 
                                     <div className="space-y-6 pl-4">
-                                        {(section.requirements || []).map((req: any, rIdx: number) => (
+                                        {(section.requirements || []).map((req: any, reqIdx: number) => (
                                             <RequirementEditorItem
-                                                key={req.id || rIdx}
+                                                key={reqIdx}
                                                 requirement={req}
+                                                isFirst={reqIdx === 0}
+                                                isLast={reqIdx === (section.requirements || []).length - 1}
                                                 specialties={specialties}
-                                                onUpdate={(updatedReq: any) => handleUpdateRequirement(sIdx, rIdx, updatedReq)}
-                                                onRemove={() => handleRemoveRequirement(sIdx, rIdx)}
+                                                onUpdate={(updated) => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].requirements[reqIdx] = updated;
+                                                    setEditedSections(newSections);
+                                                }}
+                                                onRemove={() => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].requirements = newSections[sIdx].requirements.filter((_: any, rIdx: number) => rIdx !== reqIdx);
+                                                    setEditedSections(newSections);
+                                                }}
+                                                onMoveUp={() => {
+                                                    const newSections = [...editedSections];
+                                                    const reqs = [...newSections[sIdx].requirements];
+                                                    if (reqIdx > 0) {
+                                                        [reqs[reqIdx], reqs[reqIdx - 1]] = [reqs[reqIdx - 1], reqs[reqIdx]];
+                                                        newSections[sIdx].requirements = reqs;
+                                                        setEditedSections(newSections);
+                                                    }
+                                                }}
+                                                onMoveDown={() => {
+                                                    const newSections = [...editedSections];
+                                                    const reqs = [...newSections[sIdx].requirements];
+                                                    if (reqIdx < reqs.length - 1) {
+                                                        [reqs[reqIdx], reqs[reqIdx + 1]] = [reqs[reqIdx + 1], reqs[reqIdx]];
+                                                        newSections[sIdx].requirements = reqs;
+                                                        setEditedSections(newSections);
+                                                    }
+                                                }}
                                             />
                                         ))}
 

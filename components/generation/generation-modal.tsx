@@ -50,6 +50,7 @@ export function GenerationModal({
     const [result, setResult] = useState<string | null>(null)
     const [existingContent, setExistingContent] = useState<string | null>(null)
     const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false)
+    const [justAutoSaved, setJustAutoSaved] = useState(false)
 
     const expectedTitle = `${className} - ${requirementId.toUpperCase()}`
 
@@ -59,6 +60,7 @@ export function GenerationModal({
         setDifficulty('medium')
         setOutputType('explanation')
         setShowOverwriteConfirm(false)
+        setJustAutoSaved(false)
 
         if (open) {
             checkExisting()
@@ -91,6 +93,24 @@ export function GenerationModal({
             })
             setResult(content)
             setShowOverwriteConfirm(false)
+
+            // Auto-save if it's the first time and not a refinement
+            if (!existingContent && !refinement) {
+                try {
+                    await storageService.saveContent({
+                        content: content,
+                        timestamp: new Date(),
+                        title: expectedTitle,
+                        type: type,
+                        requirementId: requirementId
+                    })
+                    setJustAutoSaved(true)
+                    setExistingContent(content)
+                    // Optional: router.refresh() if needed, but maybe not on first auto-save to allow review
+                } catch (saveErr) {
+                    console.error("Auto-save failed:", saveErr)
+                }
+            }
         } catch (error) {
             console.error(error)
         } finally {
@@ -137,7 +157,15 @@ export function GenerationModal({
                             </div>
                         )}
                         <div>
-                            <DialogTitle>Gerador de Conteúdo IA</DialogTitle>
+                            <div className="flex items-center gap-2">
+                                <DialogTitle>Gerador de Conteúdo IA</DialogTitle>
+                                {justAutoSaved && (
+                                    <div className="bg-green-100 text-green-700 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex items-center gap-1">
+                                        <div className="h-1 w-1 bg-green-500 rounded-full animate-pulse" />
+                                        Salvo Automaticamente
+                                    </div>
+                                )}
+                            </div>
                             <DialogDescription>
                                 Material para: <span className="font-medium text-primary">{requirementId.toUpperCase()}</span>
                             </DialogDescription>
@@ -305,7 +333,7 @@ export function GenerationModal({
                             {result !== existingContent && (
                                 <Button onClick={handleSave} disabled={loading}>
                                     {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                                    Salvar e Substituir
+                                    {existingContent === result ? "Atualizar Base" : "Salvar e Substituir"}
                                 </Button>
                             )}
                             {result === existingContent && (

@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { specialties as staticSpecialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles } from "lucide-react"
+import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { GenerationModal } from "@/components/generation/generation-modal"
@@ -17,7 +17,7 @@ import { supabase } from "@/lib/supabase"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
-const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, level?: number }) => {
+const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, level?: number }) => {
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onUpdate({ ...requirement, description: e.target.value });
     };
@@ -49,6 +49,15 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: {
         onUpdate({ ...requirement, subRequirements: newSubs });
     };
 
+    const handleMoveSub = (subIdx: number, direction: 'up' | 'down') => {
+        const newSubs = [...(requirement.subRequirements || [])];
+        const targetIdx = direction === 'up' ? subIdx - 1 : subIdx + 1;
+        if (targetIdx >= 0 && targetIdx < newSubs.length) {
+            [newSubs[subIdx], newSubs[targetIdx]] = [newSubs[targetIdx], newSubs[subIdx]];
+            onUpdate({ ...requirement, subRequirements: newSubs });
+        }
+    };
+
     return (
         <div className={`space-y-3 ${level > 0 ? 'ml-6 pl-4 border-l-2 border-primary/20 bg-primary/5 p-3 rounded-lg' : ''}`}>
             <div className="flex flex-col gap-3 p-4 border rounded-xl bg-card shadow-sm group/req">
@@ -63,6 +72,28 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: {
                                 onCheckedChange={handleToggleGeneration}
                                 className="scale-75"
                             />
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden"
+                                onClick={onMoveUp}
+                                disabled={isFirst}
+                                title="Subir"
+                            >
+                                <ArrowUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden"
+                                onClick={onMoveDown}
+                                disabled={isLast}
+                                title="Descer"
+                            >
+                                <ArrowDown className="h-4 w-4" />
+                            </Button>
                         </div>
                         <Button
                             variant="ghost"
@@ -102,8 +133,12 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: {
                             key={idx}
                             requirement={sub}
                             level={level + 1}
+                            isFirst={idx === 0}
+                            isLast={idx === (requirement.subRequirements || []).length - 1}
                             onUpdate={(updated) => handleUpdateSub(idx, updated)}
                             onRemove={() => handleRemoveSub(idx)}
+                            onMoveUp={() => handleMoveSub(idx, 'up')}
+                            onMoveDown={() => handleMoveSub(idx, 'down')}
                         />
                     ))}
                 </div>
@@ -302,18 +337,34 @@ function SpecialtyDetailsContent() {
 
                 <TabsContent value="requirements" className="mt-6">
                     {isEditing ? (
-                        <div className="space-y-6 pb-20">
-                            {editedRequirements.map((req, rIdx) => (
+                        <div className="space-y-6">
+                            {editedRequirements.map((req, idx) => (
                                 <RequirementEditorItem
-                                    key={rIdx}
+                                    key={idx}
                                     requirement={req}
-                                    onUpdate={(updatedReq: any) => {
+                                    isFirst={idx === 0}
+                                    isLast={idx === editedRequirements.length - 1}
+                                    onUpdate={(updated) => {
                                         const newReqs = [...editedRequirements];
-                                        newReqs[rIdx] = updatedReq;
+                                        newReqs[idx] = updated;
                                         setEditedRequirements(newReqs);
                                     }}
                                     onRemove={() => {
-                                        setEditedRequirements(editedRequirements.filter((_, i) => i !== rIdx));
+                                        setEditedRequirements(editedRequirements.filter((_, i) => i !== idx));
+                                    }}
+                                    onMoveUp={() => {
+                                        const newReqs = [...editedRequirements];
+                                        if (idx > 0) {
+                                            [newReqs[idx], newReqs[idx - 1]] = [newReqs[idx - 1], newReqs[idx]];
+                                            setEditedRequirements(newReqs);
+                                        }
+                                    }}
+                                    onMoveDown={() => {
+                                        const newReqs = [...editedRequirements];
+                                        if (idx < newReqs.length - 1) {
+                                            [newReqs[idx], newReqs[idx + 1]] = [newReqs[idx + 1], newReqs[idx]];
+                                            setEditedRequirements(newReqs);
+                                        }
                                     }}
                                 />
                             ))}
