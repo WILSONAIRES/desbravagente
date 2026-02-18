@@ -4,6 +4,7 @@ export interface ContentGenerationRequest {
     type: 'class' | 'specialty'
     name: string
     requirement: string
+    parentRequirement?: string
     difficulty?: 'easy' | 'medium' | 'hard'
     outputType: 'explanation' | 'activity' | 'quiz' | 'exam'
     refinement?: 'simpler' | 'complex'
@@ -28,6 +29,7 @@ export const aiService = {
 Gere um conteúdo do tipo "${request.outputType}" para o seguinte requisito:
 
 Classe/Especialidade: ${request.name}
+${request.parentRequirement ? `Contexto (Instrução Pai): ${request.parentRequirement}` : ''}
 Requisito: ${request.requirement}
 ${request.difficulty ? `Nível de Dificuldade: ${difficultyMap[request.difficulty]}` : ''}
 ${request.refinement === 'simpler' ? 'OBJETIVO: Simplificar ao máximo, usando linguagem lúdica e conceitos fundamentais.' : ''}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { storageService } from "@/services/storage-service"
 import { Member, ProgressItem, RequirementProgress } from "@/types/clube"
 import { Button } from "@/components/ui/button"
@@ -14,8 +15,16 @@ import {
     ChevronDown,
     ChevronUp,
     User as UserIcon,
-    Trash2
+    Trash2,
+    Award,
+    Sparkles
 } from "lucide-react"
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 import {
     Card,
     CardContent,
@@ -38,13 +47,15 @@ interface ActivityStudentManagerProps {
     activityName: string
     type: 'class' | 'specialty'
     requirements: any[] // PathfinderClass.sections or Specialty.requirements
+    onGenerateClick: (requirementId: string, description: string, parentDescription?: string) => void
 }
 
 export function ActivityStudentManager({
     activityId,
     activityName,
     type,
-    requirements
+    requirements,
+    onGenerateClick
 }: ActivityStudentManagerProps) {
     const [enrolledMembers, setEnrolledMembers] = useState<Member[]>([])
     const [availableMembers, setAvailableMembers] = useState<Member[]>([])
@@ -185,12 +196,22 @@ export function ActivityStudentManager({
         return Math.round((p.requirements.length / total) * 100)
     }
 
+    const findSpecialtyInDescription = (description: string) => {
+        const { specialties } = require("@/data/specialties");
+        const lowerDesc = description.toLowerCase()
+        return (specialties as any[]).find(s => {
+            const nameLower = s.name.toLowerCase()
+            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim()
+            return lowerDesc.includes(nameWithoutCode)
+        })
+    }
+
     const filteredAvailable = availableMembers.filter(m =>
         m.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     if (isLoading && enrolledMembers.length === 0) {
-        return <div className="p-8 text-center text-muted-foreground">Carregando gestão de alunos...</div>
+        return <div className="p-8 text-center text-muted-foreground">Carregando gestão de desbravadores...</div>
     }
 
     return (
@@ -276,102 +297,84 @@ export function ActivityStudentManager({
                                 {isExpanded && (
                                     <CardContent className="p-0 border-t bg-muted/30">
                                         <div className="divide-y max-h-[300px] overflow-y-auto">
-                                            {type === 'class' ? (
-                                                (requirements as any[]).map(section => {
-                                                    const sectionReqIds = (section.requirements || []).map((r: any) => r.id)
-                                                    const allDone = sectionReqIds.length > 0 && sectionReqIds.every((id: string) => memberProgress?.requirements.some(r => r.requirementId === id))
+                                            {requirements.length > 0 && 'title' in requirements[0] ? (
+                                                <Accordion type="multiple" className="w-full">
+                                                    {(requirements as any[]).map((section) => {
+                                                        const sectionReqIds = (section.requirements || []).map((r: any) => r.id)
+                                                        const allDone = sectionReqIds.length > 0 && sectionReqIds.every((id: string) => memberProgress?.requirements.some(r => r.requirementId === id))
 
-                                                    return (
-                                                        <div key={section.title} className="p-4">
-                                                            <div className="flex items-center justify-between mb-3 border-b border-muted pb-1">
-                                                                <h4 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground">{section.title}</h4>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="h-6 px-1.5 text-[9px] uppercase font-bold text-muted-foreground hover:text-primary"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation()
-                                                                        toggleBulkRequirements(member.id, sectionReqIds)
-                                                                    }}
-                                                                >
-                                                                    {allDone ? 'Desmarcar Tópico' : 'Marcar Tópico'}
-                                                                </Button>
-                                                            </div>
-                                                            <div className="space-y-2 ml-2">
-                                                                {(section.requirements || []).map((req: any) => {
-                                                                    const isDone = memberProgress?.requirements.some(r => r.requirementId === req.id)
-                                                                    return (
-                                                                        <div
-                                                                            key={req.id}
-                                                                            className="flex items-start gap-3 group cursor-pointer"
-                                                                            onClick={() => toggleRequirement(member.id, req.id)}
+                                                        return (
+                                                            <AccordionItem key={section.title} value={section.title} className="border-none">
+                                                                <AccordionTrigger className="px-4 py-3 hover:bg-black/5 hover:no-underline border-b">
+                                                                    <div className="flex items-center justify-between w-full">
+                                                                        <h4 className="font-semibold text-xs uppercase tracking-wider text-muted-foreground">{section.title}</h4>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="sm"
+                                                                            className="h-6 px-1.5 text-[9px] uppercase font-bold text-muted-foreground hover:text-primary"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation()
+                                                                                toggleBulkRequirements(member.id, sectionReqIds)
+                                                                            }}
                                                                         >
-                                                                            <div className="mt-1">
-                                                                                {isDone ? (
-                                                                                    <CheckSquare className="h-4 w-4 text-primary" />
-                                                                                ) : (
-                                                                                    <Square className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                                                                                )}
-                                                                            </div>
-                                                                            <span className={`text-sm ${isDone ? 'text-muted-foreground line-through decoration-primary/50' : ''}`}>
-                                                                                {req.description}
-                                                                            </span>
-                                                                        </div>
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                })
+                                                                            {allDone ? 'Desmarcar Tópico' : 'Marcar Tópico'}
+                                                                        </Button>
+                                                                    </div>
+                                                                </AccordionTrigger>
+                                                                <AccordionContent className="pb-4 pt-4 border-b">
+                                                                    <div className="space-y-4 px-4">
+                                                                        {(section.requirements || []).map((req: any) => (
+                                                                            <StudentRequirementItem
+                                                                                key={req.id}
+                                                                                req={req}
+                                                                                memberId={member.id}
+                                                                                memberProgress={memberProgress}
+                                                                                toggleRequirement={toggleRequirement}
+                                                                                findSpecialtyInDescription={findSpecialtyInDescription}
+                                                                                onGenerateClick={onGenerateClick}
+                                                                                parentDescription={section.title}
+                                                                            />
+                                                                        ))}
+                                                                    </div>
+                                                                </AccordionContent>
+                                                            </AccordionItem>
+                                                        )
+                                                    })}
+                                                </Accordion>
                                             ) : (
-                                                <div className="p-4 space-y-3">
-                                                    <div className="flex items-center justify-end mb-4 border-b border-muted pb-1">
+                                                <div className="p-4 space-y-4">
+                                                    <div className="flex items-center justify-end mb-2 border-b pb-2">
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
                                                             className="h-6 px-1.5 text-[9px] uppercase font-bold text-muted-foreground hover:text-primary"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                toggleBulkRequirements(member.id, requirements.map((r: any) => r.id))
-                                                            }}
+                                                            onClick={() => toggleBulkRequirements(member.id, requirements.map((r: any) => r.id))}
                                                         >
                                                             {requirements.every((req: any) => memberProgress?.requirements.some(r => r.requirementId === req.id)) ? 'Desmarcar Tudo' : 'Marcar Tudo'}
                                                         </Button>
                                                     </div>
-                                                    <div className="space-y-3">
-                                                        {requirements.map((req: any) => {
-                                                            const isDone = memberProgress?.requirements.some(r => r.requirementId === req.id)
-                                                            return (
-                                                                <div
-                                                                    key={req.id}
-                                                                    className="flex items-start gap-3 group cursor-pointer"
-                                                                    onClick={() => toggleRequirement(member.id, req.id)}
-                                                                >
-                                                                    <div className="mt-1">
-                                                                        {isDone ? (
-                                                                            <CheckSquare className="h-4 w-4 text-primary" />
-                                                                        ) : (
-                                                                            <Square className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                                                                        )}
-                                                                    </div>
-                                                                    <span className={`text-sm ${isDone ? 'text-muted-foreground line-through decoration-primary/50' : ''}`}>
-                                                                        {req.description}
-                                                                    </span>
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
+                                                    {requirements.map((req: any) => (
+                                                        <StudentRequirementItem
+                                                            key={req.id}
+                                                            req={req}
+                                                            memberId={member.id}
+                                                            memberProgress={memberProgress}
+                                                            toggleRequirement={toggleRequirement}
+                                                            findSpecialtyInDescription={findSpecialtyInDescription}
+                                                            onGenerateClick={onGenerateClick}
+                                                        />
+                                                    ))}
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="p-3 bg-muted border-t flex justify-end">
+                                        <div className="p-3 bg-muted/50 border-t flex justify-end">
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="text-destructive text-xs h-8"
+                                                className="text-destructive text-xs h-8 hover:bg-destructive/10"
                                                 onClick={() => handleUnenroll(member.id)}
                                             >
-                                                <Trash2 className="mr-2 h-3.3 w-3.5" />
+                                                <Trash2 className="mr-2 h-3.5 w-3.5" />
                                                 Remover do Progresso
                                             </Button>
                                         </div>
@@ -382,6 +385,80 @@ export function ActivityStudentManager({
                     })
                 )}
             </div>
+        </div>
+    )
+}
+
+function StudentRequirementItem({
+    req,
+    memberId,
+    memberProgress,
+    toggleRequirement,
+    findSpecialtyInDescription,
+    onGenerateClick,
+    isSub = false,
+    parentDescription
+}: any) {
+    const isDone = memberProgress?.requirements.some((r: any) => r.requirementId === req.id)
+    const linkedSpecialty = findSpecialtyInDescription(req.description)
+
+    return (
+        <div className="space-y-3">
+            <div className={`flex items-start justify-between gap-3 group transition-colors ${isSub ? 'ml-6' : ''}`}>
+                <div
+                    className="flex items-start gap-3 flex-1 cursor-pointer"
+                    onClick={() => toggleRequirement(memberId, req.id)}
+                >
+                    <div className="mt-1 shrink-0">
+                        {isDone ? (
+                            <CheckSquare className="h-4 w-4 text-primary" />
+                        ) : (
+                            <Square className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        )}
+                    </div>
+                    <span className={`text-sm leading-tight ${isDone ? 'text-muted-foreground line-through decoration-primary/30' : ''} ${req.noGeneration ? 'font-semibold text-primary/80' : ''}`}>
+                        {req.description}
+                    </span>
+                </div>
+
+                {!req.noGeneration && (
+                    <div className="flex shrink-0">
+                        {linkedSpecialty ? (
+                            <Link href={`/dashboard/specialties/view?id=${linkedSpecialty.id}`}>
+                                <Badge variant="secondary" className="h-6 text-[9px] bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors">
+                                    <Award className="mr-1 h-3 w-3" />
+                                    Ver Especialidade
+                                </Badge>
+                            </Link>
+                        ) : (
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-6 w-6 text-primary/40 hover:text-primary hover:bg-primary/10 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    onGenerateClick(req.id, req.description, parentDescription)
+                                }}
+                            >
+                                <Sparkles className="h-3.5 w-3.5" />
+                            </Button>
+                        )}
+                    </div>
+                )}
+            </div>
+            {req.subRequirements?.map((sub: any) => (
+                <StudentRequirementItem
+                    key={sub.id}
+                    req={sub}
+                    memberId={memberId}
+                    memberProgress={memberProgress}
+                    toggleRequirement={toggleRequirement}
+                    findSpecialtyInDescription={findSpecialtyInDescription}
+                    onGenerateClick={onGenerateClick}
+                    isSub={true}
+                    parentDescription={req.description}
+                />
+            ))}
         </div>
     )
 }

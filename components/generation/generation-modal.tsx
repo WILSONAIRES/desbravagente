@@ -31,6 +31,7 @@ interface GenerationModalProps {
     requirementDescription: string
     className: string
     type?: 'class' | 'specialty'
+    parentDescription?: string
 }
 
 export function GenerationModal({
@@ -39,7 +40,8 @@ export function GenerationModal({
     requirementId,
     requirementDescription,
     className,
-    type = 'class'
+    type = 'class',
+    parentDescription
 }: GenerationModalProps) {
     const router = useRouter()
     const [outputType, setOutputType] = useState<ContentGenerationRequest['outputType']>('explanation')
@@ -82,6 +84,7 @@ export function GenerationModal({
                 type: type,
                 name: className,
                 requirement: requirementDescription,
+                parentRequirement: parentDescription,
                 outputType,
                 difficulty: (outputType === 'quiz' || outputType === 'exam') ? difficulty : undefined,
                 refinement

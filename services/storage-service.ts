@@ -278,5 +278,58 @@ export const storageService = {
             console.error(`Error saving global config ${key}:`, error)
             throw error
         }
+    },
+
+    // Pathfinder Classes Management (Supabase)
+    async getClasses(): Promise<any[]> {
+        const { data, error } = await supabase
+            .from('pathfinder_classes')
+            .select('*')
+            .order('name')
+
+        if (error || !data || data.length === 0) return []
+
+        return data.map(c => ({
+            id: c.id,
+            name: c.name,
+            url: c.url,
+            minAge: c.min_age,
+            color: c.color,
+            type: c.type,
+            sections: c.sections
+        }))
+    },
+
+    async saveClass(cls: any): Promise<void> {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error("Usuário não autenticado")
+
+        const { error } = await supabase
+            .from('pathfinder_classes')
+            .upsert({
+                id: cls.id,
+                name: cls.name,
+                url: cls.url,
+                min_age: cls.minAge,
+                color: cls.color,
+                type: cls.type,
+                sections: cls.sections,
+                updated_at: new Date(),
+                updated_by: user.id
+            })
+
+        if (error) {
+            console.error("Error saving class:", error)
+            throw error
+        }
+    },
+
+    async migrateClassesFromStatic(staticClasses: any[]): Promise<void> {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        for (const cls of staticClasses) {
+            await this.saveClass(cls)
+        }
     }
 }

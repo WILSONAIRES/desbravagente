@@ -2,6 +2,8 @@ export interface Requirement {
   id: string
   description: string
   completed?: boolean
+  subRequirements?: Requirement[]
+  noGeneration?: boolean
 }
 
 export interface ClassSection {
