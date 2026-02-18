@@ -210,7 +210,10 @@ export const storageService = {
             .select('*')
             .order('created_at')
 
-        if (error) return []
+        if (error) {
+            console.error("Error fetching all users:", error)
+            throw error
+        }
         return data.map(p => ({
             id: p.id,
             name: p.name,
@@ -227,7 +230,7 @@ export const storageService = {
 
     async saveUserRecord(user: any): Promise<void> {
         // Admin manually updating a user profile
-        await supabase
+        const { error } = await supabase
             .from('profiles')
             .update({
                 role: user.role,
@@ -236,6 +239,11 @@ export const storageService = {
                 is_exempt: user.subscription?.isExempt
             })
             .eq('email', user.email)
+
+        if (error) {
+            console.error("Error saving user record:", error)
+            throw error
+        }
     },
 
     // Configurações Globais (IA, etc)
@@ -263,6 +271,9 @@ export const storageService = {
                 updated_by: user.id
             })
 
-        if (error) console.error(`Error saving global config ${key}:`, error)
+        if (error) {
+            console.error(`Error saving global config ${key}:`, error)
+            throw error
+        }
     }
 }

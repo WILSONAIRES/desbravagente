@@ -92,8 +92,9 @@ function SettingsContent() {
                 storageService.saveGlobalConfig("ai_model", modelName.trim())
             ])
             setStatus("saved")
-        } catch (err) {
+        } catch (err: any) {
             console.error(err)
+            alert(`Erro ao salvar configurações: ${err.message || 'Erro desconhecido'}`)
             setStatus("idle")
         }
         setTimeout(() => setStatus("idle"), 2000)
