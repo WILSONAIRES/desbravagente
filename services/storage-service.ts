@@ -300,6 +300,15 @@ export const storageService = {
         }))
     },
 
+    async isDataMigrated(): Promise<boolean> {
+        const { count, error } = await supabase
+            .from('pathfinder_classes')
+            .select('*', { count: 'exact', head: true })
+
+        if (error) return false
+        return (count || 0) > 0
+    },
+
     async saveClass(cls: any): Promise<void> {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error("Usuário não autenticado")
