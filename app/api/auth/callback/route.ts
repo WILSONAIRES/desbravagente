@@ -4,11 +4,14 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get("code");
-    // if "next" is in search params, use it as the redirection URL
     const next = searchParams.get("next") ?? "/dashboard";
 
     if (code) {
         console.log(`[Auth Callback] Code received, exchanging for session...`);
+
+        // Create the response object first so we can set cookies on it
+        const response = NextResponse.redirect(`${origin}${next}`);
+
         const supabase = createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -21,20 +24,19 @@ export async function GET(request: NextRequest) {
                         cookiesToSet.forEach(({ name, value, options }) =>
                             request.cookies.set(name, value)
                         );
+                        cookiesToSet.forEach(({ name, value, options }) =>
+                            response.cookies.set(name, value, options)
+                        );
                     },
                 },
             }
         );
+
         const { error } = await supabase.auth.exchangeCodeForSession(code);
+
         if (!error) {
             console.log(`[Auth Callback] Session exchange successful, redirecting to ${next}`);
-            const isLocalEnv = origin.includes("localhost");
-            if (isLocalEnv) {
-                return NextResponse.redirect(`${origin}${next}`);
-            }
-
-            // For Cloudflare, ensure we use the correct origin
-            return NextResponse.redirect(`${origin}${next}`);
+            return response;
         } else {
             console.error(`[Auth Callback] Session exchange error:`, error);
         }
@@ -42,7 +44,6 @@ export async function GET(request: NextRequest) {
         console.warn(`[Auth Callback] No code found in search params`);
     }
 
-    // return the user to an error page with instructions
     console.log(`[Auth Callback] Redirecting to login with error`);
     return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
 }
