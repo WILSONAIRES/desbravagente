@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { storageService } from "@/services/storage-service"
 import { Member, ProgressItem, RequirementProgress } from "@/types/clube"
+import { specialties } from "@/data/specialties"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import {
@@ -198,9 +199,8 @@ export function ActivityStudentManager({
 
     const findSpecialtyInDescription = (description: string) => {
         if (!description) return null;
-        const { specialties } = require("@/data/specialties");
         const lowerDesc = description.toLowerCase()
-        return (specialties as any[]).find(s => {
+        return (specialties || []).find(s => {
             const nameLower = s.name.toLowerCase()
             const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim()
             return lowerDesc.includes(nameWithoutCode)
@@ -298,7 +298,7 @@ export function ActivityStudentManager({
                                 {isExpanded && (
                                     <CardContent className="p-0 border-t bg-muted/30">
                                         <div className="divide-y max-h-[300px] overflow-y-auto">
-                                            {(requirements || []).length > 0 && requirements[0] && 'title' in requirements[0] ? (
+                                            {(requirements || []).length > 0 && requirements[0] && typeof requirements[0] === 'object' && ('title' in requirements[0]) ? (
                                                 <Accordion type="multiple" className="w-full">
                                                     {(requirements as any[]).map((section) => {
                                                         if (!section) return null;

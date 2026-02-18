@@ -28,14 +28,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         // Check for current session on load
         const initAuth = async () => {
+            console.log("[AuthContext] Initializing...");
             try {
                 const user = await authService.getCurrentUser()
+                console.log("[AuthContext] User loaded:", !!user);
                 setState({
                     user,
                     isAuthenticated: !!user,
                     isLoading: false,
                 })
             } catch (error) {
+                console.error("[AuthContext] Init error:", error);
                 setState(prev => ({ ...prev, isLoading: false }))
             }
         }
@@ -44,14 +47,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log(`[AuthContext] Auth event: ${event}`);
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
                 const user = await authService.getCurrentUser()
+                console.log("[AuthContext] User syncing after event:", !!user);
                 setState({
                     user,
                     isAuthenticated: !!user,
                     isLoading: false,
                 })
             } else if (event === 'SIGNED_OUT') {
+                console.log("[AuthContext] Sign out detected, clearing state");
                 setState({
                     user: null,
                     isAuthenticated: false,

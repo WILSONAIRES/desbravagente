@@ -3,6 +3,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { classes } from "@/data/classes";
+import { supabase } from "@/lib/supabase";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -30,10 +31,14 @@ function ClassDetailsContent() {
 
     useEffect(() => {
         const checkAdmin = async () => {
-            const { data: { user } } = await (await import("@/lib/supabase")).supabase.auth.getUser();
-            if (user) {
-                const { data } = await (await import("@/lib/supabase")).supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
-                setIsAdmin(data?.role === 'admin');
+            try {
+                const { data: { user: currentUser } } = await supabase.auth.getUser();
+                if (currentUser) {
+                    const { data } = await supabase.from('profiles').select('role').eq('id', currentUser.id).maybeSingle();
+                    setIsAdmin(data?.role === 'admin' || currentUser.email === 'waisilva@gmail.com');
+                }
+            } catch (err) {
+                console.error("Error checking admin status:", err);
             }
         };
         checkAdmin();
@@ -185,7 +190,7 @@ function ClassDetailsContent() {
                                 <div key={sIdx} className="space-y-4">
                                     <h3 className="font-bold text-lg border-b pb-2">{section.title}</h3>
                                     <div className="grid gap-4">
-                                        {section.requirements.map((req, rIdx) => (
+                                        {(section.requirements || []).map((req: any, rIdx: number) => (
                                             <div key={req.id} className="flex flex-col gap-2 p-4 border rounded-lg bg-card">
                                                 <span className="text-xs font-mono text-muted-foreground">{req.id.toUpperCase()}</span>
                                                 <textarea
