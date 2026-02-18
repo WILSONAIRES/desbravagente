@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/auth-context"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -33,9 +34,16 @@ const formSchema = z.object({
 })
 
 export default function LoginPage() {
-    const { login, loginWithGoogle } = useAuth()
+    const { login, loginWithGoogle, user, isAuthenticated } = useAuth()
+    const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [sent, setSent] = useState(false)
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push("/dashboard")
+        }
+    }, [isAuthenticated, router])
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
