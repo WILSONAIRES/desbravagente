@@ -13,17 +13,28 @@ import { GenerationModal } from "@/components/generation/generation-modal";
 import { storageService } from "@/services/storage-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityStudentManager } from "@/components/club/activity-student-manager";
-import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles } from "lucide-react";
+import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles, Award } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
-const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, level?: number }) => {
+const RequirementEditorItem = ({ requirement, onUpdate, onRemove, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, specialties?: any[], level?: number }) => {
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onUpdate({ ...requirement, description: e.target.value });
     };
 
     const handleToggleGeneration = (checked: boolean) => {
         onUpdate({ ...requirement, noGeneration: !checked });
+    };
+
+    const handleSpecialtyChange = (value: string) => {
+        onUpdate({ ...requirement, linkedSpecialtyId: value === "none" ? undefined : value });
     };
 
     const handleAddSub = () => {
@@ -82,7 +93,24 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: {
                     placeholder="Descreva o requisito..."
                 />
 
-                <div className="flex justify-end">
+                <div className="flex items-center justify-between gap-2 mt-1">
+                    <div className="flex items-center gap-2 flex-1 max-w-[250px]">
+                        <Award className="h-4 w-4 text-muted-foreground" />
+                        <Select value={requirement.linkedSpecialtyId || "none"} onValueChange={handleSpecialtyChange}>
+                            <SelectTrigger className="h-8 text-[11px]">
+                                <SelectValue placeholder="Vincular Especialidade..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="none">Nenhuma especialidade</SelectItem>
+                                {specialties.map((s) => (
+                                    <SelectItem key={s.id} value={s.id}>
+                                        {s.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
                     <Button
                         variant="ghost"
                         size="sm"
@@ -102,6 +130,7 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: {
                             key={idx}
                             requirement={sub}
                             level={level + 1}
+                            specialties={specialties}
                             onUpdate={(updated) => handleUpdateSub(idx, updated)}
                             onRemove={() => handleRemoveSub(idx)}
                         />
