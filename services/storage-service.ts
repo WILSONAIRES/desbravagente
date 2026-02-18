@@ -186,12 +186,20 @@ export const storageService = {
 
     async saveClubName(name: string): Promise<void> {
         const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+        if (!user) {
+            console.error("No user found when saving club name")
+            return
+        }
 
-        await supabase
+        const { error } = await supabase
             .from('profiles')
             .update({ club_name: name })
             .eq('id', user.id)
+
+        if (error) {
+            console.error("Error saving club name:", error)
+            throw error
+        }
     },
 
     // Global Admin Only Storage for Users

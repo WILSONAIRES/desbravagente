@@ -12,9 +12,11 @@ import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export default function DashboardPage() {
-    const { user } = useAuth()
+    const { user, isLoading: authLoading } = useAuth()
+    const router = useRouter()
     const [members, setMembers] = useState<Member[]>([])
     const [unitsCount, setUnitsCount] = useState(0)
     const [clubName, setClubName] = useState("Meu Clube")
@@ -41,8 +43,14 @@ export default function DashboardPage() {
             }
         }
 
+        if (user === null && !authLoading) {
+            router.push("/login")
+            return
+        }
+
         if (user) loadDashboardData()
-    }, [user])
+        else if (user === null && !authLoading) setIsLoading(false)
+    }, [user, authLoading, router])
 
     const handleSaveName = async () => {
         if (tempName.trim()) {
