@@ -42,6 +42,7 @@ export default function MembersPage() {
     const [members, setMembers] = useState<Member[]>([])
     const [units, setUnits] = useState<Unit[]>([])
     const [searchTerm, setSearchTerm] = useState("")
+    const [selectedUnit, setSelectedUnit] = useState<string>("all")
     const [isLoading, setIsLoading] = useState(true)
 
     // Add member state
@@ -127,9 +128,13 @@ export default function MembersPage() {
         }
     }
 
-    const filteredMembers = members.filter(m =>
-        m.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    const filteredMembers = members.filter(m => {
+        const matchesSearch = m.name.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesUnit = selectedUnit === "all" ||
+            (selectedUnit === "none" && !m.unitId) ||
+            m.unitId === selectedUnit
+        return matchesSearch && matchesUnit
+    })
 
     if (isLoading) {
         return <div className="p-8 text-center text-muted-foreground">Carregando desbravadores...</div>
@@ -153,14 +158,31 @@ export default function MembersPage() {
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="relative flex-1 w-full max-w-sm">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Buscar por nome..."
-                        className="pl-8"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                <div className="flex flex-col md:flex-row gap-4 flex-1 w-full">
+                    <div className="relative flex-1 max-w-sm">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Buscar por nome..."
+                            className="pl-8"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="w-full md:w-[200px]">
+                        <Select value={selectedUnit} onValueChange={setSelectedUnit}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Filtrar por Unidade" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todas as Unidades</SelectItem>
+                                <SelectItem value="none">Sem Unidade</SelectItem>
+                                {units.map(u => (
+                                    <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
                 <div className="flex gap-2">
@@ -228,6 +250,7 @@ export default function MembersPage() {
                             <TableHead>Nome</TableHead>
                             <TableHead>Unidade</TableHead>
                             <TableHead>Data Nasc.</TableHead>
+                            <TableHead>Atividades</TableHead>
                             <TableHead className="text-right">Ações</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -248,9 +271,26 @@ export default function MembersPage() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex items-center text-muted-foreground">
-                                            <Calendar className="mr-2 h-3.3 w-3.5" />
+                                        <div className="flex items-center text-muted-foreground text-xs">
+                                            <Calendar className="mr-2 h-3.5 w-3.5" />
                                             {new Date(member.dateOfBirth).toLocaleDateString()}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-1.5">
+                                            {member.progress.filter(p => p.type === 'class').length > 0 && (
+                                                <Badge variant="secondary" className="h-6 px-2 text-[10px] font-bold bg-blue-50 text-blue-700 border-blue-100">
+                                                    {member.progress.filter(p => p.type === 'class').length} Classe(s)
+                                                </Badge>
+                                            )}
+                                            {member.progress.filter(p => p.type === 'specialty').length > 0 && (
+                                                <Badge variant="secondary" className="h-6 px-2 text-[10px] font-bold bg-amber-50 text-amber-700 border-amber-100">
+                                                    {member.progress.filter(p => p.type === 'specialty').length} Espec.
+                                                </Badge>
+                                            )}
+                                            {member.progress.length === 0 && (
+                                                <span className="text-[10px] text-muted-foreground italic">Nenhuma ativa</span>
+                                            )}
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">

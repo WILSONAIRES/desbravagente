@@ -1,4 +1,4 @@
-import { Award, BookOpen, Home, FileText, Settings } from "lucide-react"
+import { Award, BookOpen, Home, FileText, Settings, Users, User as UserIcon } from "lucide-react"
 
 export const navItems = [
     {
@@ -7,9 +7,14 @@ export const navItems = [
         icon: Home,
     },
     {
-        title: "Meu Clube",
+        title: "Unidades",
         href: "/dashboard/club",
-        icon: Award, // Will use Award as a placeholder or change if needed
+        icon: Users,
+    },
+    {
+        title: "Desbravadores",
+        href: "/dashboard/club/members",
+        icon: UserIcon,
     },
     {
         title: "Classes",

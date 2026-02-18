@@ -101,9 +101,9 @@ export default function ClubPage() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-primary">{clubName}</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-primary">Gerenciar Unidades</h1>
                     <p className="text-muted-foreground">
-                        Gerencie as unidades e acompanhe o progresso dos desbravadores.
+                        Organize as unidades do seu clube e visualize o total de membros em cada uma.
                     </p>
                 </div>
                 <Dialog open={open} onOpenChange={setOpen}>

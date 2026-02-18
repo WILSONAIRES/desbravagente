@@ -17,7 +17,8 @@ import {
     Plus,
     Trash2,
     CheckSquare,
-    Square
+    Square,
+    Users
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -189,13 +190,23 @@ function MemberProfileContent() {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-4">
-                <Link href={`/dashboard/club/units/view?id=${member.unitId}`}>
+                <Link href={member.unitId ? `/dashboard/club/units/view?id=${member.unitId}` : `/dashboard/club/members`}>
                     <Button variant="ghost" size="icon">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                 </Link>
                 <div className="flex-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-primary">{member.name}</h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-bold tracking-tight text-primary">{member.name}</h1>
+                        {member.unitId && (
+                            <Link href={`/dashboard/club/units/view?id=${member.unitId}`}>
+                                <Badge variant="outline" className="cursor-pointer hover:bg-primary/5">
+                                    <Users className="mr-1.5 h-3 w-3" />
+                                    Unidade (Ver todos)
+                                </Badge>
+                            </Link>
+                        )}
+                    </div>
                     <p className="text-muted-foreground">
                         Nascido em {new Date(member.dateOfBirth).toLocaleDateString()} • {new Date().getFullYear() - new Date(member.dateOfBirth).getFullYear()} anos
                     </p>
