@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -9,18 +9,26 @@ export async function GET() {
         const hasUrl = !!url;
         const hasKey = !!key && key !== "placeholder";
 
-        const { data, error } = await supabase.from('profiles').select('count', { count: 'exact', head: true });
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
 
         return NextResponse.json({
-            status: error ? "error" : "success",
+            status: "success",
             env: {
                 NEXT_PUBLIC_SUPABASE_URL: hasUrl ? "DEFINED" : "MISSING",
                 NEXT_PUBLIC_SUPABASE_ANON_KEY: hasKey ? "DEFINED" : "MISSING (or placeholder)",
                 SUPABASE_URL_VALUE: url || "null",
             },
-            connection: {
-                error: error || null,
-                message: error ? error.message : "Supabase is reachable and responding.",
+            auth: {
+                hasSession: !!session,
+                hasUser: !!user,
+                userEmail: user?.email || null,
+                sessionError: sessionError || null,
+                userError: userError || null,
+            },
+            cookies: {
+                count: request.cookies.getAll().length,
+                names: request.cookies.getAll().map((c: any) => c.name),
             },
             timestamp: new Date().toISOString()
         });

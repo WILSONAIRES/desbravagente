@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const next = searchParams.get("next") ?? "/dashboard";
 
     if (code) {
+        console.log(`[Auth Callback] Code received, exchanging for session...`);
         const supabase = createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -26,6 +27,7 @@ export async function GET(request: NextRequest) {
         );
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (!error) {
+            console.log(`[Auth Callback] Session exchange successful, redirecting to ${next}`);
             const isLocalEnv = origin.includes("localhost");
             if (isLocalEnv) {
                 return NextResponse.redirect(`${origin}${next}`);
@@ -33,9 +35,14 @@ export async function GET(request: NextRequest) {
 
             // For Cloudflare, ensure we use the correct origin
             return NextResponse.redirect(`${origin}${next}`);
+        } else {
+            console.error(`[Auth Callback] Session exchange error:`, error);
         }
+    } else {
+        console.warn(`[Auth Callback] No code found in search params`);
     }
 
     // return the user to an error page with instructions
+    console.log(`[Auth Callback] Redirecting to login with error`);
     return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
 }
