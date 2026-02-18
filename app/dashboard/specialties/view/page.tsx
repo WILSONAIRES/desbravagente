@@ -224,9 +224,9 @@ function SpecialtyDetailsContent() {
             setSpecialty(updated)
             setIsEditing(false)
             alert("Especialidade atualizada com sucesso!")
-        } catch (err) {
-            console.error(err)
-            alert("Erro ao salvar especialidade.")
+        } catch (err: any) {
+            console.error("Erro ao salvar especialidade:", err)
+            alert(`Erro ao salvar especialidade: ${err.message || 'Erro desconhecido'}`)
         } finally {
             setIsSaving(false)
         }

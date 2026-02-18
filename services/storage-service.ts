@@ -312,8 +312,15 @@ export const storageService = {
     },
 
     async saveClass(cls: any): Promise<void> {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) throw new Error("Usuário não autenticado")
+        // Try to get session from local cache first for speed
+        const { data: { session } } = await supabase.auth.getSession()
+        let userId = session?.user?.id
+
+        if (!userId) {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) throw new Error("Usuário não autenticado")
+            userId = user.id
+        }
 
         const { error } = await supabase
             .from('pathfinder_classes')
@@ -325,12 +332,12 @@ export const storageService = {
                 color: cls.color,
                 type: cls.type,
                 sections: cls.sections,
-                updated_at: new Date(),
-                updated_by: user.id
+                updated_at: new Date().toISOString(),
+                updated_by: userId
             })
 
         if (error) {
-            console.error("Error saving class:", error)
+            console.error("Error saving class (details):", error.message, error.details, error.hint)
             throw error
         }
     },
@@ -385,8 +392,14 @@ export const storageService = {
     },
 
     async saveSpecialty(specialty: any): Promise<void> {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) throw new Error("Usuário não autenticado")
+        const { data: { session } } = await supabase.auth.getSession()
+        let userId = session?.user?.id
+
+        if (!userId) {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) throw new Error("Usuário não autenticado")
+            userId = user.id
+        }
 
         const { error } = await supabase
             .from('pathfinder_specialties')
@@ -398,12 +411,12 @@ export const storageService = {
                 color: specialty.color,
                 requirements: specialty.requirements,
                 image: specialty.image,
-                updated_at: new Date(),
-                updated_by: user.id
+                updated_at: new Date().toISOString(),
+                updated_by: userId
             })
 
         if (error) {
-            console.error("Error saving specialty:", error)
+            console.error("Error saving specialty (details):", error.message, error.details, error.hint)
             throw error
         }
     },

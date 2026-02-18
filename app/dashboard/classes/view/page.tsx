@@ -351,9 +351,9 @@ function ClassDetailsContent() {
             setCurrentClass(updatedClass);
             setIsEditing(false);
             alert("Requisitos atualizados com sucesso!");
-        } catch (err) {
-            console.error(err);
-            alert("Erro ao salvar requisitos.");
+        } catch (err: any) {
+            console.error("Erro ao salvar requisitos:", err);
+            alert(`Erro ao salvar requisitos: ${err.message || 'Erro desconhecido'}`);
         } finally {
             setIsSaving(false);
         }
