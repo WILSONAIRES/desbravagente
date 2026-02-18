@@ -31,10 +31,18 @@ export async function GET(request: NextRequest) {
                 names: request.cookies.getAll().map((c: any) => c.name),
             },
             schema_test: {
-                global_config: await supabase.from('global_config').select('*').limit(1).then(r => ({
+                global_config_read: await supabase.from('global_config').select('*').limit(1).then(r => ({
+                    error: r.error,
+                    data: r.data
+                })),
+                global_config_columns: await supabase.from('global_config').select('key').limit(1).then(r => ({
                     error: r.error,
                     data: r.data
                 }))
+            },
+            auth_details: {
+                user_id: user?.id || null,
+                user_role: user?.user_metadata?.role || null,
             },
             timestamp: new Date().toISOString()
         });
