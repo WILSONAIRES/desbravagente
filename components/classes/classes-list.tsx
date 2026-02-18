@@ -21,13 +21,17 @@ export function ClassesList() {
         try {
             const dbClasses = await storageService.getClasses()
             if (dbClasses && dbClasses.length > 0) {
+                // Database query already provides sorted results
                 setClasses(dbClasses)
             } else {
-                setClasses(staticClasses)
+                // Sort static fallback by age
+                const sorted = [...staticClasses].sort((a, b) => a.minAge - b.minAge)
+                setClasses(sorted)
             }
         } catch (err) {
             console.error("Failed to load classes:", err)
-            setClasses(staticClasses)
+            const sorted = [...staticClasses].sort((a, b) => a.minAge - b.minAge)
+            setClasses(sorted)
         } finally {
             setIsLoading(false)
         }

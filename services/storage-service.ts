@@ -236,7 +236,9 @@ export const storageService = {
                 role: user.role,
                 subscription_status: user.subscription?.status,
                 subscription_plan: user.subscription?.plan,
-                is_exempt: user.subscription?.isExempt
+                is_exempt: user.subscription?.isExempt,
+                trial_ends_at: user.subscription?.trialEndsAt,
+                club_name: user.clubName
             })
             .eq('email', user.email)
 
@@ -285,7 +287,7 @@ export const storageService = {
         const { data, error } = await supabase
             .from('pathfinder_classes')
             .select('*')
-            .order('name')
+            .order('min_age', { ascending: true })
 
         if (error || !data || data.length === 0) return []
 
