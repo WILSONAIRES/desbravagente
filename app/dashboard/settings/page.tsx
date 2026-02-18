@@ -247,40 +247,31 @@ function SettingsContent() {
                                     <Badge>Admin Only</Badge>
                                     Configuração Global de IA
                                 </CardTitle>
-                                <CardDescription>Defina os parâmetros que todos os diretores usarão para gerar conteúdos.</CardDescription>
+                                <CardDescription>Os parâmetros de IA agora são gerenciados de forma centralizada.</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4 pt-6">
-                                <div className="grid gap-2">
-                                    <Label>Provedor</Label>
-                                    <Select value={provider} onValueChange={setProvider}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="openai">OpenAI</SelectItem>
-                                            <SelectItem value="gemini">Gemini</SelectItem>
-                                            <SelectItem value="groq">Groq</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                            <CardContent className="space-y-6 pt-6">
+                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+                                    <p className="font-bold mb-1">Gerenciado via Cloudflare</p>
+                                    <p>Por questões de segurança e estabilidade, as chaves de API e modelos agora são configurados diretamente no painel do Cloudflare.</p>
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label>API Key (Supabase Global Config)</Label>
-                                    <div className="relative">
-                                        <Input type={showKey ? "text" : "password"} value={apiKey || ""} onChange={(e) => setApiKey(e.target.value)} />
-                                        <Button variant="ghost" size="icon" className="absolute right-0 top-0" onClick={() => setShowKey(!showKey)}>
-                                            {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                        </Button>
+                                <div className="space-y-2 opacity-50 pointer-events-none">
+                                    <Label>Configurações Atuais (Servidor)</Label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-3 bg-muted rounded border text-xs">
+                                            <p className="text-muted-foreground uppercase font-bold text-[10px]">Provedor</p>
+                                            <p className="font-medium">Em uso no servidor</p>
+                                        </div>
+                                        <div className="p-3 bg-muted rounded border text-xs">
+                                            <p className="text-muted-foreground uppercase font-bold text-[10px]">Modelo</p>
+                                            <p className="font-medium">Em uso no servidor</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label>Modelo</Label>
-                                    <Input value={modelName || ""} onChange={(e) => setModelName(e.target.value)} placeholder="llama-3.3-70b-versatile" />
-                                </div>
                             </CardContent>
-                            <CardFooter>
-                                <Button onClick={handleSaveAI} className="w-full" disabled={status !== "idle"}>
-                                    {status === "loading" && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    <Save className="mr-2 h-4 w-4" />
-                                    {status === "saved" ? "Configurações Globais Atualizadas!" : "Atualizar Configurações para Todos"}
-                                </Button>
+                            <CardFooter className="bg-muted/5 border-t py-4">
+                                <p className="text-xs text-muted-foreground italic">
+                                    Para alterar a chave de API ou o modelo, acesse o painel Cloudflare Pages -&gt; Settings -&gt; Environment Variables.
+                                </p>
                             </CardFooter>
                         </Card>
                     </TabsContent>

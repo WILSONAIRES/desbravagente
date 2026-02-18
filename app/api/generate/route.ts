@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from "next/server"
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json()
-        const { apiKey, modelName, prompt, provider } = body
+        const { prompt } = body
+
+        // Read from environment variables for security and stability
+        const apiKey = process.env.AI_API_KEY
+        const provider = process.env.AI_PROVIDER || "groq"
+        const modelName = process.env.AI_MODEL
 
         if (!apiKey || !prompt) {
             return NextResponse.json({ error: "Missing apiKey or prompt" }, { status: 400 })

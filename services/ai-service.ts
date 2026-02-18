@@ -17,25 +17,6 @@ export interface GeneratedContent {
 
 export const aiService = {
     async generate(request: ContentGenerationRequest): Promise<string> {
-        // Obter configurações do Supabase (prioridade) ou .env
-        const [dbKey, dbProvider, dbModel] = await Promise.all([
-            storageService.getGlobalConfig("ai_api_key"),
-            storageService.getGlobalConfig("ai_provider"),
-            storageService.getGlobalConfig("ai_model")
-        ])
-
-        const apiKey = dbKey || process.env.NEXT_PUBLIC_OPENAI_API_KEY
-        const provider = dbProvider || "groq"
-
-        const defaultModel = provider === "groq" ? "llama-3.3-70b-versatile" :
-            provider === "openai" ? "gpt-4o-mini" : "gemini-2.0-flash"
-        const modelName = dbModel || defaultModel
-
-        if (!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey.length < 5) {
-            console.warn("API Key not found or invalid")
-            return "Chave de API não configurada. Por favor, adicione sua API Key nas configurações do sistema."
-        }
-
         try {
             const difficultyMap = {
                 easy: "Fácil (linguagem simples, conceitos básicos)",
@@ -69,10 +50,7 @@ Diretrizes:
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    apiKey,
-                    modelName,
                     prompt,
-                    provider,
                 }),
             })
 
