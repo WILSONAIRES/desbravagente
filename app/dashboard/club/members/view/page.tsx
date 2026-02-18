@@ -18,11 +18,13 @@ import {
     Trash2,
     CheckSquare,
     Square,
-    Users
+    Users,
+    Sparkles
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { GenerationModal } from "@/components/generation/generation-modal"
 import {
     Dialog,
     DialogContent,
@@ -53,6 +55,10 @@ function MemberProfileContent() {
     const [selectedId, setSelectedId] = useState("")
     const [selectedType, setSelectedType] = useState<'class' | 'specialty'>('class')
     const [isLoading, setIsLoading] = useState(true)
+
+    // AI Modal State
+    const [aiModalOpen, setAiModalOpen] = useState(false)
+    const [aiRequirement, setAiRequirement] = useState<{ id: string, description: string, className: string, type: 'class' | 'specialty' } | null>(null)
 
     useEffect(() => {
         if (!memberId) return
@@ -164,6 +170,11 @@ function MemberProfileContent() {
         }
         await storageService.saveMember(updatedMember)
         setMember(updatedMember)
+    }
+
+    const openAiModal = (reqId: string, description: string, className: string, type: 'class' | 'specialty') => {
+        setAiRequirement({ id: reqId, description, className, type })
+        setAiModalOpen(true)
     }
 
     const calculateProgress = (progressId: string, type: 'class' | 'specialty') => {
@@ -355,19 +366,27 @@ function MemberProfileContent() {
                                                                     return (
                                                                         <div
                                                                             key={req.id}
-                                                                            className="flex items-start gap-3 group cursor-pointer"
-                                                                            onClick={() => toggleRequirement(p.id, req.id)}
+                                                                            className="flex items-start gap-3 group"
                                                                         >
-                                                                            <div className="mt-1">
+                                                                            <div
+                                                                                className="mt-1 cursor-pointer"
+                                                                                onClick={() => toggleRequirement(p.id, req.id)}
+                                                                            >
                                                                                 {isDone ? (
                                                                                     <CheckSquare className="h-4 w-4 text-primary" />
                                                                                 ) : (
                                                                                     <Square className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                                                                 )}
                                                                             </div>
-                                                                            <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
-                                                                                {req.description}
-                                                                            </span>
+                                                                            <div
+                                                                                className="flex-1 cursor-pointer hover:bg-primary/5 rounded px-1 -mx-1 transition-colors group/text"
+                                                                                onClick={() => openAiModal(req.id, req.description, data.name, 'class')}
+                                                                            >
+                                                                                <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
+                                                                                    {req.description}
+                                                                                </span>
+                                                                                <Sparkles className="inline-block ml-1.5 h-3 w-3 text-primary opacity-0 group-hover/text:opacity-40 transition-opacity" />
+                                                                            </div>
                                                                         </div>
                                                                     )
                                                                 })}
@@ -393,19 +412,27 @@ function MemberProfileContent() {
                                                             return (
                                                                 <div
                                                                     key={req.id}
-                                                                    className="flex items-start gap-3 group cursor-pointer"
-                                                                    onClick={() => toggleRequirement(p.id, req.id)}
+                                                                    className="flex items-start gap-3 group"
                                                                 >
-                                                                    <div className="mt-1">
+                                                                    <div
+                                                                        className="mt-1 cursor-pointer"
+                                                                        onClick={() => toggleRequirement(p.id, req.id)}
+                                                                    >
                                                                         {isDone ? (
                                                                             <CheckSquare className="h-4 w-4 text-primary" />
                                                                         ) : (
                                                                             <Square className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                                                         )}
                                                                     </div>
-                                                                    <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
-                                                                        {req.description}
-                                                                    </span>
+                                                                    <div
+                                                                        className="flex-1 cursor-pointer hover:bg-primary/5 rounded px-1 -mx-1 transition-colors group/text"
+                                                                        onClick={() => openAiModal(req.id, req.description, data.name, 'specialty')}
+                                                                    >
+                                                                        <span className={`text-sm ${isDone ? 'text-muted-foreground line-through' : ''}`}>
+                                                                            {req.description}
+                                                                        </span>
+                                                                        <Sparkles className="inline-block ml-1.5 h-3 w-3 text-primary opacity-0 group-hover/text:opacity-40 transition-opacity" />
+                                                                    </div>
                                                                 </div>
                                                             )
                                                         })}
@@ -427,6 +454,17 @@ function MemberProfileContent() {
                     )}
                 </div>
             </Tabs>
+
+            {aiRequirement && (
+                <GenerationModal
+                    open={aiModalOpen}
+                    onOpenChange={setAiModalOpen}
+                    requirementId={aiRequirement.id}
+                    requirementDescription={aiRequirement.description}
+                    className={aiRequirement.className}
+                    type={aiRequirement.type}
+                />
+            )}
         </div>
     )
 }
