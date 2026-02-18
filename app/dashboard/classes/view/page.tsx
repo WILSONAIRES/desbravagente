@@ -28,6 +28,7 @@ function ClassDetailsContent() {
     const [isEditing, setIsEditing] = useState(false);
     const [editedSections, setEditedSections] = useState<any[]>([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [selectedParentDesc, setSelectedParentDesc] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         const checkAdmin = async () => {
@@ -56,7 +57,7 @@ function ClassDetailsContent() {
 
             if (!found) {
                 // Tentativa de carregar do estático para migração inicial
-                found = classes.find(c => c.id === id);
+                found = (classes as any[]).find((c: any) => c.id === id);
                 if (found) {
                     console.log("Classe carregada do estático (ainda não migrada)");
                 }
@@ -104,6 +105,12 @@ function ClassDetailsContent() {
         }
     };
 
+    const handleGenerateContent = (id: string, description: string, parentDescription?: string) => {
+        setSelectedReq({ id, description });
+        setSelectedParentDesc(parentDescription);
+        setModalOpen(true);
+    };
+
     if (notFound) {
         return (
             <div className="text-center py-10">
@@ -116,14 +123,6 @@ function ClassDetailsContent() {
     }
 
     if (!currentClass) return <div className="p-8 text-center text-muted-foreground">Carregando detalhes da classe...</div>;
-
-    const [selectedParentDesc, setSelectedParentDesc] = useState<string | undefined>(undefined);
-
-    const handleGenerateContent = (id: string, description: string, parentDescription?: string) => {
-        setSelectedReq({ id, description });
-        setSelectedParentDesc(parentDescription);
-        setModalOpen(true);
-    };
 
     const updateRequirementText = (sectionIndex: number, reqIndex: number, text: string) => {
         const newSections = [...editedSections];
