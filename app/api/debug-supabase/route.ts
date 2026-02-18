@@ -30,6 +30,12 @@ export async function GET(request: NextRequest) {
                 count: request.cookies.getAll().length,
                 names: request.cookies.getAll().map((c: any) => c.name),
             },
+            schema_test: {
+                global_config: await supabase.from('global_config').select('*').limit(1).then(r => ({
+                    error: r.error,
+                    data: r.data
+                }))
+            },
             timestamp: new Date().toISOString()
         });
     } catch (err: any) {
