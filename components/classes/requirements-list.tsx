@@ -55,7 +55,17 @@ export function RequirementsList({ sections, onGenerateClick }: RequirementsList
 
 function RequirementItem({ req, onGenerateClick, findSpecialtyInDescription, isSub = false, parentDescription }: any) {
     if (!req) return null
-    const linkedSpecialty = findSpecialtyInDescription(req.description || "")
+
+    // Explicit link has priority
+    let linkedSpecialty = null;
+    if (req.linkedSpecialtyId) {
+        linkedSpecialty = specialties.find(s => s.id === req.linkedSpecialtyId);
+    }
+
+    // Fallback to heuristic if no explicit link
+    if (!linkedSpecialty) {
+        linkedSpecialty = findSpecialtyInDescription(req.description || "");
+    }
 
     return (
         <div className="space-y-3">

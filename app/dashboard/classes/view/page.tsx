@@ -159,27 +159,31 @@ function ClassDetailsContent() {
 
     useEffect(() => {
         const loadInitialData = async () => {
-            // Load specialties for the editor
-            const allSpecialties = await storageService.getSpecialties();
-            setSpecialties(allSpecialties);
+            try {
+                // Load specialties for the editor
+                const allSpecialties = await storageService.getSpecialties();
+                setSpecialties(allSpecialties);
 
-            if (!id) {
-                setNotFound(true);
-                return;
-            }
+                if (!id) {
+                    setNotFound(true);
+                    return;
+                }
 
-            const dbClasses = await storageService.getClasses();
-            let found = dbClasses.find(c => c.id === id);
+                const dbClasses = await storageService.getClasses();
+                let found = dbClasses.find(c => c.id === id);
 
-            if (!found) {
-                found = (classes as any[]).find((c: any) => c.id === id);
-            }
+                if (!found) {
+                    found = (classes as any[]).find((c: any) => c.id === id);
+                }
 
-            if (!found) {
-                setNotFound(true);
-            } else {
-                setCurrentClass(found);
-                setEditedSections(JSON.parse(JSON.stringify(found.sections || [])));
+                if (!found) {
+                    setNotFound(true);
+                } else {
+                    setCurrentClass(found);
+                    setEditedSections(JSON.parse(JSON.stringify(found.sections || [])));
+                }
+            } catch (err) {
+                console.error("Error loading data:", err);
             }
         };
 
@@ -188,231 +192,244 @@ function ClassDetailsContent() {
 
     useEffect(() => {
         const checkAdmin = async () => {
-
-            const handleMigrate = async () => {
-                if (!currentClass) return;
-                setIsSaving(true);
-                try {
-                    await storageService.saveClass(currentClass);
-                    alert("Classe migrada para o banco de dados com sucesso!");
-                } catch (err) {
-                    console.error(err);
-                    alert("Erro ao migrar classe.");
-                } finally {
-                    setIsSaving(false);
+            try {
+                const { data: { user: currentUser } } = await supabase.auth.getUser();
+                if (currentUser) {
+                    const { data } = await supabase.from('profiles').select('role').eq('id', currentUser.id).maybeSingle();
+                    setIsAdmin(data?.role === 'admin' || currentUser.email === 'waisilva@gmail.com');
                 }
-            };
-
-            const handleSaveRequirements = async () => {
-                if (!currentClass) return;
-                setIsSaving(true);
-                try {
-                    const updatedClass = { ...currentClass, sections: editedSections };
-                    await storageService.saveClass(updatedClass);
-                    setCurrentClass(updatedClass);
-                    setIsEditing(false);
-                    alert("Requisitos atualizados com sucesso!");
-                } catch (err) {
-                    console.error(err);
-                    alert("Erro ao salvar requisitos.");
-                } finally {
-                    setIsSaving(false);
-                }
-            };
-
-            const handleGenerateContent = (id: string, description: string, parentDescription?: string) => {
-                setSelectedReq({ id, description });
-                setSelectedParentDesc(parentDescription);
-                setModalOpen(true);
-            };
-
-            if (notFound) {
-                return (
-                    <div className="text-center py-10">
-                        <h1 className="text-xl font-bold">Classe não encontrada</h1>
-                        <Link href="/dashboard/classes">
-                            <Button className="mt-4">Voltar</Button>
-                        </Link>
-                    </div>
-                );
+            } catch (err) {
+                console.error("Error checking admin status:", err);
             }
+        };
+        checkAdmin();
+    }, []);
 
-            if (!currentClass) return <div className="p-8 text-center text-muted-foreground">Carregando detalhes da classe...</div>;
+    const handleMigrate = async () => {
+        if (!currentClass) return;
+        setIsSaving(true);
+        try {
+            await storageService.saveClass(currentClass);
+            alert("Classe migrada para o banco de dados com sucesso!");
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao migrar classe.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
-            return (
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                            <Link href="/dashboard/classes">
-                                <Button variant="ghost" size="icon">
-                                    <ChevronLeft className="h-4 w-4" />
-                                </Button>
-                            </Link>
+    const handleSaveRequirements = async () => {
+        if (!currentClass) return;
+        setIsSaving(true);
+        try {
+            const updatedClass = { ...currentClass, sections: editedSections };
+            await storageService.saveClass(updatedClass);
+            setCurrentClass(updatedClass);
+            setIsEditing(false);
+            alert("Requisitos atualizados com sucesso!");
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao salvar requisitos.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
-                            <div>
-                                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                                    {currentClass.name}
-                                    <Badge variant={currentClass.type === "regular" ? "default" : "secondary"}>
-                                        {currentClass.type === "regular" ? "Regular" : "Avançada"}
-                                    </Badge>
-                                </h1>
-                            </div>
-                        </div>
+    const handleGenerateContent = (id: string, description: string, parentDescription?: string) => {
+        setSelectedReq({ id, description });
+        setSelectedParentDesc(parentDescription);
+        setModalOpen(true);
+    };
 
-                        {isAdmin && (
-                            <div className="flex items-center gap-2">
-                                {!isEditing ? (
-                                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
-                                        <Pencil className="mr-2 h-4 w-4" />
-                                        Editar Requisitos
-                                    </Button>
-                                ) : (
-                                    <>
-                                        <Button variant="outline" size="sm" onClick={() => setIsEditing(false)} disabled={isSaving}>
-                                            <X className="mr-2 h-4 w-4" />
-                                            Cancelar
-                                        </Button>
-                                        <Button size="sm" onClick={handleSaveRequirements} disabled={isSaving}>
-                                            <Save className="mr-2 h-4 w-4" />
-                                            {isSaving ? "Salvando..." : "Salvar Alterações"}
-                                        </Button>
-                                    </>
-                                )}
-                                <Button variant="ghost" size="sm" onClick={handleMigrate} disabled={isSaving} title="Sincronizar com Banco de Dados">
-                                    <RefreshCw className={`h-4 w-4 ${isSaving ? 'animate-spin' : ''}`} />
-                                </Button>
-                            </div>
-                        )}
+    if (notFound) {
+        return (
+            <div className="text-center py-10">
+                <h1 className="text-xl font-bold">Classe não encontrada</h1>
+                <Link href="/dashboard/classes">
+                    <Button className="mt-4">Voltar</Button>
+                </Link>
+            </div>
+        );
+    }
+
+    if (!currentClass) return <div className="p-8 text-center text-muted-foreground">Carregando detalhes da classe...</div>;
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <Link href="/dashboard/classes">
+                        <Button variant="ghost" size="icon">
+                            <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                    </Link>
+
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                            {currentClass.name}
+                            <Badge variant={currentClass.type === "regular" ? "default" : "secondary"}>
+                                {currentClass.type === "regular" ? "Regular" : "Avançada"}
+                            </Badge>
+                        </h1>
                     </div>
+                </div>
 
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="grid w-full max-w-sm grid-cols-2">
-                            <TabsTrigger value="requirements">Requisitos</TabsTrigger>
-                            <TabsTrigger value="management">Gestão de Desbravadores</TabsTrigger>
-                        </TabsList>
+                {isAdmin && (
+                    <div className="flex items-center gap-2">
+                        {!isEditing ? (
+                            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Editar Requisitos
+                            </Button>
+                        ) : (
+                            <>
+                                <Button variant="outline" size="sm" onClick={() => setIsEditing(false)} disabled={isSaving}>
+                                    <X className="mr-2 h-4 w-4" />
+                                    Cancelar
+                                </Button>
+                                <Button size="sm" onClick={handleSaveRequirements} disabled={isSaving}>
+                                    <Save className="mr-2 h-4 w-4" />
+                                    {isSaving ? "Salvando..." : "Salvar Alterações"}
+                                </Button>
+                            </>
+                        )}
+                        <Button variant="ghost" size="sm" onClick={handleMigrate} disabled={isSaving} title="Sincronizar com Banco de Dados">
+                            <RefreshCw className={`h-4 w-4 ${isSaving ? 'animate-spin' : ''}`} />
+                        </Button>
+                    </div>
+                )}
+            </div>
 
-                        <TabsContent value="requirements" className="mt-6">
-                            {isEditing ? (
-                                <div className="space-y-8 pb-20">
-                                    {editedSections.map((section, sIdx) => (
-                                        <div key={sIdx} className="space-y-4 p-6 border-2 border-dashed rounded-xl bg-card/50 relative group/section">
-                                            <div className="flex items-center justify-between gap-4 border-b pb-3">
-                                                <div className="flex-1">
-                                                    <input
-                                                        className="w-full font-bold text-xl bg-transparent border-none focus:ring-0 p-0"
-                                                        value={section.title}
-                                                        onChange={(e) => {
-                                                            const newSections = [...editedSections];
-                                                            newSections[sIdx].title = e.target.value;
-                                                            setEditedSections(newSections);
-                                                        }}
-                                                        placeholder="Título da Seção"
-                                                    />
-                                                </div>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-destructive opacity-0 group-hover/section:opacity-100 transition-opacity"
-                                                    onClick={() => {
-                                                        if (confirm("Excluir esta seção inteira e todos os seus requisitos?")) {
-                                                            setEditedSections(editedSections.filter((_, i) => i !== sIdx));
-                                                        }
-                                                    }}
-                                                >
-                                                    <X className="h-4 w-4" />
-                                                </Button>
-                                            </div>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full max-w-sm grid-cols-2">
+                    <TabsTrigger value="requirements">Requisitos</TabsTrigger>
+                    <TabsTrigger value="management">Gestão de Desbravadores</TabsTrigger>
+                </TabsList>
 
-                                            <div className="space-y-6 pl-4">
-                                                {(section.requirements || []).map((req: any, rIdx: number) => (
-                                                    <RequirementEditorItem
-                                                        key={rIdx}
-                                                        requirement={req}
-                                                        onUpdate={(updatedReq: any) => {
-                                                            const newSections = [...editedSections];
-                                                            newSections[sIdx].requirements[rIdx] = updatedReq;
-                                                            setEditedSections(newSections);
-                                                        }}
-                                                        onRemove={() => {
-                                                            const newSections = [...editedSections];
-                                                            newSections[sIdx].requirements = newSections[sIdx].requirements.filter((_: any, i: number) => i !== rIdx);
-                                                            setEditedSections(newSections);
-                                                        }}
-                                                    />
-                                                ))}
-
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="w-full border-dashed"
-                                                    onClick={() => {
-                                                        const newSections = [...editedSections];
-                                                        const newId = `req-${Date.now()}`;
-                                                        newSections[sIdx].requirements = [
-                                                            ...(newSections[sIdx].requirements || []),
-                                                            { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
-                                                        ];
-                                                        setEditedSections(newSections);
-                                                    }}
-                                                >
-                                                    <Plus className="mr-2 h-4 w-4" />
-                                                    Adicionar Requisito
-                                                </Button>
-                                            </div>
+                <TabsContent value="requirements" className="mt-6">
+                    {isEditing ? (
+                        <div className="space-y-8 pb-20">
+                            {editedSections.map((section: any, sIdx: number) => (
+                                <div key={sIdx} className="space-y-4 p-6 border-2 border-dashed rounded-xl bg-card/50 relative group/section">
+                                    <div className="flex items-center justify-between gap-4 border-b pb-3">
+                                        <div className="flex-1">
+                                            <input
+                                                className="w-full font-bold text-xl bg-transparent border-none focus:ring-0 p-0"
+                                                value={section.title}
+                                                onChange={(e) => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].title = e.target.value;
+                                                    setEditedSections(newSections);
+                                                }}
+                                                placeholder="Título da Seção"
+                                            />
                                         </div>
-                                    ))}
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-destructive opacity-0 group-hover/section:opacity-100 transition-opacity"
+                                            onClick={() => {
+                                                if (confirm("Excluir esta seção inteira e todos os seus requisitos?")) {
+                                                    setEditedSections(editedSections.filter((_, i) => i !== sIdx));
+                                                }
+                                            }}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
 
-                                    <Button
-                                        variant="outline"
-                                        className="w-full h-16 border-2 border-dashed text-muted-foreground hover:text-primary hover:border-primary transition-all bg-card/30"
-                                        onClick={() => {
-                                            setEditedSections([
-                                                ...editedSections,
-                                                { title: "Nova Seção", requirements: [] }
-                                            ]);
-                                        }}
-                                    >
-                                        <Plus className="mr-2 h-5 w-5" />
-                                        Adicionar Nova Seção
-                                    </Button>
+                                    <div className="space-y-6 pl-4">
+                                        {(section.requirements || []).map((req: any, rIdx: number) => (
+                                            <RequirementEditorItem
+                                                key={rIdx}
+                                                requirement={req}
+                                                specialties={specialties}
+                                                onUpdate={(updatedReq: any) => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].requirements[rIdx] = updatedReq;
+                                                    setEditedSections(newSections);
+                                                }}
+                                                onRemove={() => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].requirements = newSections[sIdx].requirements.filter((_: any, i: number) => i !== rIdx);
+                                                    setEditedSections(newSections);
+                                                }}
+                                            />
+                                        ))}
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full border-dashed"
+                                            onClick={() => {
+                                                const newSections = [...editedSections];
+                                                const newId = `req-${Date.now()}`;
+                                                newSections[sIdx].requirements = [
+                                                    ...(newSections[sIdx].requirements || []),
+                                                    { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
+                                                ];
+                                                setEditedSections(newSections);
+                                            }}
+                                        >
+                                            <Plus className="mr-2 h-4 w-4" />
+                                            Adicionar Requisito
+                                        </Button>
+                                    </div>
                                 </div>
-                            ) : (
-                                <RequirementsList
-                                    sections={currentClass.sections}
-                                    onGenerateClick={handleGenerateContent}
-                                />
-                            )}
-                        </TabsContent>
+                            ))}
 
-                        <TabsContent value="management" className="mt-6">
-                            <ActivityStudentManager
-                                activityId={currentClass.id}
-                                activityName={currentClass.name}
-                                type="class"
-                                requirements={currentClass.sections}
-                                onGenerateClick={handleGenerateContent}
-                            />
-                        </TabsContent>
-                    </Tabs>
-
-                    {selectedReq && (
-                        <GenerationModal
-                            open={modalOpen}
-                            onOpenChange={setModalOpen}
-                            requirementId={selectedReq.id}
-                            requirementDescription={selectedReq.description}
-                            className={currentClass.name}
-                            parentDescription={selectedParentDesc}
+                            <Button
+                                variant="outline"
+                                className="w-full h-16 border-2 border-dashed text-muted-foreground hover:text-primary hover:border-primary transition-all bg-card/30"
+                                onClick={() => {
+                                    setEditedSections([
+                                        ...editedSections,
+                                        { title: "Nova Seção", requirements: [] }
+                                    ]);
+                                }}
+                            >
+                                <Plus className="mr-2 h-5 w-5" />
+                                Adicionar Nova Seção
+                            </Button>
+                        </div>
+                    ) : (
+                        <RequirementsList
+                            sections={currentClass.sections}
+                            onGenerateClick={handleGenerateContent}
                         />
                     )}
-                </div>
-            );
-        }
+                </TabsContent>
 
-        export default function ClassDetailsPage() {
-            return (
-                <Suspense fallback={<div className="p-8 text-center text-muted-foreground"><RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 opacity-20" />Carregando...</div>}>
-                    <ClassDetailsContent />
-                </Suspense>
-            );
-        }
+                <TabsContent value="management" className="mt-6">
+                    <ActivityStudentManager
+                        activityId={currentClass.id}
+                        activityName={currentClass.name}
+                        type="class"
+                        requirements={currentClass.sections}
+                        onGenerateClick={handleGenerateContent}
+                    />
+                </TabsContent>
+            </Tabs>
+
+            {selectedReq && (
+                <GenerationModal
+                    open={modalOpen}
+                    onOpenChange={setModalOpen}
+                    requirementId={selectedReq.id}
+                    requirementDescription={selectedReq.description}
+                    className={currentClass.name}
+                    parentDescription={selectedParentDesc}
+                    onGenerateClick={handleGenerateContent}
+                />
+            )}
+        </div>
+    );
+}
+export default function ClassDetailsPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-muted-foreground"><RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 opacity-20" />Carregando...</div>}>
+            <ClassDetailsContent />
+        </Suspense>
+    );
+}
