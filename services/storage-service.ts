@@ -251,7 +251,7 @@ export const storageService = {
         const { data, error } = await supabase
             .from('global_config')
             .select('value')
-            .eq('key', key)
+            .eq('id', key)
             .maybeSingle()
 
         if (error || !data) return null
@@ -260,12 +260,15 @@ export const storageService = {
 
     async saveGlobalConfig(key: string, value: any): Promise<void> {
         const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+        if (!user) {
+            console.error("No user found for saveGlobalConfig")
+            throw new Error("Usuário não autenticado")
+        }
 
         const { error } = await supabase
             .from('global_config')
             .upsert({
-                key,
+                id: key,
                 value,
                 updated_at: new Date(),
                 updated_by: user.id

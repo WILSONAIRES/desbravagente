@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/server";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
         const hasUrl = !!url;
         const hasKey = !!key && key !== "placeholder";
 
+        const supabase = await createClient();
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         const { data: { user }, error: userError } = await supabase.auth.getUser();
 
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
                     error: r.error,
                     data: r.data
                 })),
-                global_config_columns: await supabase.from('global_config').select('key').limit(1).then(r => ({
+                global_config_columns: await supabase.from('global_config').select('id').limit(1).then(r => ({
                     error: r.error,
                     data: r.data
                 }))
