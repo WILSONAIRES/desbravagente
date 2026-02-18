@@ -13,7 +13,104 @@ import { GenerationModal } from "@/components/generation/generation-modal";
 import { storageService } from "@/services/storage-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityStudentManager } from "@/components/club/activity-student-manager";
-import { Pencil, Save, X, RefreshCw } from "lucide-react";
+import { Pencil, Save, X, RefreshCw, Plus, Trash2, ChevronRight, Sparkles } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+
+const RequirementEditorItem = ({ requirement, onUpdate, onRemove, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, level?: number }) => {
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        onUpdate({ ...requirement, description: e.target.value });
+    };
+
+    const handleToggleGeneration = (checked: boolean) => {
+        onUpdate({ ...requirement, noGeneration: !checked });
+    };
+
+    const handleAddSub = () => {
+        const newId = `${requirement.id}-${Date.now()}`;
+        const updated = {
+            ...requirement,
+            subRequirements: [
+                ...(requirement.subRequirements || []),
+                { id: newId, description: "Novo Sub-item", noGeneration: false, subRequirements: [] }
+            ]
+        };
+        onUpdate(updated);
+    };
+
+    const handleUpdateSub = (subIdx: number, updatedSub: any) => {
+        const newSubs = [...(requirement.subRequirements || [])];
+        newSubs[subIdx] = updatedSub;
+        onUpdate({ ...requirement, subRequirements: newSubs });
+    };
+
+    const handleRemoveSub = (subIdx: number) => {
+        const newSubs = (requirement.subRequirements || []).filter((_: any, i: number) => i !== subIdx);
+        onUpdate({ ...requirement, subRequirements: newSubs });
+    };
+
+    return (
+        <div className={`space-y-3 ${level > 0 ? 'ml-6 pl-4 border-l-2 border-primary/20 bg-primary/5 p-3 rounded-lg' : ''}`}>
+            <div className="flex flex-col gap-3 p-4 border rounded-xl bg-card shadow-sm group/req">
+                <div className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">{requirement.id}</span>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor={`gen-${requirement.id}`} className="text-[10px] uppercase font-bold text-muted-foreground">Conteúdo IA</Label>
+                            <Switch
+                                id={`gen-${requirement.id}`}
+                                checked={!requirement.noGeneration}
+                                onCheckedChange={handleToggleGeneration}
+                                className="scale-75"
+                            />
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive opacity-0 group-hover/req:opacity-100 transition-opacity"
+                            onClick={onRemove}
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+
+                <textarea
+                    className="w-full min-h-[60px] p-3 rounded-lg border bg-background text-sm resize-y focus:ring-1 focus:ring-primary/50 transition-all font-medium"
+                    value={requirement.description}
+                    onChange={handleDescriptionChange}
+                    placeholder="Descreva o requisito..."
+                />
+
+                <div className="flex justify-end">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-[10px] uppercase font-bold h-7 hover:bg-primary/10 text-primary"
+                        onClick={handleAddSub}
+                    >
+                        <Plus className="mr-1 h-3 w-3" />
+                        Adicionar Sub-item
+                    </Button>
+                </div>
+            </div>
+
+            {requirement.subRequirements?.length > 0 && (
+                <div className="space-y-3">
+                    {requirement.subRequirements.map((sub: any, idx: number) => (
+                        <RequirementEditorItem
+                            key={idx}
+                            requirement={sub}
+                            level={level + 1}
+                            onUpdate={(updated) => handleUpdateSub(idx, updated)}
+                            onRemove={() => handleRemoveSub(idx)}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 function ClassDetailsContent() {
     const searchParams = useSearchParams();
@@ -124,12 +221,6 @@ function ClassDetailsContent() {
 
     if (!currentClass) return <div className="p-8 text-center text-muted-foreground">Carregando detalhes da classe...</div>;
 
-    const updateRequirementText = (sectionIndex: number, reqIndex: number, text: string) => {
-        const newSections = [...editedSections];
-        newSections[sectionIndex].requirements[reqIndex].description = text;
-        setEditedSections(newSections);
-    };
-
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
@@ -184,24 +275,88 @@ function ClassDetailsContent() {
 
                 <TabsContent value="requirements" className="mt-6">
                     {isEditing ? (
-                        <div className="space-y-8">
+                        <div className="space-y-8 pb-20">
                             {editedSections.map((section, sIdx) => (
-                                <div key={sIdx} className="space-y-4">
-                                    <h3 className="font-bold text-lg border-b pb-2">{section.title}</h3>
-                                    <div className="grid gap-4">
+                                <div key={sIdx} className="space-y-4 p-6 border-2 border-dashed rounded-xl bg-card/50 relative group/section">
+                                    <div className="flex items-center justify-between gap-4 border-b pb-3">
+                                        <div className="flex-1">
+                                            <input
+                                                className="w-full font-bold text-xl bg-transparent border-none focus:ring-0 p-0"
+                                                value={section.title}
+                                                onChange={(e) => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].title = e.target.value;
+                                                    setEditedSections(newSections);
+                                                }}
+                                                placeholder="Título da Seção"
+                                            />
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-destructive opacity-0 group-hover/section:opacity-100 transition-opacity"
+                                            onClick={() => {
+                                                if (confirm("Excluir esta seção inteira e todos os seus requisitos?")) {
+                                                    setEditedSections(editedSections.filter((_, i) => i !== sIdx));
+                                                }
+                                            }}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+
+                                    <div className="space-y-6 pl-4">
                                         {(section.requirements || []).map((req: any, rIdx: number) => (
-                                            <div key={req.id} className="flex flex-col gap-2 p-4 border rounded-lg bg-card">
-                                                <span className="text-xs font-mono text-muted-foreground">{req.id.toUpperCase()}</span>
-                                                <textarea
-                                                    className="w-full min-h-[80px] p-2 rounded border bg-background text-sm resize-y"
-                                                    value={req.description}
-                                                    onChange={(e) => updateRequirementText(sIdx, rIdx, e.target.value)}
-                                                />
-                                            </div>
+                                            <RequirementEditorItem
+                                                key={rIdx}
+                                                requirement={req}
+                                                onUpdate={(updatedReq: any) => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].requirements[rIdx] = updatedReq;
+                                                    setEditedSections(newSections);
+                                                }}
+                                                onRemove={() => {
+                                                    const newSections = [...editedSections];
+                                                    newSections[sIdx].requirements = newSections[sIdx].requirements.filter((_: any, i: number) => i !== rIdx);
+                                                    setEditedSections(newSections);
+                                                }}
+                                            />
                                         ))}
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full border-dashed"
+                                            onClick={() => {
+                                                const newSections = [...editedSections];
+                                                const newId = `req-${Date.now()}`;
+                                                newSections[sIdx].requirements = [
+                                                    ...(newSections[sIdx].requirements || []),
+                                                    { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
+                                                ];
+                                                setEditedSections(newSections);
+                                            }}
+                                        >
+                                            <Plus className="mr-2 h-4 w-4" />
+                                            Adicionar Requisito
+                                        </Button>
                                     </div>
                                 </div>
                             ))}
+
+                            <Button
+                                variant="outline"
+                                className="w-full h-16 border-2 border-dashed text-muted-foreground hover:text-primary hover:border-primary transition-all bg-card/30"
+                                onClick={() => {
+                                    setEditedSections([
+                                        ...editedSections,
+                                        { title: "Nova Seção", requirements: [] }
+                                    ]);
+                                }}
+                            >
+                                <Plus className="mr-2 h-5 w-5" />
+                                Adicionar Nova Seção
+                            </Button>
                         </div>
                     ) : (
                         <RequirementsList
@@ -238,7 +393,7 @@ function ClassDetailsContent() {
 
 export default function ClassDetailsPage() {
     return (
-        <Suspense fallback={<div className="p-8 text-center">Carregando...</div>}>
+        <Suspense fallback={<div className="p-8 text-center text-muted-foreground"><RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 opacity-20" />Carregando...</div>}>
             <ClassDetailsContent />
         </Suspense>
     );
