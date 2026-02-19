@@ -9,6 +9,39 @@ export interface SavedContent extends GeneratedContent {
     requirementId: string
 }
 
+// Helper: sanitize requirements array to remove runtime-only or circular data
+function sanitizeRequirements(reqs: any[]): any[] {
+    if (!Array.isArray(reqs)) return []
+    return reqs.map(req => ({
+        id: req.id,
+        description: req.description,
+        noGeneration: req.noGeneration ?? false,
+        linkedSpecialtyId: req.linkedSpecialtyId ?? null,
+        subRequirements: req.subRequirements ? sanitizeRequirements(req.subRequirements) : []
+    }))
+}
+
+// Helper: sanitize sections for classes
+function sanitizeSections(sections: any[]): any[] {
+    if (!Array.isArray(sections)) return []
+    return sections.map(section => ({
+        id: section.id,
+        title: section.title,
+        requirements: section.requirements ? sanitizeRequirements(section.requirements) : []
+    }))
+}
+
+// Helper: retry a Supabase operation with 1 automatic retry on failure
+async function withRetry(fn: () => PromiseLike<{ error: any }>): Promise<{ error: any }> {
+    const result = await fn()
+    if (!result.error) return result
+
+    // Wait 1.5s then retry
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    console.warn('[StorageService] Retrying after error:', result.error.message)
+    return fn()
+}
+
 export const storageService = {
     // Content Storage (AI Generated)
     async saveContent(content: Omit<SavedContent, 'id'>): Promise<void> {
@@ -322,23 +355,25 @@ export const storageService = {
             userId = user.id
         }
 
-        const { error } = await supabase
-            .from('pathfinder_classes')
-            .upsert({
-                id: cls.id,
-                name: cls.name,
-                url: cls.url,
-                min_age: cls.minAge,
-                color: cls.color,
-                type: cls.type,
-                sections: cls.sections,
-                updated_at: new Date().toISOString(),
-                updated_by: userId
-            })
+        const payload = {
+            id: cls.id,
+            name: cls.name,
+            url: cls.url,
+            min_age: cls.minAge,
+            color: cls.color,
+            type: cls.type,
+            sections: sanitizeSections(cls.sections || []),
+            updated_at: new Date().toISOString(),
+            updated_by: userId
+        }
+
+        const { error } = await withRetry(async () =>
+            supabase.from('pathfinder_classes').upsert(payload)
+        )
 
         if (error) {
             console.error("Error saving class (details):", error.message, error.details, error.hint)
-            throw error
+            throw new Error(`Falha ao salvar classe: ${error.message}`)
         }
     },
 
@@ -401,23 +436,25 @@ export const storageService = {
             userId = user.id
         }
 
-        const { error } = await supabase
-            .from('pathfinder_specialties')
-            .upsert({
-                id: specialty.id,
-                name: specialty.name,
-                code: specialty.code,
-                category: specialty.category,
-                color: specialty.color,
-                requirements: specialty.requirements,
-                image: specialty.image,
-                updated_at: new Date().toISOString(),
-                updated_by: userId
-            })
+        const payload = {
+            id: specialty.id,
+            name: specialty.name,
+            code: specialty.code,
+            category: specialty.category,
+            color: specialty.color,
+            requirements: sanitizeRequirements(specialty.requirements || []),
+            image: specialty.image,
+            updated_at: new Date().toISOString(),
+            updated_by: userId
+        }
+
+        const { error } = await withRetry(async () =>
+            supabase.from('pathfinder_specialties').upsert(payload)
+        )
 
         if (error) {
             console.error("Error saving specialty (details):", error.message, error.details, error.hint)
-            throw error
+            throw new Error(`Falha ao salvar especialidade: ${error.message}`)
         }
     },
 

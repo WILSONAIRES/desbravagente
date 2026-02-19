@@ -23,6 +23,7 @@ export const specialtyCategories = [
     { id: "ciencia-saude", name: "Ciência e Saúde", color: "bg-purple-700" },
     { id: "estudo-natureza", name: "Estudos da Natureza", color: "bg-white text-black border" },
     { id: "habilidades-domesticas", name: "Habilidades Domésticas", color: "bg-sky-300" },
+    { id: "mestrados", name: "Mestrados", color: "bg-yellow-600" },
 ];
 
 export function getSpecialtyImage(code?: string | null): string {
@@ -34,11 +35,139 @@ export function getSpecialtyImage(code?: string | null): string {
 }
 export const specialties: Specialty[] = [
     {
+        "id": "mestrado-adra",
+        "name": "ME-001 ADRA",
+        "code": "ME-001",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-artes-habilidades",
+        "name": "ME-002 Artes e Habilidades Manuais",
+        "code": "ME-002",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-atividades-agricolas",
+        "name": "ME-003 Atividades Agrícolas",
+        "code": "ME-003",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-testificacao",
+        "name": "ME-004 Testificação",
+        "code": "ME-004",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-atividades-profissionais",
+        "name": "ME-005 Atividades Profissionais",
+        "code": "ME-005",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-ciencia-tecnologia",
+        "name": "ME-006 Ciência e Tecnologia",
+        "code": "ME-006",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-aquatica",
+        "name": "ME-007 Aquática",
+        "code": "ME-007",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-esportes",
+        "name": "ME-008 Esportes",
+        "code": "ME-008",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-vida-campestre",
+        "name": "ME-009 Vida Campestre",
+        "code": "ME-009",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-atividades-recreativas",
+        "name": "ME-010 Atividades Recreativas",
+        "code": "ME-010",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-saude",
+        "name": "ME-011 Saúde",
+        "code": "ME-011",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-zoologia",
+        "name": "ME-012 Zoologia",
+        "code": "ME-012",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-ecologia",
+        "name": "ME-013 Ecologia",
+        "code": "ME-013",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-botanica",
+        "name": "ME-014 Botânica",
+        "code": "ME-014",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-habilidades-domesticas",
+        "name": "ME-015 Habilidades Domésticas",
+        "code": "ME-015",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
+        "id": "mestrado-ensinamentos-biblicos",
+        "name": "ME-016 Ensinos Bíblicos",
+        "code": "ME-016",
+        "category": "mestrados",
+        "color": "bg-yellow-600",
+        "requirements": []
+    },
+    {
         "id": "avicultura",
         "name": "AA-001 Avicultura",
         "code": "AA-001",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -88,7 +217,7 @@ export const specialties: Specialty[] = [
         "name": "AA-002 Jardinagem e Horticultura",
         "code": "AA-002",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -118,7 +247,7 @@ export const specialties: Specialty[] = [
         "name": "AA-003 Agricultura Familiar de Subsistência",
         "code": "AA-003",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -188,7 +317,7 @@ export const specialties: Specialty[] = [
         "name": "AA-004 Apicultura",
         "code": "AA-004",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -262,7 +391,7 @@ export const specialties: Specialty[] = [
         "name": "AA-005 Agricultura",
         "code": "AA-005",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -340,7 +469,7 @@ export const specialties: Specialty[] = [
         "name": "AA-006 Pescaria",
         "code": "AA-006",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -386,7 +515,7 @@ export const specialties: Specialty[] = [
         "name": "AA-007 Criação de Gado Leiteiro",
         "code": "AA-007",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -460,7 +589,7 @@ export const specialties: Specialty[] = [
         "name": "AA-008 Pomicultura",
         "code": "AA-008",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -530,7 +659,7 @@ export const specialties: Specialty[] = [
         "name": "AA-009 Pomicultura II - Frutas Pequenas",
         "code": "AA-009",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -620,7 +749,7 @@ export const specialties: Specialty[] = [
         "name": "AA-010 Floricultura",
         "code": "AA-010",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -674,7 +803,7 @@ export const specialties: Specialty[] = [
         "name": "AA-011 Criação de Cavalos",
         "code": "AA-011",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -748,7 +877,7 @@ export const specialties: Specialty[] = [
         "name": "AA-012 Criação de Pombos",
         "code": "AA-012",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -802,7 +931,7 @@ export const specialties: Specialty[] = [
         "name": "AA-013 Criação de Ovelhas",
         "code": "AA-013",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -884,7 +1013,7 @@ export const specialties: Specialty[] = [
         "name": "AA-014 Pecuária",
         "code": "AA-014",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -950,7 +1079,7 @@ export const specialties: Specialty[] = [
         "name": "AA-015 Criação de Cabras",
         "code": "AA-015",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -1024,7 +1153,7 @@ export const specialties: Specialty[] = [
         "name": "AA-016 Paisagismo",
         "code": "AA-016",
         "category": "atividades-agricolas",
-        
+
         "color": "bg-amber-700",
         "requirements": [
             {
@@ -1086,7 +1215,7 @@ export const specialties: Specialty[] = [
         "name": "AD-001 Alívio da Fome",
         "code": "AD-001",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1116,7 +1245,7 @@ export const specialties: Specialty[] = [
         "name": "AD-002 Avaliação da Comunidade",
         "code": "AD-002",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1146,7 +1275,7 @@ export const specialties: Specialty[] = [
         "name": "AD-003 Serviço Comunitário",
         "code": "AD-003",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1172,7 +1301,7 @@ export const specialties: Specialty[] = [
         "name": "AD-004 Resposta a Emergências e Desastres",
         "code": "AD-004",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1210,7 +1339,7 @@ export const specialties: Specialty[] = [
         "name": "AD-005 Resposta a Emergências e Desastres - avançado",
         "code": "AD-005",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1248,7 +1377,7 @@ export const specialties: Specialty[] = [
         "name": "AD-006 Alfabetização",
         "code": "AD-006",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1278,7 +1407,7 @@ export const specialties: Specialty[] = [
         "name": "AD-007 Resolução de Conflitos",
         "code": "AD-007",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1316,7 +1445,7 @@ export const specialties: Specialty[] = [
         "name": "AD-008 Reassentamento de Refugiados",
         "code": "AD-008",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1350,7 +1479,7 @@ export const specialties: Specialty[] = [
         "name": "AD-009 Desenvolvimento Comunitário",
         "code": "AD-009",
         "category": "adra",
-        
+
         "color": "bg-purple-600",
         "requirements": [
             {
@@ -1388,7 +1517,7 @@ export const specialties: Specialty[] = [
         "name": "AM-001 Arte de Contar Histórias Cristãs",
         "code": "AM-001",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1414,7 +1543,7 @@ export const specialties: Specialty[] = [
         "name": "AM-002 Arte em Fantoches",
         "code": "AM-002",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1444,7 +1573,7 @@ export const specialties: Specialty[] = [
         "name": "AM-003 Arte em Fantoches - avançado",
         "code": "AM-003",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1478,7 +1607,7 @@ export const specialties: Specialty[] = [
         "name": "AM-004 Etnologia Missionária",
         "code": "AM-004",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1512,7 +1641,7 @@ export const specialties: Specialty[] = [
         "name": "AM-005 Colportagem",
         "code": "AM-005",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1554,7 +1683,7 @@ export const specialties: Specialty[] = [
         "name": "AM-006 Cidadania Cristã",
         "code": "AM-006",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1628,7 +1757,7 @@ export const specialties: Specialty[] = [
         "name": "AM-007 Estudo de Línguas - Avançado",
         "code": "AM-007",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1666,7 +1795,7 @@ export const specialties: Specialty[] = [
         "name": "AM-008 Evangelismo Pessoal",
         "code": "AM-008",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1696,7 +1825,7 @@ export const specialties: Specialty[] = [
         "name": "AM-009 Liderança Juvenil",
         "code": "AM-009",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1738,7 +1867,7 @@ export const specialties: Specialty[] = [
         "name": "AM-010 Testemunho Juvenil",
         "code": "AM-010",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1780,7 +1909,7 @@ export const specialties: Specialty[] = [
         "name": "AM-011 Asseio e Cortesia Cristã",
         "code": "AM-011",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1814,7 +1943,7 @@ export const specialties: Specialty[] = [
         "name": "AM-012 Vida Familiar",
         "code": "AM-012",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1864,7 +1993,7 @@ export const specialties: Specialty[] = [
         "name": "AM-013 Temperança",
         "code": "AM-013",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1902,7 +2031,7 @@ export const specialties: Specialty[] = [
         "name": "AM-014 Língua de Sinais",
         "code": "AM-014",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1936,7 +2065,7 @@ export const specialties: Specialty[] = [
         "name": "AM-016 Aventuras com Cristo",
         "code": "AM-016",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1958,7 +2087,7 @@ export const specialties: Specialty[] = [
         "name": "AM-017 Aventuras com Cristo - avançado",
         "code": "AM-017",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -1988,7 +2117,7 @@ export const specialties: Specialty[] = [
         "name": "AM-018 Língua de Sinais - avançado",
         "code": "AM-018",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2026,7 +2155,7 @@ export const specialties: Specialty[] = [
         "name": "AM-019 Marcação Bíblica",
         "code": "AM-019",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2052,7 +2181,7 @@ export const specialties: Specialty[] = [
         "name": "AM-020 Marcação Bíblica - avançado",
         "code": "AM-020",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2082,7 +2211,7 @@ export const specialties: Specialty[] = [
         "name": "AM-021 Pregador Evangelista",
         "code": "AM-021",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2100,7 +2229,7 @@ export const specialties: Specialty[] = [
         "name": "AM-022 Pregador Evangelista - avançado",
         "code": "AM-022",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2122,7 +2251,7 @@ export const specialties: Specialty[] = [
         "name": "AM-023 Santuário",
         "code": "AM-023",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2172,7 +2301,7 @@ export const specialties: Specialty[] = [
         "name": "AM-024 Dramatização Cristã",
         "code": "AM-024",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2214,7 +2343,7 @@ export const specialties: Specialty[] = [
         "name": "AM-025 Desfile com Carros Alegóricos",
         "code": "AM-025",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2248,7 +2377,7 @@ export const specialties: Specialty[] = [
         "name": "AM-026 Desfile com Carros Alegóricos - avançado",
         "code": "AM-026",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2278,7 +2407,7 @@ export const specialties: Specialty[] = [
         "name": "AM-027 Pacificador",
         "code": "AM-027",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2300,7 +2429,7 @@ export const specialties: Specialty[] = [
         "name": "AM-028 Pacificador - avançado",
         "code": "AM-028",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2338,7 +2467,7 @@ export const specialties: Specialty[] = [
         "name": "AM-029 Adoração Cristã",
         "code": "AM-029",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2384,7 +2513,7 @@ export const specialties: Specialty[] = [
         "name": "AM-030 Arte da Pregação Cristã",
         "code": "AM-030",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2434,7 +2563,7 @@ export const specialties: Specialty[] = [
         "name": "AM-031 Arte da Pregação Cristã - avançado",
         "code": "AM-031",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2476,7 +2605,7 @@ export const specialties: Specialty[] = [
         "name": "AM-032 Arqueologia Bíblica",
         "code": "AM-032",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2530,7 +2659,7 @@ export const specialties: Specialty[] = [
         "name": "AM-033 Cerimônias",
         "code": "AM-033",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2548,7 +2677,7 @@ export const specialties: Specialty[] = [
         "name": "AM-034 Braile",
         "code": "AM-034",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2606,7 +2735,7 @@ export const specialties: Specialty[] = [
         "name": "AM-035 Criacionismo",
         "code": "AM-035",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2660,7 +2789,7 @@ export const specialties: Specialty[] = [
         "name": "AM-036 Criacionismo - avançado",
         "code": "AM-036",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2714,7 +2843,7 @@ export const specialties: Specialty[] = [
         "name": "AM-037 Espírito de Profecia",
         "code": "AM-037",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2760,7 +2889,7 @@ export const specialties: Specialty[] = [
         "name": "AM-038 Escatologia",
         "code": "AM-038",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2797,7 +2926,7 @@ export const specialties: Specialty[] = [
         "id": "historiador-eclesiastico",
         "name": "AM-039 Historiador Eclesiástico",
         "code": "AM-039",
-        "category": "atividades-missionarias",       
+        "category": "atividades-missionarias",
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2854,7 +2983,7 @@ export const specialties: Specialty[] = [
         "id": "evangelismo-web",
         "name": "AM-040 Especialidade de Evangelismo Web",
         "code": "AM-040",
-        "category": "atividades-missionarias",       
+        "category": "atividades-missionarias",
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2916,7 +3045,7 @@ export const specialties: Specialty[] = [
         "name": "AM-041 Evangelismo Web - avançado",
         "code": "AM-041",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -2962,7 +3091,7 @@ export const specialties: Specialty[] = [
         "name": "AM-042 Intercessor",
         "code": "AM-042",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3020,7 +3149,7 @@ export const specialties: Specialty[] = [
         "name": "AM-043 Pioneiros Adventistas",
         "code": "AM-043",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3066,7 +3195,7 @@ export const specialties: Specialty[] = [
         "name": "AM-044 Patriotismo",
         "code": "AM-044",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3128,7 +3257,7 @@ export const specialties: Specialty[] = [
         "name": "AM-045 Sonoplastia",
         "code": "AM-045",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3190,7 +3319,7 @@ export const specialties: Specialty[] = [
         "name": "AM-046 Sonoplastia - avançado",
         "code": "AM-046",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3244,7 +3373,7 @@ export const specialties: Specialty[] = [
         "name": "AM-047 Investigador Bíblico I",
         "code": "AM-047",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3274,7 +3403,7 @@ export const specialties: Specialty[] = [
         "name": "AM-048 Boa Conduta Escolar",
         "code": "AM-048",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3308,7 +3437,7 @@ export const specialties: Specialty[] = [
         "name": "AM-049 Mensageira de Deus",
         "code": "AM-049",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3322,7 +3451,7 @@ export const specialties: Specialty[] = [
         "name": "AM-050 Estudo de Línguas",
         "code": "AM-050",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3356,7 +3485,7 @@ export const specialties: Specialty[] = [
         "name": "AM-051 Cultura Sul Americana",
         "code": "AM-051",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3406,7 +3535,7 @@ export const specialties: Specialty[] = [
         "name": "AM-052 Apocalipse",
         "code": "AM-052",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3448,7 +3577,7 @@ export const specialties: Specialty[] = [
         "name": "AM-053 Crítico de Mídia",
         "code": "AM-053",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3510,7 +3639,7 @@ export const specialties: Specialty[] = [
         "name": "AM-054 Livro de Daniel",
         "code": "AM-054",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3580,7 +3709,7 @@ export const specialties: Specialty[] = [
         "name": "AM-055 Educação Inclusiva",
         "code": "AM-055",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3630,7 +3759,7 @@ export const specialties: Specialty[] = [
         "name": "AM-056 Inteligência Emocional",
         "code": "AM-056",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3684,7 +3813,7 @@ export const specialties: Specialty[] = [
         "name": "AM-057 Interpretação Bíblica",
         "code": "AM-057",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3734,7 +3863,7 @@ export const specialties: Specialty[] = [
         "name": "AM-058 Lives - Transmissão de Cultos Online",
         "code": "AM-058",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3784,7 +3913,7 @@ export const specialties: Specialty[] = [
         "name": "AM-059 Parábolas de Jesus",
         "code": "AM-059",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3846,7 +3975,7 @@ export const specialties: Specialty[] = [
         "name": "AM-060 Relacionamentos Saudáveis",
         "code": "AM-060",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3920,7 +4049,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-001 Escrituras Sagradas",
         "code": "AM-EB-001",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -3962,7 +4091,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-002 Trindade",
         "code": "AM-EB-002",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4008,7 +4137,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-003 Deus Pai",
         "code": "AM-EB-003",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4050,7 +4179,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-004 Deus Filho",
         "code": "AM-EB-004",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4088,7 +4217,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-005 Deus Espírito Santo",
         "code": "AM-EB-005",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4126,7 +4255,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-006 Criação do Mundo",
         "code": "AM-EB-006",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4172,7 +4301,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-007 Natureza da Humanidade",
         "code": "AM-EB-007",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4214,7 +4343,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-008 Grande Conflito",
         "code": "AM-EB-008",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4248,7 +4377,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-009 Vida, morte e ressureição de Cristo",
         "code": "AM-EB-009",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4286,7 +4415,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-010 Experiência da Salvação",
         "code": "AM-EB-010",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4324,7 +4453,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-011 Crescimento em Cristo",
         "code": "AM-EB-011",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4362,7 +4491,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-012 Igreja",
         "code": "AM-EB-012",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4404,7 +4533,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-013 Remanescente e sua Missão",
         "code": "AM-EB-013",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4442,7 +4571,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-014 Unidade no Corpo de Cristo",
         "code": "AM-EB-014",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4480,7 +4609,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-015 Batismo",
         "code": "AM-EB-015",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4518,7 +4647,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-016 Ceia do Senhor",
         "code": "AM-EB-016",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4556,7 +4685,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-017 Dons e Ministérios Espirituais",
         "code": "AM-EB-017",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4594,7 +4723,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-018 Dom de Profecia",
         "code": "AM-EB-018",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4632,7 +4761,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-019 Lei de Deus",
         "code": "AM-EB-019",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4670,7 +4799,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-020 Sábado",
         "code": "AM-EB-020",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4708,7 +4837,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-021 Mordomia",
         "code": "AM-EB-021",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4778,7 +4907,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-022 Conduta Cristã",
         "code": "AM-EB-022",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4816,7 +4945,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-023 Matrimônio e Família",
         "code": "AM-EB-023",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4854,7 +4983,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-024 Ministério de Cristo no Santuário Celestial",
         "code": "AM-EB-024",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4892,7 +5021,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-025 Segunda Vinda de Cristo",
         "code": "AM-EB-025",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4929,7 +5058,7 @@ export const specialties: Specialty[] = [
         "id": "morte-e-ressurreicao",
         "name": "AM-EB-026 Morte e Ressurreição",
         "code": "AM-EB-026",
-        "category": "atividades-missionarias",        
+        "category": "atividades-missionarias",
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -4966,7 +5095,7 @@ export const specialties: Specialty[] = [
         "id": "milenio-e-fim-do-pecado",
         "name": "AM-EB-027 Milênio e Fim do Pecado",
         "code": "AM-EB-027",
-        "category": "atividades-missionarias",        
+        "category": "atividades-missionarias",
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -5004,7 +5133,7 @@ export const specialties: Specialty[] = [
         "name": "AM-EB-028 Nova Terra",
         "code": "AM-EB-028",
         "category": "atividades-missionarias",
-        
+
         "color": "bg-blue-800",
         "requirements": [
             {
@@ -5042,7 +5171,7 @@ export const specialties: Specialty[] = [
         "name": "AP-001 Conserto de Sapatos",
         "code": "AP-001",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5088,7 +5217,7 @@ export const specialties: Specialty[] = [
         "name": "AP-002 Fotografia",
         "code": "AP-002",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5138,7 +5267,7 @@ export const specialties: Specialty[] = [
         "name": "AP-003 Mecânica Automotiva",
         "code": "AP-003",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5176,7 +5305,7 @@ export const specialties: Specialty[] = [
         "name": "AP-004 Radioamadorismo",
         "code": "AP-004",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5246,7 +5375,7 @@ export const specialties: Specialty[] = [
         "name": "AP-005 Datilografia",
         "code": "AP-005",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5284,7 +5413,7 @@ export const specialties: Specialty[] = [
         "name": "AP-006 Eletricidade",
         "code": "AP-006",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5350,7 +5479,7 @@ export const specialties: Specialty[] = [
         "name": "AP-007 Carpintaria",
         "code": "AP-007",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5388,7 +5517,7 @@ export const specialties: Specialty[] = [
         "name": "AP-008 Corte e Costura",
         "code": "AP-008",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5430,7 +5559,7 @@ export const specialties: Specialty[] = [
         "name": "AP-009 Taquigrafia",
         "code": "AP-009",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5456,7 +5585,7 @@ export const specialties: Specialty[] = [
         "name": "AP-010 Tipografia",
         "code": "AP-010",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5498,7 +5627,7 @@ export const specialties: Specialty[] = [
         "name": "AP-011 Marcenaria",
         "code": "AP-011",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5548,7 +5677,7 @@ export const specialties: Specialty[] = [
         "name": "AP-012 Encadernação",
         "code": "AP-012",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5586,7 +5715,7 @@ export const specialties: Specialty[] = [
         "name": "AP-013 Alvenaria",
         "code": "AP-013",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5644,7 +5773,7 @@ export const specialties: Specialty[] = [
         "name": "AP-014 Barbearia",
         "code": "AP-014",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5690,7 +5819,7 @@ export const specialties: Specialty[] = [
         "name": "AP-015 Colocação de Papel de Parede",
         "code": "AP-015",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5720,7 +5849,7 @@ export const specialties: Specialty[] = [
         "name": "AP-016 Contabilidade",
         "code": "AP-016",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5770,7 +5899,7 @@ export const specialties: Specialty[] = [
         "name": "AP-017 Evangelismo",
         "code": "AP-017",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5808,7 +5937,7 @@ export const specialties: Specialty[] = [
         "name": "AP-018 Hidráulica",
         "code": "AP-018",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5846,7 +5975,7 @@ export const specialties: Specialty[] = [
         "name": "AP-019 Jornalismo",
         "code": "AP-019",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5916,7 +6045,7 @@ export const specialties: Specialty[] = [
         "name": "AP-020 Ofício de Alfaiate",
         "code": "AP-020",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -5954,7 +6083,7 @@ export const specialties: Specialty[] = [
         "name": "AP-021 Pintura de Paredes Exteriores",
         "code": "AP-021",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6000,7 +6129,7 @@ export const specialties: Specialty[] = [
         "name": "AP-022 Pintura de Paredes Interiores",
         "code": "AP-022",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6066,7 +6195,7 @@ export const specialties: Specialty[] = [
         "name": "AP-023 Radioeletrônica",
         "code": "AP-023",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6108,7 +6237,7 @@ export const specialties: Specialty[] = [
         "name": "AP-024 Magistério",
         "code": "AP-024",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6150,7 +6279,7 @@ export const specialties: Specialty[] = [
         "name": "AP-025 Corte e Costura - avançado",
         "code": "AP-025",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6200,7 +6329,7 @@ export const specialties: Specialty[] = [
         "name": "AP-026 Radioamadorismo - avançado",
         "code": "AP-026",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6222,7 +6351,7 @@ export const specialties: Specialty[] = [
         "name": "AP-027 Mecânica Automotiva - avançado",
         "code": "AP-027",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6252,7 +6381,7 @@ export const specialties: Specialty[] = [
         "name": "AP-028 Mecânica de Pequenos Motores",
         "code": "AP-028",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6302,7 +6431,7 @@ export const specialties: Specialty[] = [
         "name": "AP-029 Cães - Cuidado e Treinamento",
         "code": "AP-029",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6336,7 +6465,7 @@ export const specialties: Specialty[] = [
         "name": "AP-030 Serviço Rádio do Cidadão",
         "code": "AP-030",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6374,7 +6503,7 @@ export const specialties: Specialty[] = [
         "name": "AP-031 Soldagem",
         "code": "AP-031",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6440,7 +6569,7 @@ export const specialties: Specialty[] = [
         "name": "AP-032 Produção de Vídeo",
         "code": "AP-032",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6498,7 +6627,7 @@ export const specialties: Specialty[] = [
         "name": "AP-033 Vendas",
         "code": "AP-033",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6544,7 +6673,7 @@ export const specialties: Specialty[] = [
         "name": "AP-034 Internet",
         "code": "AP-034",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6590,7 +6719,7 @@ export const specialties: Specialty[] = [
         "name": "AP-035 Internet - avançado",
         "code": "AP-035",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6624,7 +6753,7 @@ export const specialties: Specialty[] = [
         "name": "AP-036 Silvicultura",
         "code": "AP-036",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6682,7 +6811,7 @@ export const specialties: Specialty[] = [
         "name": "AP-037 Administração",
         "code": "AP-037",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6732,7 +6861,7 @@ export const specialties: Specialty[] = [
         "name": "AP-038 Bandeiras Náuticas",
         "code": "AP-038",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6766,7 +6895,7 @@ export const specialties: Specialty[] = [
         "name": "AP-039 Blogs",
         "code": "AP-039",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6804,7 +6933,7 @@ export const specialties: Specialty[] = [
         "name": "AP-040 Biblioteconomia",
         "code": "AP-040",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6866,7 +6995,7 @@ export const specialties: Specialty[] = [
         "name": "AP-041 Computação I - básico",
         "code": "AP-041",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6896,7 +7025,7 @@ export const specialties: Specialty[] = [
         "name": "AP-042 Computação II - médio",
         "code": "AP-042",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6930,7 +7059,7 @@ export const specialties: Specialty[] = [
         "name": "AP-043 Computação III - regular",
         "code": "AP-043",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -6980,7 +7109,7 @@ export const specialties: Specialty[] = [
         "name": "AP-044 Computação IV - avançado",
         "code": "AP-044",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7034,7 +7163,7 @@ export const specialties: Specialty[] = [
         "name": "AP-045 Computação V - especialista",
         "code": "AP-045",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7084,7 +7213,7 @@ export const specialties: Specialty[] = [
         "name": "AP-046 Código Semafórico",
         "code": "AP-046",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7118,7 +7247,7 @@ export const specialties: Specialty[] = [
         "name": "AP-047 Código Morse",
         "code": "AP-047",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7152,7 +7281,7 @@ export const specialties: Specialty[] = [
         "name": "AP-048 Cuidados e Manutenção de Violões",
         "code": "AP-048",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7206,7 +7335,7 @@ export const specialties: Specialty[] = [
         "name": "AP-049 Desenvolvimento de Software",
         "code": "AP-049",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7252,7 +7381,7 @@ export const specialties: Specialty[] = [
         "name": "AP-050 Eletrônica",
         "code": "AP-050",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7318,7 +7447,7 @@ export const specialties: Specialty[] = [
         "name": "AP-051 Intérprete de Língua de Sinais",
         "code": "AP-051",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7360,7 +7489,7 @@ export const specialties: Specialty[] = [
         "name": "AP-052 Informática Programável",
         "code": "AP-052",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7390,7 +7519,7 @@ export const specialties: Specialty[] = [
         "name": "AP-053 Manutenção de Bicicletas",
         "code": "AP-053",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7456,7 +7585,7 @@ export const specialties: Specialty[] = [
         "name": "AP-054 Marketing",
         "code": "AP-054",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7502,7 +7631,7 @@ export const specialties: Specialty[] = [
         "name": "AP-055 Marketing - avançado",
         "code": "AP-055",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7548,7 +7677,7 @@ export const specialties: Specialty[] = [
         "name": "AP-056 Modelagem Têxtil",
         "code": "AP-056",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7614,7 +7743,7 @@ export const specialties: Specialty[] = [
         "name": "AP-057 Montagem e Manutenção de Computadores",
         "code": "AP-057",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7704,7 +7833,7 @@ export const specialties: Specialty[] = [
         "name": "AP-058 Noções de Economia",
         "code": "AP-058",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7758,7 +7887,7 @@ export const specialties: Specialty[] = [
         "name": "AP-059 Operação e Manutenção de Impressoras",
         "code": "AP-059",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7816,7 +7945,7 @@ export const specialties: Specialty[] = [
         "name": "AP-060 Restauro e Conservação Documental",
         "code": "AP-060",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7894,7 +8023,7 @@ export const specialties: Specialty[] = [
         "name": "AP-061 Secretariado",
         "code": "AP-061",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7936,7 +8065,7 @@ export const specialties: Specialty[] = [
         "name": "AP-062 Torno Mecânico",
         "code": "AP-062",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -7998,7 +8127,7 @@ export const specialties: Specialty[] = [
         "name": "AP-063 Web Design - básico",
         "code": "AP-063",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -8024,7 +8153,7 @@ export const specialties: Specialty[] = [
         "name": "AP-064 Web Design - avançado",
         "code": "AP-064",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -8046,7 +8175,7 @@ export const specialties: Specialty[] = [
         "name": "AP-065 Logística",
         "code": "AP-065",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -8096,7 +8225,7 @@ export const specialties: Specialty[] = [
         "name": "AP-066 Noções de Direito",
         "code": "AP-066",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -8162,7 +8291,7 @@ export const specialties: Specialty[] = [
         "name": "AP-067 Segurança Nas Redes Sociais",
         "code": "AP-067",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -8228,7 +8357,7 @@ export const specialties: Specialty[] = [
         "name": "AP-068 Segurança Contra Incêndios",
         "code": "AP-068",
         "category": "atividades-profissionais",
-        
+
         "color": "bg-red-600",
         "requirements": [
             {
@@ -8253,7 +8382,7 @@ export const specialties: Specialty[] = [
         "id": "arte-de-acampar",
         "name": "AR-001 Arte de Acampar",
         "code": "AR-001",
-        "category": "atividades-recreativas",        
+        "category": "atividades-recreativas",
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8303,7 +8432,7 @@ export const specialties: Specialty[] = [
         "name": "AR-002 Cultura Física",
         "code": "AR-002",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8341,7 +8470,7 @@ export const specialties: Specialty[] = [
         "name": "AR-003 Natação Principiante I",
         "code": "AR-003",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8395,7 +8524,7 @@ export const specialties: Specialty[] = [
         "name": "AR-004 Natação Principiante II",
         "code": "AR-004",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8445,7 +8574,7 @@ export const specialties: Specialty[] = [
         "name": "AR-005 Natação Intermediário I",
         "code": "AR-005",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8491,7 +8620,7 @@ export const specialties: Specialty[] = [
         "name": "AR-006 Natação Intermediário II",
         "code": "AR-006",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8537,7 +8666,7 @@ export const specialties: Specialty[] = [
         "name": "AR-007 Natação - avançado",
         "code": "AR-007",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8595,7 +8724,7 @@ export const specialties: Specialty[] = [
         "name": "AR-008 Salvamento de Afogados",
         "code": "AR-008",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8649,7 +8778,7 @@ export const specialties: Specialty[] = [
         "name": "AR-009 Ciclismo",
         "code": "AR-009",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8691,7 +8820,7 @@ export const specialties: Specialty[] = [
         "name": "AR-010 Excursionismo Pedestre",
         "code": "AR-010",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8741,7 +8870,7 @@ export const specialties: Specialty[] = [
         "name": "AR-011 Filatelia",
         "code": "AR-011",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8791,7 +8920,7 @@ export const specialties: Specialty[] = [
         "name": "AR-012 Filatelia - avançado",
         "code": "AR-012",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8825,7 +8954,7 @@ export const specialties: Specialty[] = [
         "name": "AR-013 Esqui Downhill",
         "code": "AR-013",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8851,7 +8980,7 @@ export const specialties: Specialty[] = [
         "name": "AR-014 Arco e Flecha",
         "code": "AR-014",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8901,7 +9030,7 @@ export const specialties: Specialty[] = [
         "name": "AR-015 Caiaque",
         "code": "AR-015",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8935,7 +9064,7 @@ export const specialties: Specialty[] = [
         "name": "AR-016 Canoagem",
         "code": "AR-016",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -8981,7 +9110,7 @@ export const specialties: Specialty[] = [
         "name": "AR-017 Numismática",
         "code": "AR-017",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9027,7 +9156,7 @@ export const specialties: Specialty[] = [
         "name": "AR-018 Navegação",
         "code": "AR-018",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9073,7 +9202,7 @@ export const specialties: Specialty[] = [
         "name": "AR-019 Vela",
         "code": "AR-019",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9127,7 +9256,7 @@ export const specialties: Specialty[] = [
         "name": "AR-020 Fogueiras e Cozinha ao Ar Livre",
         "code": "AR-020",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9193,7 +9322,7 @@ export const specialties: Specialty[] = [
         "name": "AR-021 Mapa e Bússola",
         "code": "AR-021",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9251,7 +9380,7 @@ export const specialties: Specialty[] = [
         "name": "AR-022 Pioneirismo",
         "code": "AR-022",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9313,7 +9442,7 @@ export const specialties: Specialty[] = [
         "name": "AR-023 Remo",
         "code": "AR-023",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9375,7 +9504,7 @@ export const specialties: Specialty[] = [
         "name": "AR-024 Vida Silvestre",
         "code": "AR-024",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9441,7 +9570,7 @@ export const specialties: Specialty[] = [
         "name": "AR-025 Equitação",
         "code": "AR-025",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9499,7 +9628,7 @@ export const specialties: Specialty[] = [
         "name": "AR-026 Esqui Aquático",
         "code": "AR-026",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9537,7 +9666,7 @@ export const specialties: Specialty[] = [
         "name": "AR-027 Esqui Aquático - avançado",
         "code": "AR-027",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9567,7 +9696,7 @@ export const specialties: Specialty[] = [
         "name": "AR-028 Mergulho Livre",
         "code": "AR-028",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9609,7 +9738,7 @@ export const specialties: Specialty[] = [
         "name": "AR-029 Salvamento de Afogados - avançado",
         "code": "AR-029",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9627,7 +9756,7 @@ export const specialties: Specialty[] = [
         "name": "AR-030 Saltos Ornamentais",
         "code": "AR-030",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9653,7 +9782,7 @@ export const specialties: Specialty[] = [
         "name": "AR-031 Mergulho Autônomo",
         "code": "AR-031",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9674,7 +9803,7 @@ export const specialties: Specialty[] = [
         "id": "mergulho-autonomo---avancado",
         "name": "AR-032 Mergulho Autônomo - avançado",
         "code": "AR-032",
-        "category": "atividades-recreativas",        
+        "category": "atividades-recreativas",
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9695,7 +9824,7 @@ export const specialties: Specialty[] = [
         "id": "acampamento-em-baixas-temperaturas",
         "name": "AR-033 Especialidade de Acampamento em Baixas Temperaturas",
         "code": "AR-033",
-        "category": "atividades-recreativas",        
+        "category": "atividades-recreativas",
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9753,7 +9882,7 @@ export const specialties: Specialty[] = [
         "name": "AR-034 Escalada",
         "code": "AR-034",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9807,7 +9936,7 @@ export const specialties: Specialty[] = [
         "name": "AR-035 Escalada - avançado",
         "code": "AR-035",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9853,7 +9982,7 @@ export const specialties: Specialty[] = [
         "name": "AR-036 Escalada em Árvores",
         "code": "AR-036",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9899,7 +10028,7 @@ export const specialties: Specialty[] = [
         "name": "AR-037 Exploração de Cavernas",
         "code": "AR-037",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9945,7 +10074,7 @@ export const specialties: Specialty[] = [
         "name": "AR-038 Exploração de Cavernas - avançado",
         "code": "AR-038",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -9991,7 +10120,7 @@ export const specialties: Specialty[] = [
         "name": "AR-039 Barco a Motor",
         "code": "AR-039",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10045,7 +10174,7 @@ export const specialties: Specialty[] = [
         "name": "AR-040 Nós e Amarras",
         "code": "AR-040",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10103,7 +10232,7 @@ export const specialties: Specialty[] = [
         "name": "AR-041 Arco e Flecha - avançado",
         "code": "AR-041",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10149,7 +10278,7 @@ export const specialties: Specialty[] = [
         "name": "AR-042 Ciclismo - avançado",
         "code": "AR-042",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10207,7 +10336,7 @@ export const specialties: Specialty[] = [
         "name": "AR-043 Ginástica Acrobática",
         "code": "AR-043",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10233,7 +10362,7 @@ export const specialties: Specialty[] = [
         "name": "AR-044 Ginástica Acrobática - avançado",
         "code": "AR-044",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10267,7 +10396,7 @@ export const specialties: Specialty[] = [
         "name": "AR-045 Liderança na Selva",
         "code": "AR-045",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10313,7 +10442,7 @@ export const specialties: Specialty[] = [
         "name": "AR-046 Liderança na Selva - avançado",
         "code": "AR-046",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10371,7 +10500,7 @@ export const specialties: Specialty[] = [
         "name": "AR-047 Ordem Unida",
         "code": "AR-047",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10417,7 +10546,7 @@ export const specialties: Specialty[] = [
         "name": "Ordem Unida - avançado",
         "code": "AR-048",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10431,7 +10560,7 @@ export const specialties: Specialty[] = [
         "name": "AR-049 Atletismo",
         "code": "AR-049",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10461,7 +10590,7 @@ export const specialties: Specialty[] = [
         "name": "AR-050 Acampamento I",
         "code": "AR-050",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10527,7 +10656,7 @@ export const specialties: Specialty[] = [
         "name": "AR-051 Acampamento II",
         "code": "AR-051",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10593,7 +10722,7 @@ export const specialties: Specialty[] = [
         "name": "AR-052 Acampamento III",
         "code": "AR-052",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10663,7 +10792,7 @@ export const specialties: Specialty[] = [
         "name": "AR-053 Acampamento IV",
         "code": "AR-053",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10725,7 +10854,7 @@ export const specialties: Specialty[] = [
         "name": "AR-054 Esqui Cross Country",
         "code": "AR-054",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10763,7 +10892,7 @@ export const specialties: Specialty[] = [
         "name": "AR-055 Excursionismo Pedestre - avançado",
         "code": "AR-055",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10789,7 +10918,7 @@ export const specialties: Specialty[] = [
         "name": "AR-056 Excursionismo Pedestre com Mochila",
         "code": "AR-056",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10851,7 +10980,7 @@ export const specialties: Specialty[] = [
         "name": "AR-057 Liderança Campestre",
         "code": "AR-057",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10889,7 +11018,7 @@ export const specialties: Specialty[] = [
         "name": "AR-058 Liderança Campestre - avançado",
         "code": "AR-058",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10931,7 +11060,7 @@ export const specialties: Specialty[] = [
         "name": "AR-059 Pipas",
         "code": "AR-059",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -10985,7 +11114,7 @@ export const specialties: Specialty[] = [
         "name": "AR-060 Skate",
         "code": "AR-060",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11011,7 +11140,7 @@ export const specialties: Specialty[] = [
         "name": "AR-061 Windsurf",
         "code": "AR-061",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11065,7 +11194,7 @@ export const specialties: Specialty[] = [
         "name": "AR-062 Numismática - avançado",
         "code": "AR-062",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11095,7 +11224,7 @@ export const specialties: Specialty[] = [
         "name": "AR-063 Mountain Biking",
         "code": "AR-063",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11149,7 +11278,7 @@ export const specialties: Specialty[] = [
         "name": "AR-064 Basquete",
         "code": "AR-064",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11199,7 +11328,7 @@ export const specialties: Specialty[] = [
         "name": "AR-065 Futebol",
         "code": "AR-065",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11253,7 +11382,7 @@ export const specialties: Specialty[] = [
         "name": "AR-066 Equitação - avançado",
         "code": "AR-066",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11291,7 +11420,7 @@ export const specialties: Specialty[] = [
         "name": "AR-067 Geocaching",
         "code": "AR-067",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11345,7 +11474,7 @@ export const specialties: Specialty[] = [
         "name": "AR-068 Geocaching - avançado",
         "code": "AR-068",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11379,7 +11508,7 @@ export const specialties: Specialty[] = [
         "name": "AR-069 Construção de Canoas",
         "code": "AR-069",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11425,7 +11554,7 @@ export const specialties: Specialty[] = [
         "name": "AR-070 Cozinha com Forno Holandês",
         "code": "AR-070",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11507,7 +11636,7 @@ export const specialties: Specialty[] = [
         "name": "AR-071 Fanfarra",
         "code": "AR-071",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11577,7 +11706,7 @@ export const specialties: Specialty[] = [
         "name": "AR-072 Rapel",
         "code": "AR-072",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11603,7 +11732,7 @@ export const specialties: Specialty[] = [
         "name": "AR-073 Rapel - avançado",
         "code": "AR-073",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11637,7 +11766,7 @@ export const specialties: Specialty[] = [
         "name": "AR-074 Rapel - instrutor",
         "code": "AR-074",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11667,7 +11796,7 @@ export const specialties: Specialty[] = [
         "name": "AR-075 Triathlon",
         "code": "AR-075",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11693,7 +11822,7 @@ export const specialties: Specialty[] = [
         "name": "AR-076 Triathlon - avançado",
         "code": "AR-076",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11719,7 +11848,7 @@ export const specialties: Specialty[] = [
         "name": "AR-077 Telecartofilia",
         "code": "AR-077",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11761,7 +11890,7 @@ export const specialties: Specialty[] = [
         "name": "AR-078 Telecartofilia - avançado",
         "code": "AR-078",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11795,7 +11924,7 @@ export const specialties: Specialty[] = [
         "name": "AR-079 Wakeboard",
         "code": "AR-079",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11829,7 +11958,7 @@ export const specialties: Specialty[] = [
         "name": "AR-080 Softbol",
         "code": "AR-080",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11891,7 +12020,7 @@ export const specialties: Specialty[] = [
         "name": "AR-081 Letterboxing",
         "code": "AR-081",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11921,7 +12050,7 @@ export const specialties: Specialty[] = [
         "name": "AR-082 Letterboxing - avançado",
         "code": "AR-082",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11951,7 +12080,7 @@ export const specialties: Specialty[] = [
         "name": "AR-083 Monociclo",
         "code": "AR-083",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -11989,7 +12118,7 @@ export const specialties: Specialty[] = [
         "name": "AR-084 Acampamento Seguro",
         "code": "AR-084",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12043,7 +12172,7 @@ export const specialties: Specialty[] = [
         "name": "AR-085 Acampamento Seguro - avançado",
         "code": "AR-085",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12069,7 +12198,7 @@ export const specialties: Specialty[] = [
         "name": "AR-086 Viagem e Turismo",
         "code": "AR-086",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12115,7 +12244,7 @@ export const specialties: Specialty[] = [
         "name": "AR-087 Viagem e Turismo - avançado",
         "code": "AR-087",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12149,7 +12278,7 @@ export const specialties: Specialty[] = [
         "name": "AR-088 Excursionismo Pedestre na Neve",
         "code": "AR-088",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12195,7 +12324,7 @@ export const specialties: Specialty[] = [
         "name": "AR-089 Excursionismo Pedestre na Neve - avançado",
         "code": "AR-089",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12233,7 +12362,7 @@ export const specialties: Specialty[] = [
         "name": "AR-090 Segurança Básica na Água",
         "code": "AR-090",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12287,7 +12416,7 @@ export const specialties: Specialty[] = [
         "name": "AR-091 Boliche",
         "code": "AR-091",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12341,7 +12470,7 @@ export const specialties: Specialty[] = [
         "name": "AR-092 Carrinho de Rolimã",
         "code": "AR-092",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12383,7 +12512,7 @@ export const specialties: Specialty[] = [
         "name": "AR-093 Colecionador",
         "code": "AR-093",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12425,7 +12554,7 @@ export const specialties: Specialty[] = [
         "name": "AR-094 Esportes Adaptados",
         "code": "AR-094",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12475,7 +12604,7 @@ export const specialties: Specialty[] = [
         "name": "AR-095 Excursionismo Pedestre com Mochila - avançado",
         "code": "AR-095",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12537,7 +12666,7 @@ export const specialties: Specialty[] = [
         "name": "AR-096 Futebol de Botão",
         "code": "AR-096",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12587,7 +12716,7 @@ export const specialties: Specialty[] = [
         "name": "AR-097 Futsal",
         "code": "AR-097",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12637,7 +12766,7 @@ export const specialties: Specialty[] = [
         "name": "AR-098 Handebol",
         "code": "AR-098",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12687,7 +12816,7 @@ export const specialties: Specialty[] = [
         "name": "AR-099 Nós e Amarras - avançado",
         "code": "AR-099",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12729,7 +12858,7 @@ export const specialties: Specialty[] = [
         "name": "AR-100 Ordem Unida - instrutor",
         "code": "AR-100",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12811,7 +12940,7 @@ export const specialties: Specialty[] = [
         "name": "AR-101 Pioneirias",
         "code": "AR-101",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12845,7 +12974,7 @@ export const specialties: Specialty[] = [
         "name": "AR-102 Pioneirias - avançado",
         "code": "AR-102",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12883,7 +13012,7 @@ export const specialties: Specialty[] = [
         "name": "AR-103 Patins",
         "code": "AR-103",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12925,7 +13054,7 @@ export const specialties: Specialty[] = [
         "name": "AR-104 Orientação com GPS",
         "code": "AR-104",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -12991,7 +13120,7 @@ export const specialties: Specialty[] = [
         "name": "AR-105 Rafting",
         "code": "AR-105",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13045,7 +13174,7 @@ export const specialties: Specialty[] = [
         "name": "AR-106 Pião",
         "code": "AR-106",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13103,7 +13232,7 @@ export const specialties: Specialty[] = [
         "name": "AR-107 Tênis de Mesa",
         "code": "AR-107",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13149,7 +13278,7 @@ export const specialties: Specialty[] = [
         "name": "AR-108 Vôlei",
         "code": "AR-108",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13199,7 +13328,7 @@ export const specialties: Specialty[] = [
         "name": "AR-109 Waveboarding",
         "code": "AR-109",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13233,7 +13362,7 @@ export const specialties: Specialty[] = [
         "name": "AR-110 Evolução em Ordem Unida",
         "code": "AR-110",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13267,7 +13396,7 @@ export const specialties: Specialty[] = [
         "name": "AR-111 Campori Seguro",
         "code": "AR-111",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13293,7 +13422,7 @@ export const specialties: Specialty[] = [
         "name": "AR-112 Acampamento Consciente",
         "code": "AR-112",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13339,7 +13468,7 @@ export const specialties: Specialty[] = [
         "name": "AR-113 Artes Mateiras",
         "code": "AR-113",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13381,7 +13510,7 @@ export const specialties: Specialty[] = [
         "name": "AR-114 Bolinha de Gude",
         "code": "AR-114",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13415,7 +13544,7 @@ export const specialties: Specialty[] = [
         "name": "AR-115 Comida Mateira",
         "code": "AR-115",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13445,7 +13574,7 @@ export const specialties: Specialty[] = [
         "name": "AR-116 Construções Rústicas de Grande Porte",
         "code": "AR-116",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13507,7 +13636,7 @@ export const specialties: Specialty[] = [
         "name": "AR-117 Cozinha Segura",
         "code": "AR-117",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13549,7 +13678,7 @@ export const specialties: Specialty[] = [
         "name": "AR-118 Cubo Mágico",
         "code": "AR-118",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13607,7 +13736,7 @@ export const specialties: Specialty[] = [
         "name": "AR-119 Slackline",
         "code": "AR-119",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13653,7 +13782,7 @@ export const specialties: Specialty[] = [
         "name": "AR-120 Trilha de Sinais",
         "code": "AR-120",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13695,7 +13824,7 @@ export const specialties: Specialty[] = [
         "name": "AR-121 Troca de Pins",
         "code": "AR-121",
         "category": "atividades-recreativas",
-        
+
         "color": "bg-green-600",
         "requirements": [
             {
@@ -13737,7 +13866,7 @@ export const specialties: Specialty[] = [
         "name": "CS-001 Saúde e Cura",
         "code": "CS-001",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -13771,7 +13900,7 @@ export const specialties: Specialty[] = [
         "name": "CS-002 Química",
         "code": "CS-002",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -13805,7 +13934,7 @@ export const specialties: Specialty[] = [
         "name": "CS-003 Primeiros Socorros - básico",
         "code": "CS-003",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -13899,7 +14028,7 @@ export const specialties: Specialty[] = [
         "name": "CS-004 Primeiros Socorros - intermediário",
         "code": "CS-004",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -13965,7 +14094,7 @@ export const specialties: Specialty[] = [
         "name": "CS-005 Primeiros Socorros - avançado",
         "code": "CS-005",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -13999,7 +14128,7 @@ export const specialties: Specialty[] = [
         "name": "CS-006 Enfermagem Básica",
         "code": "CS-006",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14061,7 +14190,7 @@ export const specialties: Specialty[] = [
         "name": "CS-007 Ótica",
         "code": "CS-007",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14118,7 +14247,7 @@ export const specialties: Specialty[] = [
         "id": "nutricao",
         "name": "CS-008 Especialidade de Nutrição",
         "code": "CS-008",
-        "category": "ciencia-saude",       
+        "category": "ciencia-saude",
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14184,7 +14313,7 @@ export const specialties: Specialty[] = [
         "name": "CS-009 Alerta Vermelho",
         "code": "CS-009",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14214,7 +14343,7 @@ export const specialties: Specialty[] = [
         "name": "CS-010 Nutrição - avançado",
         "code": "CS-010",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14288,7 +14417,7 @@ export const specialties: Specialty[] = [
         "name": "CS-011 Reanimação Cardiopulmonar",
         "code": "CS-011",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14326,7 +14455,7 @@ export const specialties: Specialty[] = [
         "name": "CS-012 Resgate Básico",
         "code": "CS-012",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14376,7 +14505,7 @@ export const specialties: Specialty[] = [
         "name": "CS-013 Física",
         "code": "CS-013",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14430,7 +14559,7 @@ export const specialties: Specialty[] = [
         "name": "CS-014 Microscopia",
         "code": "CS-014",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14472,7 +14601,7 @@ export const specialties: Specialty[] = [
         "name": "CS-015 Digestão",
         "code": "CS-015",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14542,7 +14671,7 @@ export const specialties: Specialty[] = [
         "name": "CS-016 Ossos, Músculos e Articulações",
         "code": "CS-016",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14628,7 +14757,7 @@ export const specialties: Specialty[] = [
         "name": "CS-017 Sistema Nervoso",
         "code": "CS-017",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14694,7 +14823,7 @@ export const specialties: Specialty[] = [
         "name": "CS-018 Sangue e Defesas do Corpo",
         "code": "CS-018",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14780,7 +14909,7 @@ export const specialties: Specialty[] = [
         "name": "CS-019 Hereditariedade",
         "code": "CS-019",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14834,7 +14963,7 @@ export const specialties: Specialty[] = [
         "name": "CS-020 Coração e Circulação",
         "code": "CS-020",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14900,7 +15029,7 @@ export const specialties: Specialty[] = [
         "name": "CS-021 Bioquímica",
         "code": "CS-021",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -14977,7 +15106,7 @@ export const specialties: Specialty[] = [
         "id": "bioquimica---avancado",
         "name": "CS-022 Bioquímica - avançado",
         "code": "CS-022",
-        "category": "ciencia-saude",       
+        "category": "ciencia-saude",
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15075,7 +15204,7 @@ export const specialties: Specialty[] = [
         "name": "CS-023 Higiene Oral",
         "code": "CS-023",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15137,7 +15266,7 @@ export const specialties: Specialty[] = [
         "name": "CS-024 Higiene Oral - avançado",
         "code": "CS-024",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15187,7 +15316,7 @@ export const specialties: Specialty[] = [
         "name": "CS-025 Metodologia de Estudo",
         "code": "CS-025",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15237,7 +15366,7 @@ export const specialties: Specialty[] = [
         "name": "CS-026 Prevenção de Doenças Tropicais",
         "code": "CS-026",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15267,7 +15396,7 @@ export const specialties: Specialty[] = [
         "name": "CS-027 Patrimônio Histórico",
         "code": "CS-027",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15321,7 +15450,7 @@ export const specialties: Specialty[] = [
         "name": "CS-028 Saúde Mental",
         "code": "CS-028",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15387,7 +15516,7 @@ export const specialties: Specialty[] = [
         "name": "CS-029 Sexualidade Humana",
         "code": "CS-029",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15457,7 +15586,7 @@ export const specialties: Specialty[] = [
         "name": "CS-030 Sistema Respiratório",
         "code": "CS-030",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15527,7 +15656,7 @@ export const specialties: Specialty[] = [
         "name": "CS-031 Habilidades em Matemática I",
         "code": "CS-031",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15577,7 +15706,7 @@ export const specialties: Specialty[] = [
         "name": "CS-032 Habilidades em Matemática II",
         "code": "CS-032",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15627,7 +15756,7 @@ export const specialties: Specialty[] = [
         "name": "CS-033 Habilidades em Matemática III",
         "code": "CS-033",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15681,7 +15810,7 @@ export const specialties: Specialty[] = [
         "name": "CS-034 Habilidades em Matemática IV",
         "code": "CS-034",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15735,7 +15864,7 @@ export const specialties: Specialty[] = [
         "name": "CS-035 Biossegurança",
         "code": "CS-035",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15797,7 +15926,7 @@ export const specialties: Specialty[] = [
         "name": "CS-036 Anatomia Humana Básica",
         "code": "CS-036",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15835,7 +15964,7 @@ export const specialties: Specialty[] = [
         "name": "CS-037 Cientistas Cristãos",
         "code": "CS-037",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15857,7 +15986,7 @@ export const specialties: Specialty[] = [
         "name": "CS-038 Experimentos Científicos",
         "code": "CS-038",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15919,7 +16048,7 @@ export const specialties: Specialty[] = [
         "name": "CS-039 Plantas Medicinais",
         "code": "CS-039",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15961,7 +16090,7 @@ export const specialties: Specialty[] = [
         "name": "CS-040 Remédios da Natureza",
         "code": "CS-040",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -15975,7 +16104,7 @@ export const specialties: Specialty[] = [
         "name": "CS-041 Trânsito Seguro",
         "code": "CS-041",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -16037,7 +16166,7 @@ export const specialties: Specialty[] = [
         "name": "CS-042 Vacinas",
         "code": "CS-042",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -16075,7 +16204,7 @@ export const specialties: Specialty[] = [
         "name": "CS-043 Zoonoses",
         "code": "CS-043",
         "category": "ciencia-saude",
-        
+
         "color": "bg-purple-700",
         "requirements": [
             {
@@ -16125,7 +16254,7 @@ export const specialties: Specialty[] = [
         "name": "EN-001 Aranhas",
         "code": "EN-001",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16183,7 +16312,7 @@ export const specialties: Specialty[] = [
         "name": "EN-002 Astronomia",
         "code": "EN-002",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16233,7 +16362,7 @@ export const specialties: Specialty[] = [
         "name": "EN-003 Aves",
         "code": "EN-003",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16271,7 +16400,7 @@ export const specialties: Specialty[] = [
         "name": "EN-004 Aves Domésticas",
         "code": "EN-004",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16309,7 +16438,7 @@ export const specialties: Specialty[] = [
         "name": "EN-005 Flores",
         "code": "EN-005",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16355,7 +16484,7 @@ export const specialties: Specialty[] = [
         "name": "EN-006 Árvores",
         "code": "EN-006",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16405,7 +16534,7 @@ export const specialties: Specialty[] = [
         "name": "EN-007 Insetos",
         "code": "EN-007",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16439,7 +16568,7 @@ export const specialties: Specialty[] = [
         "name": "EN-008 Mariposas e Borboletas",
         "code": "EN-008",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16485,7 +16614,7 @@ export const specialties: Specialty[] = [
         "name": "EN-009 Fungos",
         "code": "EN-009",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16547,7 +16676,7 @@ export const specialties: Specialty[] = [
         "name": "EN-010 Mamíferos",
         "code": "EN-010",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16593,7 +16722,7 @@ export const specialties: Specialty[] = [
         "name": "EN-011 Répteis",
         "code": "EN-011",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16643,7 +16772,7 @@ export const specialties: Specialty[] = [
         "name": "EN-012 Rochas e minerais",
         "code": "EN-012",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16685,7 +16814,7 @@ export const specialties: Specialty[] = [
         "name": "EN-013 Rochas e Minerais - avançado",
         "code": "EN-013",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16723,7 +16852,7 @@ export const specialties: Specialty[] = [
         "name": "EN-014 Moluscos",
         "code": "EN-014",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16785,7 +16914,7 @@ export const specialties: Specialty[] = [
         "name": "EN-015 Cactos",
         "code": "EN-015",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16835,7 +16964,7 @@ export const specialties: Specialty[] = [
         "name": "EN-016 Climatologia",
         "code": "EN-016",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16897,7 +17026,7 @@ export const specialties: Specialty[] = [
         "name": "EN-017 Fósseis",
         "code": "EN-017",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16951,7 +17080,7 @@ export const specialties: Specialty[] = [
         "name": "EN-018 Samambaias",
         "code": "EN-018",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -16988,7 +17117,7 @@ export const specialties: Specialty[] = [
         "id": "arbustos",
         "name": "EN-019 Arbustos",
         "code": "EN-019",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17037,7 +17166,7 @@ export const specialties: Specialty[] = [
         "id": "aves-de-estimacao",
         "name": "EN-020 Aves de Estimação",
         "code": "EN-020",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17074,7 +17203,7 @@ export const specialties: Specialty[] = [
         "id": "gramineas",
         "name": "EN-021 Gramíneas",
         "code": "EN-021",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17132,7 +17261,7 @@ export const specialties: Specialty[] = [
         "name": "EN-022 Peixes",
         "code": "EN-022",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17190,7 +17319,7 @@ export const specialties: Specialty[] = [
         "name": "EN-023 Anfíbios",
         "code": "EN-023",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17244,7 +17373,7 @@ export const specialties: Specialty[] = [
         "name": "EN-024 Felinos",
         "code": "EN-024",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17302,7 +17431,7 @@ export const specialties: Specialty[] = [
         "name": "EN-025 Rebanhos Domésticos",
         "code": "EN-025",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17344,7 +17473,7 @@ export const specialties: Specialty[] = [
         "name": "EN-026 Astronomia - avançado",
         "code": "EN-026",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17426,7 +17555,7 @@ export const specialties: Specialty[] = [
         "name": "EN-027 Aves - avançado",
         "code": "EN-027",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17496,7 +17625,7 @@ export const specialties: Specialty[] = [
         "name": "EN-028 Climatologia - avançado",
         "code": "EN-028",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17554,7 +17683,7 @@ export const specialties: Specialty[] = [
         "name": "EN-029 Flores - avançado",
         "code": "EN-029",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17600,7 +17729,7 @@ export const specialties: Specialty[] = [
         "name": "EN-030 Insetos - avançado",
         "code": "EN-030",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17650,7 +17779,7 @@ export const specialties: Specialty[] = [
         "name": "EN-031 Mamíferos - avançado",
         "code": "EN-031",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17684,7 +17813,7 @@ export const specialties: Specialty[] = [
         "name": "EN-032 Moluscos - avançado",
         "code": "EN-032",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17738,7 +17867,7 @@ export const specialties: Specialty[] = [
         "name": "EN-033 Árvores - avançado",
         "code": "EN-033",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17776,7 +17905,7 @@ export const specialties: Specialty[] = [
         "name": "EN-034 Cães",
         "code": "EN-034",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17838,7 +17967,7 @@ export const specialties: Specialty[] = [
         "name": "EN-035 Areia",
         "code": "EN-035",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17880,7 +18009,7 @@ export const specialties: Specialty[] = [
         "name": "EN-036 Algas",
         "code": "EN-036",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17942,7 +18071,7 @@ export const specialties: Specialty[] = [
         "name": "EN-037 Cetáceos",
         "code": "EN-037",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -17984,7 +18113,7 @@ export const specialties: Specialty[] = [
         "name": "EN-038 Ervas",
         "code": "EN-038",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18042,7 +18171,7 @@ export const specialties: Specialty[] = [
         "name": "EN-039 Eucaliptos",
         "code": "EN-039",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18092,7 +18221,7 @@ export const specialties: Specialty[] = [
         "name": "EN-040 Sementes",
         "code": "EN-040",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18142,7 +18271,7 @@ export const specialties: Specialty[] = [
         "name": "EN-041 Sementes - avançado",
         "code": "EN-041",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18184,7 +18313,7 @@ export const specialties: Specialty[] = [
         "name": "EN-042 Orquídeas",
         "code": "EN-042",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18226,7 +18355,7 @@ export const specialties: Specialty[] = [
         "name": "EN-043 Plantas Silvestres Comestíveis",
         "code": "EN-043",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18272,7 +18401,7 @@ export const specialties: Specialty[] = [
         "name": "EN-044 Ecologia",
         "code": "EN-044",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18314,7 +18443,7 @@ export const specialties: Specialty[] = [
         "name": "EN-045 Ecologia - avançado",
         "code": "EN-045",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18360,7 +18489,7 @@ export const specialties: Specialty[] = [
         "name": "EN-046 Conservação Ambiental",
         "code": "EN-046",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18406,7 +18535,7 @@ export const specialties: Specialty[] = [
         "name": "EN-047 Geologia",
         "code": "EN-047",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18432,7 +18561,7 @@ export const specialties: Specialty[] = [
         "name": "EN-048 Geologia - avançado",
         "code": "EN-048",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18458,7 +18587,7 @@ export const specialties: Specialty[] = [
         "name": "EN-049 Plantas Caseiras",
         "code": "EN-049",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18520,7 +18649,7 @@ export const specialties: Specialty[] = [
         "name": "EN-050 Rastreio de Animais",
         "code": "EN-050",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18578,7 +18707,7 @@ export const specialties: Specialty[] = [
         "name": "EN-051 Mamíferos Marinhos",
         "code": "EN-051",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18628,7 +18757,7 @@ export const specialties: Specialty[] = [
         "name": "EN-052 Pequenos Mamíferos de Estimação",
         "code": "EN-052",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18674,7 +18803,7 @@ export const specialties: Specialty[] = [
         "name": "EN-053 Cactos - avançado",
         "code": "EN-053",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18708,7 +18837,7 @@ export const specialties: Specialty[] = [
         "name": "EN-054 Anfíbios - avançado",
         "code": "EN-054",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18734,7 +18863,7 @@ export const specialties: Specialty[] = [
         "name": "EN-055 Felinos - avançado",
         "code": "EN-055",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18776,7 +18905,7 @@ export const specialties: Specialty[] = [
         "name": "EN-056 Rastreio de Animais - avançado",
         "code": "EN-056",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18810,7 +18939,7 @@ export const specialties: Specialty[] = [
         "name": "EN-057 Répteis - avançado",
         "code": "EN-057",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18856,7 +18985,7 @@ export const specialties: Specialty[] = [
         "name": "EN-058 Animais Ameaçados de Extinção",
         "code": "EN-058",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18906,7 +19035,7 @@ export const specialties: Specialty[] = [
         "name": "EN-059 Morcegos",
         "code": "EN-059",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -18976,7 +19105,7 @@ export const specialties: Specialty[] = [
         "name": "EN-060 Morcegos - avançado",
         "code": "EN-060",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19029,7 +19158,7 @@ export const specialties: Specialty[] = [
         "id": "marsupiais",
         "name": "EN-061 Marsupiais",
         "code": "EN-061",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19066,7 +19195,7 @@ export const specialties: Specialty[] = [
         "id": "orquideas---avancado",
         "name": "EN-062 Especialidade de Orquídeas - avançado",
         "code": "EN-062",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19132,7 +19261,7 @@ export const specialties: Specialty[] = [
         "name": "EN-063 Palmeiras",
         "code": "EN-063",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19170,7 +19299,7 @@ export const specialties: Specialty[] = [
         "name": "EN-064 Solos",
         "code": "EN-064",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19211,7 +19340,7 @@ export const specialties: Specialty[] = [
         "id": "vermes",
         "name": "Vermes",
         "code": "EN-065",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19265,7 +19394,7 @@ export const specialties: Specialty[] = [
         "name": "EN-066 Vermes - avançado",
         "code": "EN-066",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19306,7 +19435,7 @@ export const specialties: Specialty[] = [
         "id": "quedas-dagua",
         "name": "EN-067 Quedas d'água",
         "code": "EN-067",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19335,7 +19464,7 @@ export const specialties: Specialty[] = [
         "id": "aquarismo",
         "name": "EN-068 Aquarismo",
         "code": "EN-068",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19393,7 +19522,7 @@ export const specialties: Specialty[] = [
         "name": "EN-069 Animais Peçonhentos",
         "code": "EN-069",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19451,7 +19580,7 @@ export const specialties: Specialty[] = [
         "name": "EN-070 Animais Noturnos",
         "code": "EN-070",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19493,7 +19622,7 @@ export const specialties: Specialty[] = [
         "name": "EN-071 Animais Nocivos",
         "code": "EN-071",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19547,7 +19676,7 @@ export const specialties: Specialty[] = [
         "name": "EN-072 Arbustos - avançado",
         "code": "EN-072",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19585,7 +19714,7 @@ export const specialties: Specialty[] = [
         "name": "EN-073 Araras, Papagaios e Periquitos",
         "code": "EN-073",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19627,7 +19756,7 @@ export const specialties: Specialty[] = [
         "name": "EN-074 Briófitas",
         "code": "EN-074",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19673,7 +19802,7 @@ export const specialties: Specialty[] = [
         "name": "EN-075 Bactérias",
         "code": "EN-075",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19727,7 +19856,7 @@ export const specialties: Specialty[] = [
         "name": "EN-076 Camelos",
         "code": "EN-076",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19761,7 +19890,7 @@ export const specialties: Specialty[] = [
         "name": "EN-077 Citologia",
         "code": "EN-077",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19819,7 +19948,7 @@ export const specialties: Specialty[] = [
         "name": "EN-078 Crustáceos",
         "code": "EN-078",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19873,7 +20002,7 @@ export const specialties: Specialty[] = [
         "name": "EN-079 Dinossauros",
         "code": "EN-079",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19935,7 +20064,7 @@ export const specialties: Specialty[] = [
         "name": "EN-080 Equinodermos",
         "code": "EN-080",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -19985,7 +20114,7 @@ export const specialties: Specialty[] = [
         "name": "EN-081 Energias Renováveis",
         "code": "EN-081",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20031,7 +20160,7 @@ export const specialties: Specialty[] = [
         "name": "EN-082 Estuário",
         "code": "EN-082",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20101,7 +20230,7 @@ export const specialties: Specialty[] = [
         "name": "EN-083 Fauna Marinha",
         "code": "EN-083",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20155,7 +20284,7 @@ export const specialties: Specialty[] = [
         "name": "EN-084 Fisiologia Vegetal",
         "code": "EN-084",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20201,7 +20330,7 @@ export const specialties: Specialty[] = [
         "name": "EN-085 Formigas",
         "code": "EN-085",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20251,7 +20380,7 @@ export const specialties: Specialty[] = [
         "name": "EN-086 Liquens",
         "code": "EN-086",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20301,7 +20430,7 @@ export const specialties: Specialty[] = [
         "name": "EN-087 Odonata",
         "code": "EN-087",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20367,7 +20496,7 @@ export const specialties: Specialty[] = [
         "name": "EN-088 Plantas Carnívoras",
         "code": "EN-088",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20405,7 +20534,7 @@ export const specialties: Specialty[] = [
         "name": "EN-089 Preservação de Recursos Hídricos",
         "code": "EN-089",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20443,7 +20572,7 @@ export const specialties: Specialty[] = [
         "name": "EN-090 Poríferos e Cnidários",
         "code": "EN-090",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20488,7 +20617,7 @@ export const specialties: Specialty[] = [
         "id": "protozoarios",
         "name": "EN-091 Protozoários",
         "code": "EN-091",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20537,7 +20666,7 @@ export const specialties: Specialty[] = [
         "id": "reciclagem-e-sustentabilidade",
         "name": "EN-092 Reciclagem e Sustentabilidade",
         "code": "EN-092",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20587,7 +20716,7 @@ export const specialties: Specialty[] = [
         "name": "EN-093 Reciclagem e Sustentabilidade - avançado",
         "code": "EN-093",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20637,7 +20766,7 @@ export const specialties: Specialty[] = [
         "name": "EN-094 Tubarões",
         "code": "EN-094",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20683,7 +20812,7 @@ export const specialties: Specialty[] = [
         "name": "EN-095 Vírus",
         "code": "EN-095",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20737,7 +20866,7 @@ export const specialties: Specialty[] = [
         "name": "EN-096 Abelhas e Vespas",
         "code": "EN-096",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20802,7 +20931,7 @@ export const specialties: Specialty[] = [
         "id": "animais-migratorios",
         "name": "EN-097 Animais Migratórios",
         "code": "EN-097",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20843,7 +20972,7 @@ export const specialties: Specialty[] = [
         "id": "aves-de-rapina",
         "name": "EN-098 Aves de Rapina",
         "code": "EN-098",
-        "category": "estudo-natureza",        
+        "category": "estudo-natureza",
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20901,7 +21030,7 @@ export const specialties: Specialty[] = [
         "name": "EN-099 Ciência Planetária",
         "code": "EN-099",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20943,7 +21072,7 @@ export const specialties: Specialty[] = [
         "name": "EN-100 Cigarras",
         "code": "EN-100",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -20985,7 +21114,7 @@ export const specialties: Specialty[] = [
         "name": "EN-101 Compostagem Doméstica",
         "code": "EN-101",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21027,7 +21156,7 @@ export const specialties: Specialty[] = [
         "name": "EN-102 Mimetismo e Camuflagem",
         "code": "EN-102",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21065,7 +21194,7 @@ export const specialties: Specialty[] = [
         "name": "EN-103 Peixes Ornamentais",
         "code": "EN-103",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21095,7 +21224,7 @@ export const specialties: Specialty[] = [
         "name": "EN-104 Primatas",
         "code": "EN-104",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21133,7 +21262,7 @@ export const specialties: Specialty[] = [
         "name": "EN-105 Quelônios",
         "code": "EN-105",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21191,7 +21320,7 @@ export const specialties: Specialty[] = [
         "name": "EN-106 Vulcões",
         "code": "EN-106",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21249,7 +21378,7 @@ export const specialties: Specialty[] = [
         "name": "EN-107 Bromélias",
         "code": "EN-107",
         "category": "estudo-natureza",
-        
+
         "color": "bg-white text-black border",
         "requirements": [
             {
@@ -21315,7 +21444,7 @@ export const specialties: Specialty[] = [
         "name": "HD-001 Arte Culinária",
         "code": "HD-001",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21373,7 +21502,7 @@ export const specialties: Specialty[] = [
         "name": "HD-002 Técnicas de Lavanderia",
         "code": "HD-002",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21435,7 +21564,7 @@ export const specialties: Specialty[] = [
         "name": "HD-003 Cuidado de Bebês",
         "code": "HD-003",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21493,7 +21622,7 @@ export const specialties: Specialty[] = [
         "name": "HD-004 Cuidados da Casa",
         "code": "HD-004",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21539,7 +21668,7 @@ export const specialties: Specialty[] = [
         "name": "HD-005 Técnicas de Fazer Conserva",
         "code": "HD-005",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21592,7 +21721,7 @@ export const specialties: Specialty[] = [
         "id": "orcamento-familiar",
         "name": "HD-006 Orçamento Familiar",
         "code": "HD-006",
-        "category": "habilidades-domesticas",       
+        "category": "habilidades-domesticas",
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21669,7 +21798,7 @@ export const specialties: Specialty[] = [
         "id": "panificacao",
         "name": "HD-007 Panificação",
         "code": "HD-007",
-        "category": "habilidades-domesticas",       
+        "category": "habilidades-domesticas",
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21727,7 +21856,7 @@ export const specialties: Specialty[] = [
         "name": "HD-008 Arte Culinária - avançado",
         "code": "HD-008",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21792,7 +21921,7 @@ export const specialties: Specialty[] = [
         "id": "costura-basica",
         "name": "HD-009 Costura Básica",
         "code": "HD-009",
-        "category": "habilidades-domesticas",       
+        "category": "habilidades-domesticas",
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21834,7 +21963,7 @@ export const specialties: Specialty[] = [
         "name": "HD-010 Comidas Típicas",
         "code": "HD-010",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21872,7 +22001,7 @@ export const specialties: Specialty[] = [
         "name": "HD-011 Congelamento de Alimentos",
         "code": "HD-011",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21938,7 +22067,7 @@ export const specialties: Specialty[] = [
         "name": "HD-012 Desidratação de Alimentos",
         "code": "HD-012",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -21976,7 +22105,7 @@ export const specialties: Specialty[] = [
         "name": "HD-013 Produção de Pizza",
         "code": "HD-013",
         "category": "habilidades-domesticas",
-        
+
         "color": "bg-yellow-600",
         "requirements": [
             {
@@ -22014,7 +22143,7 @@ export const specialties: Specialty[] = [
         "name": "HM-001 Automodelismo",
         "code": "HM-001",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22036,7 +22165,7 @@ export const specialties: Specialty[] = [
         "name": "HM-002 Trabalhos com Agulha",
         "code": "HM-002",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22074,7 +22203,7 @@ export const specialties: Specialty[] = [
         "name": "HM-003 Desenho e Pintura",
         "code": "HM-003",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22112,7 +22241,7 @@ export const specialties: Specialty[] = [
         "name": "HM-004 Música - básico",
         "code": "HM-004",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22158,7 +22287,7 @@ export const specialties: Specialty[] = [
         "name": "HM-005 Música - intermediário",
         "code": "HM-005",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22208,7 +22337,7 @@ export const specialties: Specialty[] = [
         "name": "HM-006 Música - avançado",
         "code": "HM-006",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22238,7 +22367,7 @@ export const specialties: Specialty[] = [
         "name": "HM-007 Letreiros e Cartazes",
         "code": "HM-007",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22272,7 +22401,7 @@ export const specialties: Specialty[] = [
         "name": "HM-008 Cestaria",
         "code": "HM-008",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22326,7 +22455,7 @@ export const specialties: Specialty[] = [
         "name": "HM-009 Trabalhos em Metal",
         "code": "HM-009",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22360,7 +22489,7 @@ export const specialties: Specialty[] = [
         "name": "HM-010 Arte de Oleiro",
         "code": "HM-010",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22386,7 +22515,7 @@ export const specialties: Specialty[] = [
         "name": "HM-011 Entalhe em Madeira",
         "code": "HM-011",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22416,7 +22545,7 @@ export const specialties: Specialty[] = [
         "name": "HM-012 Ornamentação com Flores",
         "code": "HM-012",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22462,7 +22591,7 @@ export const specialties: Specialty[] = [
         "name": "HM-013 Pintura em Vidro",
         "code": "HM-013",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22512,7 +22641,7 @@ export const specialties: Specialty[] = [
         "name": "HM-014 Tecelagem",
         "code": "HM-014",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22566,7 +22695,7 @@ export const specialties: Specialty[] = [
         "name": "HM-015 Trabalhos em Madeira",
         "code": "HM-015",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22608,7 +22737,7 @@ export const specialties: Specialty[] = [
         "name": "HM-016 Aeromodelismo",
         "code": "HM-016",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22634,7 +22763,7 @@ export const specialties: Specialty[] = [
         "name": "HM-017 Cultura Indígena",
         "code": "HM-017",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22692,7 +22821,7 @@ export const specialties: Specialty[] = [
         "name": "HM-018 Escultura",
         "code": "HM-018",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22718,7 +22847,7 @@ export const specialties: Specialty[] = [
         "name": "HM-019 Xilogravura",
         "code": "HM-019",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22764,7 +22893,7 @@ export const specialties: Specialty[] = [
         "name": "HM-020 Cerâmica",
         "code": "HM-020",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22822,7 +22951,7 @@ export const specialties: Specialty[] = [
         "name": "HM-021 Pintura em Tecido",
         "code": "HM-021",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22892,7 +23021,7 @@ export const specialties: Specialty[] = [
         "name": "HM-022 Trabalhos em Feltro",
         "code": "HM-022",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22930,7 +23059,7 @@ export const specialties: Specialty[] = [
         "name": "HM-023 Trabalhos em Acrílico",
         "code": "HM-023",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -22972,7 +23101,7 @@ export const specialties: Specialty[] = [
         "name": "HM-024 Modelagem e Fabricação de Sabão",
         "code": "HM-024",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23010,7 +23139,7 @@ export const specialties: Specialty[] = [
         "name": "HM-025 Modelagem e Fabricação de Sabão - avançado",
         "code": "HM-025",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23052,7 +23181,7 @@ export const specialties: Specialty[] = [
         "name": "HM-026 Arte de Fazer Esteiras",
         "code": "HM-026",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23082,7 +23211,7 @@ export const specialties: Specialty[] = [
         "name": "HM-027 Construção Nativa",
         "code": "HM-027",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23120,7 +23249,7 @@ export const specialties: Specialty[] = [
         "name": "HM-028 Ferreomodelismo",
         "code": "HM-028",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23166,7 +23295,7 @@ export const specialties: Specialty[] = [
         "name": "HM-029 Herança Cultural",
         "code": "HM-029",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23224,7 +23353,7 @@ export const specialties: Specialty[] = [
         "name": "HM-030 Lapidação",
         "code": "HM-030",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23282,7 +23411,7 @@ export const specialties: Specialty[] = [
         "name": "HM-031 Modelagem em Gesso",
         "code": "HM-031",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23328,7 +23457,7 @@ export const specialties: Specialty[] = [
         "name": "HM-032 Trabalhos em Couro",
         "code": "HM-032",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23374,7 +23503,7 @@ export const specialties: Specialty[] = [
         "name": "HM-033 Crochê",
         "code": "HM-033",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23416,7 +23545,7 @@ export const specialties: Specialty[] = [
         "name": "HM-034 Crochê - avançado",
         "code": "HM-034",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23458,7 +23587,7 @@ export const specialties: Specialty[] = [
         "name": "HM-035 Espaçomodelismo",
         "code": "HM-035",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23492,7 +23621,7 @@ export const specialties: Specialty[] = [
         "name": "HM-036 Espaçomodelismo - avançado",
         "code": "HM-036",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23530,7 +23659,7 @@ export const specialties: Specialty[] = [
         "name": "HM-037 Tricô",
         "code": "HM-037",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23568,7 +23697,7 @@ export const specialties: Specialty[] = [
         "name": "HM-038 Tricô - avançado",
         "code": "HM-038",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23614,7 +23743,7 @@ export const specialties: Specialty[] = [
         "name": "HM-039 Trabalhos em Vidro",
         "code": "HM-039",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23652,7 +23781,7 @@ export const specialties: Specialty[] = [
         "name": "HM-040 Arte de Trançar",
         "code": "HM-040",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23686,7 +23815,7 @@ export const specialties: Specialty[] = [
         "name": "HM-041 Arte de Trançar - avançado",
         "code": "HM-041",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23716,7 +23845,7 @@ export const specialties: Specialty[] = [
         "name": "HM-042 Decoração de Bolos",
         "code": "HM-042",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23782,7 +23911,7 @@ export const specialties: Specialty[] = [
         "name": "HM-043 Esmaltado em Cobre",
         "code": "HM-043",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23824,7 +23953,7 @@ export const specialties: Specialty[] = [
         "name": "HM-044 Esmaltado em Cobre - avançado",
         "code": "HM-044",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23850,7 +23979,7 @@ export const specialties: Specialty[] = [
         "name": "HM-045 Estofamento",
         "code": "HM-045",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23892,7 +24021,7 @@ export const specialties: Specialty[] = [
         "name": "HM-046 Fabricação de Velas",
         "code": "HM-046",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23922,7 +24051,7 @@ export const specialties: Specialty[] = [
         "name": "HM-047 Serigrafia",
         "code": "HM-047",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23952,7 +24081,7 @@ export const specialties: Specialty[] = [
         "name": "HM-048 Serigrafia - avançado",
         "code": "HM-048",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -23990,7 +24119,7 @@ export const specialties: Specialty[] = [
         "name": "HM-049 Arte com Barbante",
         "code": "HM-049",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24024,7 +24153,7 @@ export const specialties: Specialty[] = [
         "name": "HM-050 Decoupage",
         "code": "HM-050",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24070,7 +24199,7 @@ export const specialties: Specialty[] = [
         "name": "HM-051 Macramê",
         "code": "HM-051",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24112,7 +24241,7 @@ export const specialties: Specialty[] = [
         "name": "HM-052 Telhados",
         "code": "HM-052",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24150,7 +24279,7 @@ export const specialties: Specialty[] = [
         "name": "HM-053 Cultura Indígena - avançado",
         "code": "HM-053",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24208,7 +24337,7 @@ export const specialties: Specialty[] = [
         "name": "HM-054 Bordado em Ponto Cruz",
         "code": "HM-054",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24250,7 +24379,7 @@ export const specialties: Specialty[] = [
         "name": "HM-055 Biscuit",
         "code": "HM-055",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24288,7 +24417,7 @@ export const specialties: Specialty[] = [
         "name": "HM-056 Patchwork",
         "code": "HM-056",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24354,7 +24483,7 @@ export const specialties: Specialty[] = [
         "name": "HM-057 Nautimodelismo",
         "code": "HM-057",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24372,7 +24501,7 @@ export const specialties: Specialty[] = [
         "name": "HM-058 Trabalhos em Couro - avançado",
         "code": "HM-058",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24406,7 +24535,7 @@ export const specialties: Specialty[] = [
         "name": "HM-059 Gravuras em Vidro",
         "code": "HM-059",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24440,7 +24569,7 @@ export const specialties: Specialty[] = [
         "name": "HM-060 Origami",
         "code": "HM-060",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24482,7 +24611,7 @@ export const specialties: Specialty[] = [
         "name": "HM-061 Corrida de Carrinhos de Madeira",
         "code": "HM-061",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24520,7 +24649,7 @@ export const specialties: Specialty[] = [
         "name": "HM-062 Corrida de Carrinhos de Madeira - avançado",
         "code": "HM-062",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24574,7 +24703,7 @@ export const specialties: Specialty[] = [
         "name": "HM-063 Scrapbooking",
         "code": "HM-063",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24620,7 +24749,7 @@ export const specialties: Specialty[] = [
         "name": "HM-064 Scrapbooking - avançado",
         "code": "HM-064",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24654,7 +24783,7 @@ export const specialties: Specialty[] = [
         "name": "HM-065 Fotografia Digital",
         "code": "HM-065",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24720,7 +24849,7 @@ export const specialties: Specialty[] = [
         "name": "HM-066 Genealogia",
         "code": "HM-066",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24782,7 +24911,7 @@ export const specialties: Specialty[] = [
         "name": "HM-067 Plástico Canvas",
         "code": "HM-067",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24828,7 +24957,7 @@ export const specialties: Specialty[] = [
         "name": "HM-068 Quilling",
         "code": "HM-068",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24866,7 +24995,7 @@ export const specialties: Specialty[] = [
         "name": "HM-069 Quilling - avançado",
         "code": "HM-069",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24908,7 +25037,7 @@ export const specialties: Specialty[] = [
         "name": "HM-070 Tie-dye",
         "code": "HM-070",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -24958,7 +25087,7 @@ export const specialties: Specialty[] = [
         "name": "HM-071 Apitos",
         "code": "HM-071",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25040,7 +25169,7 @@ export const specialties: Specialty[] = [
         "name": "HM-072 Apitos - avançado",
         "code": "HM-072",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25074,7 +25203,7 @@ export const specialties: Specialty[] = [
         "name": "HM-073 Faróis",
         "code": "HM-073",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25116,7 +25245,7 @@ export const specialties: Specialty[] = [
         "name": "HM-074 Faróis - avançado",
         "code": "HM-074",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25170,7 +25299,7 @@ export const specialties: Specialty[] = [
         "name": "HM-075 Balões de Ar Quente",
         "code": "HM-075",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25232,7 +25361,7 @@ export const specialties: Specialty[] = [
         "name": "HM-076 Origami - avançado",
         "code": "HM-076",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25262,7 +25391,7 @@ export const specialties: Specialty[] = [
         "name": "HM-077 Embalagem",
         "code": "HM-077",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25296,7 +25425,7 @@ export const specialties: Specialty[] = [
         "name": "HM-078 E.V.A.",
         "code": "HM-078",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25338,7 +25467,7 @@ export const specialties: Specialty[] = [
         "name": "HM-079 Desenho vetorial",
         "code": "HM-079",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25388,7 +25517,7 @@ export const specialties: Specialty[] = [
         "name": "HM-080 Fuxico",
         "code": "HM-080",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25422,7 +25551,7 @@ export const specialties: Specialty[] = [
         "name": "HM-081 História em Quadrinhos",
         "code": "HM-081",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25468,7 +25597,7 @@ export const specialties: Specialty[] = [
         "name": "HM-082 Ornamentação",
         "code": "HM-082",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25498,7 +25627,7 @@ export const specialties: Specialty[] = [
         "name": "HM-083 Papercraft",
         "code": "HM-083",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25544,7 +25673,7 @@ export const specialties: Specialty[] = [
         "name": "HM-084 Papel Machê",
         "code": "HM-084",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25586,7 +25715,7 @@ export const specialties: Specialty[] = [
         "name": "HM-085 Pirografia",
         "code": "HM-085",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25624,7 +25753,7 @@ export const specialties: Specialty[] = [
         "name": "HM-086 Plastimodelismo",
         "code": "HM-086",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25658,7 +25787,7 @@ export const specialties: Specialty[] = [
         "name": "HM-087 Violão",
         "code": "HM-087",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25716,7 +25845,7 @@ export const specialties: Specialty[] = [
         "name": "HM-088 Violão - avançado",
         "code": "HM-088",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25774,7 +25903,7 @@ export const specialties: Specialty[] = [
         "name": "HM-089 Amigurumi",
         "code": "HM-089",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25812,7 +25941,7 @@ export const specialties: Specialty[] = [
         "name": "HM-090 Arte Digital",
         "code": "HM-090",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
@@ -25874,7 +26003,7 @@ export const specialties: Specialty[] = [
         "name": "HM-091 Lettering",
         "code": "HM-091",
         "category": "artes-habilidades",
-        
+
         "color": "bg-blue-400",
         "requirements": [
             {
