@@ -5,9 +5,9 @@ import { useSearchParams } from "next/navigation"
 import { specialties as staticSpecialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown, Award, Link2 } from "lucide-react"
+import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown, Award, Search } from "lucide-react"
 import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { GenerationModal } from "@/components/generation/generation-modal"
 import { FullExamModal } from "@/components/generation/full-exam-modal"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -16,15 +16,102 @@ import { storageService } from "@/services/storage-service"
 import { supabase } from "@/lib/supabase"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 
-const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, level?: number }) => {
+// ---------- Specialty Search Dialog (same UX as classes view) ----------
+const SpecialtySearchDialog = ({
+    specialties,
+    selectedId,
+    onSelect
+}: {
+    specialties: any[],
+    selectedId?: string | null,
+    onSelect: (id: string | undefined) => void
+}) => {
+    const [search, setSearch] = useState("")
+    const [isOpen, setIsOpen] = useState(false)
+
+    const filtered = specialties.filter(s =>
+        s.name.toLowerCase().includes(search.toLowerCase()) ||
+        s.code?.toLowerCase().includes(search.toLowerCase())
+    )
+
+    const selected = specialties.find(s => s.id === selectedId)
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 text-[11px] justify-start px-2 font-normal w-full max-w-xs">
+                    <Award className="mr-2 h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    {selected ? (
+                        <span className="truncate">{selected.name}</span>
+                    ) : (
+                        <span className="text-muted-foreground">Vincular Especialidade Pré-requisito...</span>
+                    )}
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Especialidade Pré-requisito</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Pesquisar por nome ou código..."
+                            className="pl-9"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            autoFocus
+                        />
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto space-y-1 pr-2">
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start text-sm h-9"
+                            onClick={() => { onSelect(undefined); setIsOpen(false) }}
+                        >
+                            <X className="mr-2 h-4 w-4 text-muted-foreground" />
+                            Nenhuma (Remover vínculo)
+                        </Button>
+                        {filtered.map((s) => (
+                            <Button
+                                key={s.id}
+                                variant={selectedId === s.id ? "secondary" : "ghost"}
+                                className="w-full justify-start text-sm h-9 px-3"
+                                onClick={() => { onSelect(s.id); setIsOpen(false) }}
+                            >
+                                <div className="flex items-center gap-2 truncate">
+                                    <span className="font-mono text-[10px] text-muted-foreground">{s.code}</span>
+                                    <span className="truncate">{s.name}</span>
+                                </div>
+                            </Button>
+                        ))}
+                        {filtered.length === 0 && (
+                            <div className="text-center py-6 text-sm text-muted-foreground">
+                                Nenhuma especialidade encontrada.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+// ---------- Requirement Editor Item ----------
+const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, level = 0, allSpecialties = [] }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, level?: number, allSpecialties?: any[] }) => {
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onUpdate({ ...requirement, description: e.target.value });
     };
 
     const handleToggleGeneration = (checked: boolean) => {
         onUpdate({ ...requirement, noGeneration: !checked });
+    };
+
+    const handleSpecialtyChange = (id: string | undefined) => {
+        onUpdate({ ...requirement, linkedSpecialtyId: id ?? null });
     };
 
     const handleAddSub = () => {
@@ -59,10 +146,6 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
         }
     };
 
-    const handleLinkedSpecialtyChange = (value: string) => {
-        onUpdate({ ...requirement, linkedSpecialtyId: value === 'none' ? null : value });
-    };
-
     return (
         <div className={`space-y-3 ${level > 0 ? 'ml-6 pl-4 border-l-2 border-primary/20 bg-primary/5 p-3 rounded-lg' : ''}`}>
             <div className="flex flex-col gap-3 p-4 border rounded-xl bg-card shadow-sm group/req">
@@ -79,33 +162,14 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                             />
                         </div>
                         <div className="flex items-center gap-1">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden"
-                                onClick={onMoveUp}
-                                disabled={isFirst}
-                                title="Subir"
-                            >
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden" onClick={onMoveUp} disabled={isFirst} title="Subir">
                                 <ArrowUp className="h-4 w-4" />
                             </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden"
-                                onClick={onMoveDown}
-                                disabled={isLast}
-                                title="Descer"
-                            >
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground opacity-0 group-hover/req:opacity-100 transition-opacity disabled:hidden" onClick={onMoveDown} disabled={isLast} title="Descer">
                                 <ArrowDown className="h-4 w-4" />
                             </Button>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive opacity-0 group-hover/req:opacity-100 transition-opacity"
-                            onClick={onRemove}
-                        >
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive opacity-0 group-hover/req:opacity-100 transition-opacity" onClick={onRemove}>
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
@@ -120,33 +184,16 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
 
                 {/* Specialty Prerequisite Picker */}
                 <div className="flex items-center gap-2">
-                    <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap">Especialidade Pré-requisito</Label>
-                    <Select
-                        value={requirement.linkedSpecialtyId || 'none'}
-                        onValueChange={handleLinkedSpecialtyChange}
-                    >
-                        <SelectTrigger className="h-8 text-xs flex-1">
-                            <SelectValue placeholder="Nenhuma" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="none">Nenhuma</SelectItem>
-                            {staticSpecialties.map((s) => (
-                                <SelectItem key={s.id} value={s.id}>
-                                    {s.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap shrink-0">Pré-requisito</Label>
+                    <SpecialtySearchDialog
+                        specialties={allSpecialties}
+                        selectedId={requirement.linkedSpecialtyId}
+                        onSelect={handleSpecialtyChange}
+                    />
                 </div>
 
                 <div className="flex justify-end">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-[10px] uppercase font-bold h-7 hover:bg-primary/10 text-primary"
-                        onClick={handleAddSub}
-                    >
+                    <Button variant="ghost" size="sm" className="text-[10px] uppercase font-bold h-7 hover:bg-primary/10 text-primary" onClick={handleAddSub}>
                         <Plus className="mr-1 h-3 w-3" />
                         Adicionar Sub-item
                     </Button>
@@ -166,6 +213,7 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                             onRemove={() => handleRemoveSub(idx)}
                             onMoveUp={() => handleMoveSub(idx, 'up')}
                             onMoveDown={() => handleMoveSub(idx, 'down')}
+                            allSpecialties={allSpecialties}
                         />
                     ))}
                 </div>
@@ -190,6 +238,19 @@ function SpecialtyDetailsContent() {
     const [isEditing, setIsEditing] = useState(false)
     const [editedRequirements, setEditedRequirements] = useState<any[]>([])
     const [isSaving, setIsSaving] = useState(false)
+    const [allSpecialties, setAllSpecialties] = useState<any[]>(staticSpecialties)
+
+    // Load all specialties from DB (for prerequisite picker/badge)
+    useEffect(() => {
+        storageService.getSpecialties().then((dbSpecialties) => {
+            if (dbSpecialties && dbSpecialties.length > 0) {
+                // Merge DB specialties with any static ones not yet in DB
+                const dbIds = new Set(dbSpecialties.map((s: any) => s.id))
+                const staticOnly = staticSpecialties.filter(s => !dbIds.has(s.id))
+                setAllSpecialties([...dbSpecialties, ...staticOnly])
+            }
+        }).catch(() => { /* fallback to staticSpecialties already set */ })
+    }, [])
 
     useEffect(() => {
         const checkAdmin = async () => {
@@ -428,11 +489,24 @@ function SpecialtyDetailsContent() {
                                             key={req.id}
                                             className="flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                                         >
-                                            <div className="space-y-1">
+                                            <div className="space-y-1 flex-1 min-w-0">
                                                 <p className="font-medium text-sm text-muted-foreground uppercase tracking-widest">
                                                     {req.id}
                                                 </p>
                                                 <p className="text-sm md:text-base leading-relaxed">{req.description}</p>
+
+                                                {/* Prerequisite specialty link */}
+                                                {req.linkedSpecialtyId && (() => {
+                                                    const linked = allSpecialties.find((s: any) => s.id === req.linkedSpecialtyId)
+                                                    return linked ? (
+                                                        <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
+                                                            <Badge variant="secondary" className="mt-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 transition-colors py-1 px-2 cursor-pointer">
+                                                                <Award className="mr-1.5 h-3 w-3" />
+                                                                Pré-requisito: {linked.name}
+                                                            </Badge>
+                                                        </Link>
+                                                    ) : null
+                                                })()}
 
                                                 {req.subRequirements?.length > 0 && (
                                                     <div className="mt-4 ml-4 pl-4 border-l-2 border-primary/20 space-y-3">
@@ -446,17 +520,6 @@ function SpecialtyDetailsContent() {
                                                 )}
                                             </div>
                                             <div className="flex flex-col gap-2 shrink-0">
-                                                {req.linkedSpecialtyId && (() => {
-                                                    const linked = staticSpecialties.find(s => s.id === req.linkedSpecialtyId)
-                                                    return linked ? (
-                                                        <Link href={`/dashboard/specialties/view?id=${linked.id}`}>
-                                                            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
-                                                                <Award className="mr-2 h-3 w-3" />
-                                                                {linked.name}
-                                                            </Badge>
-                                                        </Link>
-                                                    ) : null
-                                                })()}
                                                 {!req.noGeneration && (
                                                     <Button
                                                         size="sm"
