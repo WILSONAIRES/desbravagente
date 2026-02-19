@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import React, { Suspense, useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
@@ -47,19 +47,19 @@ const SpecialtySearchDialog = ({
                     {selected ? (
                         <span className="truncate">{selected.name}</span>
                     ) : (
-                        <span className="text-muted-foreground">Vincular Especialidade Pré-requisito...</span>
+                        <span className="text-muted-foreground">Vincular Especialidade PrÃ©-requisito...</span>
                     )}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Especialidade Pré-requisito</DialogTitle>
+                    <DialogTitle>Especialidade PrÃ©-requisito</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Pesquisar por nome ou código..."
+                            placeholder="Pesquisar por nome ou cÃ³digo..."
                             className="pl-9"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -73,7 +73,7 @@ const SpecialtySearchDialog = ({
                             onClick={() => { onSelect(undefined); setIsOpen(false) }}
                         >
                             <X className="mr-2 h-4 w-4 text-muted-foreground" />
-                            Nenhuma (Remover vínculo)
+                            Nenhuma (Remover vÃ­nculo)
                         </Button>
                         {filtered.map((s) => (
                             <Button
@@ -153,7 +153,7 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                     <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">{requirement.id}</span>
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <Label htmlFor={`gen-${requirement.id}`} className="text-[10px] uppercase font-bold text-muted-foreground">Conteúdo IA</Label>
+                            <Label htmlFor={`gen-${requirement.id}`} className="text-[10px] uppercase font-bold text-muted-foreground">ConteÃºdo IA</Label>
                             <Switch
                                 id={`gen-${requirement.id}`}
                                 checked={!requirement.noGeneration}
@@ -184,7 +184,7 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
 
                 {/* Specialty Prerequisite Picker */}
                 <div className="flex items-center gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap shrink-0">Pré-requisito</Label>
+                    <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap shrink-0">PrÃ©-requisito</Label>
                     <SpecialtySearchDialog
                         specialties={allSpecialties}
                         selectedId={requirement.linkedSpecialtyId}
@@ -281,7 +281,7 @@ function SpecialtyDetailsContent() {
                 if (!found) {
                     found = staticSpecialties.find((s) => s.id === specialtyId)
                     if (found) {
-                        console.log("Especialidade carregada do estático (ainda não migrada)")
+                        console.log("Especialidade carregada do estÃ¡tico (ainda nÃ£o migrada)")
                     }
                 }
 
@@ -332,7 +332,7 @@ function SpecialtyDetailsContent() {
     if (notFound) {
         return (
             <div className="text-center py-10">
-                <h1 className="text-xl font-bold">Especialidade não encontrada</h1>
+                <h1 className="text-xl font-bold">Especialidade nÃ£o encontrada</h1>
                 <Link href="/dashboard/specialties">
                     <Button className="mt-4">Voltar</Button>
                 </Link>
@@ -365,12 +365,12 @@ function SpecialtyDetailsContent() {
                                     className="w-full h-full object-contain p-2"
                                     onError={(e) => {
                                         const img = e.target as HTMLImageElement
-                                        // Se ainda não tentou o JPG, tenta
+                                        // Se ainda nÃ£o tentou o JPG, tenta
                                         if (img.src.endsWith('.png')) {
                                             const cleanCode = specialty.code?.toLowerCase().replace(/-/g, "")
                                             img.src = `https://mda.wiki.br/site/@imgs_wiki_cp/imagem@${cleanCode}.jpg`
                                         } else {
-                                            // Se o JPG também falhar, usa o fallback final
+                                            // Se o JPG tambÃ©m falhar, usa o fallback final
                                             img.src = "https://mda.wiki.br/site/@imgs/ico_especialidade_dbv.svg"
                                         }
                                     }}
@@ -403,7 +403,7 @@ function SpecialtyDetailsContent() {
                                 </Button>
                                 <Button size="sm" onClick={handleSaveRequirements} disabled={isSaving}>
                                     <Save className="mr-2 h-4 w-4" />
-                                    {isSaving ? "Salvando..." : "Salvar Alterações"}
+                                    {isSaving ? "Salvando..." : "Salvar AlteraÃ§Ãµes"}
                                 </Button>
                             </>
                         )
@@ -420,7 +420,7 @@ function SpecialtyDetailsContent() {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full max-w-sm grid-cols-2">
                     <TabsTrigger value="requirements">Requisitos</TabsTrigger>
-                    <TabsTrigger value="management">Gestão de Alunos</TabsTrigger>
+                    <TabsTrigger value="management">GestÃ£o de Alunos</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="requirements" className="mt-6">
@@ -454,6 +454,7 @@ function SpecialtyDetailsContent() {
                                             setEditedRequirements(newReqs);
                                         }
                                     }}
+                                     allSpecialties={allSpecialties}
                                 />
                             ))}
                             <Button
@@ -502,7 +503,7 @@ function SpecialtyDetailsContent() {
                                                         <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
                                                             <Badge variant="secondary" className="mt-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 transition-colors py-1 px-2 cursor-pointer">
                                                                 <Award className="mr-1.5 h-3 w-3" />
-                                                                Pré-requisito: {linked.name}
+                                                                PrÃ©-requisito: {linked.name}
                                                             </Badge>
                                                         </Link>
                                                     ) : null
@@ -536,7 +537,7 @@ function SpecialtyDetailsContent() {
                                     ))
                                 ) : (
                                     <div className="text-center py-8 text-muted-foreground">
-                                        Requisitos ainda não cadastrados para esta especialidade.
+                                        Requisitos ainda nÃ£o cadastrados para esta especialidade.
                                     </div>
                                 )}
                             </CardContent>
