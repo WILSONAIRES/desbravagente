@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { specialties as staticSpecialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown } from "lucide-react"
+import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown, Award, Link2 } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { GenerationModal } from "@/components/generation/generation-modal"
@@ -16,6 +16,7 @@ import { storageService } from "@/services/storage-service"
 import { supabase } from "@/lib/supabase"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, level?: number }) => {
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -56,6 +57,10 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
             [newSubs[subIdx], newSubs[targetIdx]] = [newSubs[targetIdx], newSubs[subIdx]];
             onUpdate({ ...requirement, subRequirements: newSubs });
         }
+    };
+
+    const handleLinkedSpecialtyChange = (value: string) => {
+        onUpdate({ ...requirement, linkedSpecialtyId: value === 'none' ? null : value });
     };
 
     return (
@@ -112,6 +117,28 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                     onChange={handleDescriptionChange}
                     placeholder="Descreva o requisito..."
                 />
+
+                {/* Specialty Prerequisite Picker */}
+                <div className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap">Especialidade Pré-requisito</Label>
+                    <Select
+                        value={requirement.linkedSpecialtyId || 'none'}
+                        onValueChange={handleLinkedSpecialtyChange}
+                    >
+                        <SelectTrigger className="h-8 text-xs flex-1">
+                            <SelectValue placeholder="Nenhuma" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="none">Nenhuma</SelectItem>
+                            {staticSpecialties.map((s) => (
+                                <SelectItem key={s.id} value={s.id}>
+                                    {s.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
 
                 <div className="flex justify-end">
                     <Button
@@ -419,6 +446,17 @@ function SpecialtyDetailsContent() {
                                                 )}
                                             </div>
                                             <div className="flex flex-col gap-2 shrink-0">
+                                                {req.linkedSpecialtyId && (() => {
+                                                    const linked = staticSpecialties.find(s => s.id === req.linkedSpecialtyId)
+                                                    return linked ? (
+                                                        <Link href={`/dashboard/specialties/view?id=${linked.id}`}>
+                                                            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
+                                                                <Award className="mr-2 h-3 w-3" />
+                                                                {linked.name}
+                                                            </Badge>
+                                                        </Link>
+                                                    ) : null
+                                                })()}
                                                 {!req.noGeneration && (
                                                     <Button
                                                         size="sm"

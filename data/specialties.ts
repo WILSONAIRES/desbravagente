@@ -1,6 +1,9 @@
 export interface SpecialtyRequirement {
     id: string
     description: string
+    noGeneration?: boolean
+    linkedSpecialtyId?: string | null
+    subRequirements?: SpecialtyRequirement[]
 }
 
 export interface Specialty {
