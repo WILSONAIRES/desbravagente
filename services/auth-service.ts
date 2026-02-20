@@ -81,6 +81,8 @@ export const authService = {
         if (!profile) {
             // Create or update profile if it doesn't exist (first time login)
             const isEmailAdmin = user.email === 'waisilva@gmail.com'
+            const sevenDaysFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+
             const { data: newProfile, error: insertError } = await supabase
                 .from('profiles')
                 .upsert({
@@ -90,7 +92,8 @@ export const authService = {
                     role: isEmailAdmin ? 'admin' : 'director',
                     subscription_status: isEmailAdmin ? 'exempt' : 'trial',
                     subscription_plan: 'free',
-                    is_exempt: isEmailAdmin
+                    is_exempt: isEmailAdmin,
+                    trial_ends_at: isEmailAdmin ? null : sevenDaysFromNow
                 }, { onConflict: 'id' })
                 .select()
                 .single()
@@ -103,7 +106,12 @@ export const authService = {
                     email: user.email || '',
                     name: user.user_metadata?.name || 'Usuário',
                     role: 'director',
-                    subscription: { status: 'trial', plan: 'free', isExempt: false }
+                    subscription: {
+                        status: 'trial',
+                        plan: 'free',
+                        isExempt: false,
+                        trialEndsAt: sevenDaysFromNow
+                    }
                 }
             }
             return this.mapProfileToUser(newProfile)

@@ -60,8 +60,8 @@ Diretrizes:
 
             if (!response.ok) {
                 console.error("API Error:", data)
-                const errorMsg = data?.error || data?.details?.error?.message || `HTTP ${response.status}`
-                return `Erro da API (${response.status}): ${errorMsg}`
+                const errorMsg = data?.message || data?.error || data?.details?.error?.message || `HTTP ${response.status}`
+                return `Erro: ${errorMsg}`
             }
 
             if (!data.text) {
