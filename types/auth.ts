@@ -10,6 +10,7 @@ export interface User {
         trialEndsAt?: string
         courtesyEndsAt?: string
         isExempt?: boolean
+        customMonthlyAmount?: number | string
     }
 }
 

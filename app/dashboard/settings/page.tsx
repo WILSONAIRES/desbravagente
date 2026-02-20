@@ -152,9 +152,22 @@ function SettingsContent() {
         if (targetUser) {
             setIsUpdatingUser(email)
             try {
+                // Determine if we are tearing down exemption
+                let finalUpdates = { ...updates }
+                if (updates.status === 'trial') {
+                    // Calculate fresh trial ends at 7 days from now
+                    const sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+                    finalUpdates = {
+                        ...finalUpdates,
+                        plan: 'free',
+                        isExempt: false,
+                        trialEndsAt: sevenDays
+                    }
+                }
+
                 const updatedUser = {
                     ...targetUser,
-                    subscription: { ...targetUser.subscription, ...updates }
+                    subscription: { ...targetUser.subscription, ...finalUpdates }
                 }
                 await storageService.saveUserRecord(updatedUser)
                 await loadAllUsers()
@@ -170,6 +183,15 @@ function SettingsContent() {
                 setIsUpdatingUser(null)
             }
         }
+    }
+
+    const [editingCustomAmount, setEditingCustomAmount] = useState<string | null>(null)
+    const [customAmountValue, setCustomAmountValue] = useState<string>("")
+
+    const handleSaveCustomAmount = async (email: string) => {
+        await handleUpdateUserSub(email, { customMonthlyAmount: customAmountValue })
+        setEditingCustomAmount(null)
+        setCustomAmountValue("")
     }
 
     return (
@@ -264,7 +286,7 @@ function SettingsContent() {
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-sm py-2 border-b">
                                         <span className="text-muted-foreground">Valor mensal</span>
-                                        <span className="font-medium">R$ {subAmount}</span>
+                                        <span className="font-medium">R$ {user?.subscription?.customMonthlyAmount || subAmount}</span>
                                     </div>
                                     <div className="flex justify-between text-sm py-2 border-b">
                                         <span className="text-muted-foreground">Status do Pagamento</span>
@@ -438,7 +460,35 @@ function SettingsContent() {
                                             <div className="flex gap-2 flex-wrap items-center">
                                                 <div className="hidden lg:block text-right mr-4">
                                                     <p className="text-[10px] uppercase font-bold text-muted-foreground">Plano Atual</p>
-                                                    <p className="text-xs font-medium">{u.subscription?.plan === 'free' ? 'Free/Trial' : `Mensal R$ ${subAmount}`}</p>
+                                                    <p className="text-xs font-medium">
+                                                        {u.subscription?.plan === 'free'
+                                                            ? 'Free/Trial'
+                                                            : `Mensal R$ ${u.subscription?.customMonthlyAmount || subAmount}`}
+                                                    </p>
+                                                    {editingCustomAmount === u.email ? (
+                                                        <div className="flex items-center gap-1 mt-1 justify-end">
+                                                            <Input
+                                                                className="h-6 w-16 text-[10px] p-1"
+                                                                value={customAmountValue}
+                                                                onChange={(e) => setCustomAmountValue(e.target.value)}
+                                                                placeholder={subAmount}
+                                                            />
+                                                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleSaveCustomAmount(u.email)}>
+                                                                <Save className="h-3 w-3" />
+                                                            </Button>
+                                                        </div>
+                                                    ) : (
+                                                        <Button
+                                                            variant="link"
+                                                            className="h-auto p-0 text-[10px] text-muted-foreground hover:text-primary"
+                                                            onClick={() => {
+                                                                setEditingCustomAmount(u.email)
+                                                                setCustomAmountValue(u.subscription?.customMonthlyAmount || subAmount)
+                                                            }}
+                                                        >
+                                                            Editar Valor
+                                                        </Button>
+                                                    )}
                                                 </div>
                                                 <Button
                                                     size="sm"
@@ -450,16 +500,29 @@ function SettingsContent() {
                                                     <Gift className="h-4 w-4 text-primary" />
                                                     {isUpdatingUser === u.email ? "..." : "Cortesia 30d"}
                                                 </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="h-9 px-3 text-xs gap-2 border-green-200 hover:bg-green-50"
-                                                    onClick={() => handleUpdateUserSub(u.email, { status: 'exempt', plan: 'yearly', isExempt: true })}
-                                                    disabled={isUpdatingUser === u.email}
-                                                >
-                                                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                                    {isUpdatingUser === u.email ? "..." : "Isentar"}
-                                                </Button>
+                                                {u.subscription?.status === 'exempt' ? (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-9 px-3 text-xs gap-2 border-amber-200 hover:bg-amber-50"
+                                                        onClick={() => handleUpdateUserSub(u.email, { status: 'trial' })}
+                                                        disabled={isUpdatingUser === u.email}
+                                                    >
+                                                        <Ban className="h-4 w-4 text-amber-600" />
+                                                        {isUpdatingUser === u.email ? "..." : "Revogar Isenção"}
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="h-9 px-3 text-xs gap-2 border-green-200 hover:bg-green-50"
+                                                        onClick={() => handleUpdateUserSub(u.email, { status: 'exempt', plan: 'yearly', isExempt: true })}
+                                                        disabled={isUpdatingUser === u.email}
+                                                    >
+                                                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                                        {isUpdatingUser === u.email ? "..." : "Isentar"}
+                                                    </Button>
+                                                )}
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"

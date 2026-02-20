@@ -256,7 +256,8 @@ export const storageService = {
                 status: p.subscription_status,
                 plan: p.subscription_plan,
                 isExempt: p.is_exempt,
-                trialEndsAt: p.trial_ends_at
+                trialEndsAt: p.trial_ends_at,
+                customMonthlyAmount: p.custom_monthly_amount
             }
         }))
     },
@@ -271,6 +272,7 @@ export const storageService = {
                 subscription_plan: user.subscription?.plan,
                 is_exempt: user.subscription?.isExempt,
                 trial_ends_at: user.subscription?.trialEndsAt,
+                custom_monthly_amount: user.subscription?.customMonthlyAmount,
                 club_name: user.clubName
             })
             .eq('email', user.email)
