@@ -501,9 +501,9 @@ function SpecialtyDetailsContent() {
                                                     const linked = allSpecialties.find((s: any) => s.id === req.linkedSpecialtyId)
                                                     return linked ? (
                                                         <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
-                                                            <Badge variant="secondary" className="mt-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 transition-colors py-1 px-2 cursor-pointer">
-                                                                <Award className="mr-1.5 h-3 w-3" />
-                                                                PrÃ©-requisito: {linked.name}
+                                                            <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
+                                                                <Award className="mr-2 h-4 w-4" />
+                                                                Ver Especialidade
                                                             </Badge>
                                                         </Link>
                                                     ) : null
@@ -521,9 +521,9 @@ function SpecialtyDetailsContent() {
                                                                     const linked = allSpecialties.find((s: any) => s.id === sub.linkedSpecialtyId)
                                                                     return linked ? (
                                                                         <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
-                                                                            <Badge variant="secondary" className="mt-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 transition-colors py-1 px-2 cursor-pointer">
-                                                                                <Award className="mr-1.5 h-3 w-3" />
-                                                                                Pré-requisito: {linked.name}
+                                                                            <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
+                                                                                <Award className="mr-2 h-4 w-4" />
+                                                                                Ver Especialidade
                                                                             </Badge>
                                                                         </Link>
                                                                     ) : null
