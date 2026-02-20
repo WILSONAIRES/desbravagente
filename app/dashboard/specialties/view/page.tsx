@@ -83,6 +83,7 @@ const SpecialtySearchDialog = ({
                                 onClick={() => { onSelect(s.id); setIsOpen(false) }}
                             >
                                 <div className="flex items-center gap-2 truncate">
+                                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
                                     <span className="font-mono text-[10px] text-muted-foreground">{s.code}</span>
                                     <span className="truncate">{s.name}</span>
                                 </div>
@@ -182,17 +183,16 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                     placeholder="Descreva o requisito..."
                 />
 
-                {/* Specialty Prerequisite Picker */}
-                <div className="flex items-center gap-2">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap shrink-0">PrÃ©-requisito</Label>
-                    <SpecialtySearchDialog
-                        specialties={allSpecialties}
-                        selectedId={requirement.linkedSpecialtyId}
-                        onSelect={handleSpecialtyChange}
-                    />
-                </div>
+                <div className="flex items-center justify-between gap-2 mt-1">
+                    <div className="flex items-center gap-2">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap shrink-0">PrÃ©-requisito</Label>
+                        <SpecialtySearchDialog
+                            specialties={allSpecialties}
+                            selectedId={requirement.linkedSpecialtyId}
+                            onSelect={handleSpecialtyChange}
+                        />
+                    </div>
 
-                <div className="flex justify-end">
                     <Button variant="ghost" size="sm" className="text-[10px] uppercase font-bold h-7 hover:bg-primary/10 text-primary" onClick={handleAddSub}>
                         <Plus className="mr-1 h-3 w-3" />
                         Adicionar Sub-item
@@ -454,7 +454,7 @@ function SpecialtyDetailsContent() {
                                             setEditedRequirements(newReqs);
                                         }
                                     }}
-                                     allSpecialties={allSpecialties}
+                                    allSpecialties={allSpecialties}
                                 />
                             ))}
                             <Button
@@ -515,6 +515,19 @@ function SpecialtyDetailsContent() {
                                                             <div key={sub.id} className="text-sm">
                                                                 <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-tighter mb-1">{sub.id}</p>
                                                                 <p className="opacity-90">{sub.description}</p>
+
+                                                                {/* Prerequisite specialty link for sub requirements */}
+                                                                {sub.linkedSpecialtyId && (() => {
+                                                                    const linked = allSpecialties.find((s: any) => s.id === sub.linkedSpecialtyId)
+                                                                    return linked ? (
+                                                                        <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
+                                                                            <Badge variant="secondary" className="mt-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 transition-colors py-1 px-2 cursor-pointer">
+                                                                                <Award className="mr-1.5 h-3 w-3" />
+                                                                                Pré-requisito: {linked.name}
+                                                                            </Badge>
+                                                                        </Link>
+                                                                    ) : null
+                                                                })()}
                                                             </div>
                                                         ))}
                                                     </div>
