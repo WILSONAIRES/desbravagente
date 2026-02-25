@@ -376,15 +376,23 @@ export const storageService = {
     },
 
     async saveClass(cls: any): Promise<void> {
+        console.time(`[StorageService] saveClass ${cls.id}`);
+        console.log(`[StorageService] saveClass START: ${cls.id}`);
         // Try to get session from local cache first for speed
         const { data: { session } } = await supabase.auth.getSession()
         let userId = session?.user?.id
 
         if (!userId) {
+            console.log(`[StorageService] No session found, fetching user...`);
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) throw new Error("Usuário não autenticado")
             userId = user.id
         }
+        console.log(`[StorageService] User ID: ${userId}`);
+
+        console.log(`[StorageService] Sanitizing sections...`);
+        const sanitizedSections = sanitizeSections(cls.sections || []);
+        console.log(`[StorageService] Sanitization DONE`);
 
         const payload = {
             id: cls.id,
@@ -393,20 +401,25 @@ export const storageService = {
             min_age: cls.minAge,
             color: cls.color,
             type: cls.type,
-            sections: sanitizeSections(cls.sections || []),
+            sections: sanitizedSections,
             updated_at: new Date().toISOString(),
             updated_by: userId
         }
 
-        console.log(`[StorageService] Saving class ${cls.id}...`);
+        const payloadSize = JSON.stringify(payload).length;
+        console.log(`[StorageService] Payload size: ${(payloadSize / 1024).toFixed(2)} KB`);
+
+        console.log(`[StorageService] UPSERT starting...`);
         const { error } = await withRetry(async () =>
             supabase.from('pathfinder_classes').upsert(payload)
         )
+        console.log(`[StorageService] UPSERT finished`);
 
         if (error) {
             console.error("Error saving class (details):", error.message, error.details, error.hint)
             throw new Error(`Falha ao salvar classe: ${error.message}`)
         }
+        console.timeEnd(`[StorageService] saveClass ${cls.id}`);
     },
 
     async migrateClassesFromStatic(staticClasses: any[]): Promise<void> {
@@ -459,14 +472,22 @@ export const storageService = {
     },
 
     async saveSpecialty(specialty: any): Promise<void> {
+        console.time(`[StorageService] saveSpecialty ${specialty.id}`);
+        console.log(`[StorageService] saveSpecialty START: ${specialty.id}`);
         const { data: { session } } = await supabase.auth.getSession()
         let userId = session?.user?.id
 
         if (!userId) {
+            console.log(`[StorageService] No session found, fetching user...`);
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) throw new Error("Usuário não autenticado")
             userId = user.id
         }
+        console.log(`[StorageService] User ID: ${userId}`);
+
+        console.log(`[StorageService] Sanitizing requirements...`);
+        const sanitizedReqs = sanitizeRequirements(specialty.requirements || []);
+        console.log(`[StorageService] Sanitization DONE`);
 
         const payload = {
             id: specialty.id,
@@ -474,21 +495,26 @@ export const storageService = {
             code: specialty.code,
             category: specialty.category,
             color: specialty.color,
-            requirements: sanitizeRequirements(specialty.requirements || []),
+            requirements: sanitizedReqs,
             image: specialty.image,
             updated_at: new Date().toISOString(),
             updated_by: userId
         }
 
-        console.log(`[StorageService] Saving specialty ${specialty.id}...`);
+        const payloadSize = JSON.stringify(payload).length;
+        console.log(`[StorageService] Payload size: ${(payloadSize / 1024).toFixed(2)} KB`);
+
+        console.log(`[StorageService] UPSERT starting...`);
         const { error } = await withRetry(async () =>
             supabase.from('pathfinder_specialties').upsert(payload)
         )
+        console.log(`[StorageService] UPSERT finished`);
 
         if (error) {
             console.error("Error saving specialty (details):", error.message, error.details, error.hint)
             throw new Error(`Falha ao salvar especialidade: ${error.message}`)
         }
+        console.timeEnd(`[StorageService] saveSpecialty ${specialty.id}`);
     },
 
     async migrateSpecialtiesFromStatic(staticSpecialties: any[]): Promise<void> {

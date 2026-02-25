@@ -13,6 +13,7 @@ interface AuthContextType extends AuthState {
     updateProfile: (data: { name: string }) => Promise<void>
     updateSubscription: (subscription: User['subscription']) => Promise<void>
     loginWithGoogle: () => Promise<void>
+    loginWithApple: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -119,6 +120,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await authService.loginWithGoogle()
     }
 
+    const loginWithApple = async () => {
+        await authService.loginWithApple()
+    }
+
     return (
         <AuthContext.Provider
             value={{
@@ -129,6 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 updateProfile,
                 updateSubscription,
                 loginWithGoogle,
+                loginWithApple,
             }}
         >
             {children}

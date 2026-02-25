@@ -144,4 +144,14 @@ export const authService = {
         })
         if (error) throw error
     },
+
+    async loginWithApple(): Promise<void> {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'apple',
+            options: {
+                redirectTo: `${window.location.origin}/api/auth/callback`
+            }
+        })
+        if (error) throw error
+    },
 }
