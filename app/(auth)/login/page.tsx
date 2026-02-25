@@ -95,7 +95,7 @@ export default function LoginPage() {
 
     return (
         <>
-            <LoginBackground imagePath="/images/login-bg.png" />
+            <LoginBackground imagePath="/bg-login.png" />
             <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-transparent z-10">
 
                 <AnimatePresence mode="wait">

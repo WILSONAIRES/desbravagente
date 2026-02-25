@@ -8,25 +8,14 @@ import { useEffect } from "react";
 
 const HomeBackground = ({ imagePath }: { imagePath: string }) => {
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-slate-200">
+    <div className="fixed inset-0 z-0 overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        className="absolute inset-0"
-      >
-        <img
-          src={imagePath}
-          alt="Background"
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            console.error(`[HomeBackground] Failed to load image: ${imagePath}`);
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
-        <div className="absolute inset-0 bg-black/30" />
-      </motion.div>
-
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${imagePath})` }}
+      />
       {/* Artistic Overlays */}
       <div className="absolute inset-0 bg-gradient-to-t from-slate-200 via-transparent to-transparent opacity-80" />
       <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
@@ -37,7 +26,7 @@ const HomeBackground = ({ imagePath }: { imagePath: string }) => {
 export default function Home() {
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden">
-      <HomeBackground imagePath="/images/home-bg.png" />
+      <HomeBackground imagePath="/bg-home.png" />
 
       <main className="relative z-10 w-full max-w-4xl">
         <div className="flex flex-col items-center text-center space-y-8">
