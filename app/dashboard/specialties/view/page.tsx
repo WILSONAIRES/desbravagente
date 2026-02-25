@@ -222,6 +222,76 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
     );
 };
 
+// ---------- Recursive Requirement View Item ----------
+const SpecialtyRequirementViewItem = ({
+    requirement,
+    level = 0,
+    allSpecialties,
+    onGenerate
+}: {
+    requirement: any,
+    level?: number,
+    allSpecialties: any[],
+    onGenerate: (id: string, desc: string) => void
+}) => {
+    return (
+        <div className="space-y-4">
+            <div
+                className={`flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${level > 0 ? 'ml-6' : ''}`}
+                style={level > 0 ? { marginLeft: `${level * 1.5}rem` } : {}}
+            >
+                <div className="space-y-1 flex-1 min-w-0">
+                    <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-widest">
+                        {requirement.id}
+                    </p>
+                    <p className="text-sm md:text-base leading-relaxed">{requirement.description}</p>
+
+                    {/* Prerequisite specialty link */}
+                    {requirement.linkedSpecialtyId && (() => {
+                        const linked = allSpecialties.find((s: any) => s.id === requirement.linkedSpecialtyId)
+                        return linked ? (
+                            <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
+                                <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
+                                    <Award className="mr-2 h-4 w-4" />
+                                    Ver Especialidade
+                                </Badge>
+                            </Link>
+                        ) : null
+                    })()}
+                </div>
+
+                <div className="flex flex-col gap-2 shrink-0">
+                    {!requirement.noGeneration && (
+                        <Button
+                            size="sm"
+                            variant="secondary"
+                            className="shrink-0"
+                            onClick={() => onGenerate(requirement.id, requirement.description)}
+                        >
+                            <Sparkles className="mr-2 h-3 w-3" />
+                            Gerar
+                        </Button>
+                    )}
+                </div>
+            </div>
+
+            {requirement.subRequirements?.length > 0 && (
+                <div className="space-y-4">
+                    {requirement.subRequirements.map((sub: any) => (
+                        <SpecialtyRequirementViewItem
+                            key={sub.id}
+                            requirement={sub}
+                            level={level + 1}
+                            allSpecialties={allSpecialties}
+                            onGenerate={onGenerate}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 function SpecialtyDetailsContent() {
     const searchParams = useSearchParams()
     const specialtyId = searchParams.get("id")
@@ -486,67 +556,12 @@ function SpecialtyDetailsContent() {
                             <CardContent className="space-y-4">
                                 {specialty.requirements?.length > 0 ? (
                                     specialty.requirements.map((req: any) => (
-                                        <div
+                                        <SpecialtyRequirementViewItem
                                             key={req.id}
-                                            className="flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-                                        >
-                                            <div className="space-y-1 flex-1 min-w-0">
-                                                <p className="font-medium text-sm text-muted-foreground uppercase tracking-widest">
-                                                    {req.id}
-                                                </p>
-                                                <p className="text-sm md:text-base leading-relaxed">{req.description}</p>
-
-                                                {/* Prerequisite specialty link */}
-                                                {req.linkedSpecialtyId && (() => {
-                                                    const linked = allSpecialties.find((s: any) => s.id === req.linkedSpecialtyId)
-                                                    return linked ? (
-                                                        <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
-                                                            <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
-                                                                <Award className="mr-2 h-4 w-4" />
-                                                                Ver Especialidade
-                                                            </Badge>
-                                                        </Link>
-                                                    ) : null
-                                                })()}
-
-                                                {req.subRequirements?.length > 0 && (
-                                                    <div className="mt-4 ml-4 pl-4 border-l-2 border-primary/20 space-y-3">
-                                                        {req.subRequirements.map((sub: any) => (
-                                                            <div key={sub.id} className="text-sm">
-                                                                <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-tighter mb-1">{sub.id}</p>
-                                                                <p className="opacity-90">{sub.description}</p>
-
-                                                                {/* Prerequisite specialty link for sub requirements */}
-                                                                {sub.linkedSpecialtyId && (() => {
-                                                                    const linked = allSpecialties.find((s: any) => s.id === sub.linkedSpecialtyId)
-                                                                    return linked ? (
-                                                                        <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
-                                                                            <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
-                                                                                <Award className="mr-2 h-4 w-4" />
-                                                                                Ver Especialidade
-                                                                            </Badge>
-                                                                        </Link>
-                                                                    ) : null
-                                                                })()}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="flex flex-col gap-2 shrink-0">
-                                                {!req.noGeneration && (
-                                                    <Button
-                                                        size="sm"
-                                                        variant="secondary"
-                                                        className="shrink-0"
-                                                        onClick={() => handleGenerateContent(req.id, req.description)}
-                                                    >
-                                                        <Sparkles className="mr-2 h-3 w-3" />
-                                                        Gerar
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </div>
+                                            requirement={req}
+                                            allSpecialties={allSpecialties}
+                                            onGenerate={handleGenerateContent}
+                                        />
                                     ))
                                 ) : (
                                     <div className="text-center py-8 text-muted-foreground">

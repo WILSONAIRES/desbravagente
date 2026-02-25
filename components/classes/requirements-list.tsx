@@ -19,33 +19,8 @@ interface RequirementsListProps {
 }
 
 export function RequirementsList({ sections, onGenerateClick }: RequirementsListProps) {
-    const findSpecialtyInDescription = (description: string) => {
-        if (!description) return null;
-        const lowerDesc = description.toLowerCase();
-        const cleanDesc = lowerDesc.replace(/[.,;]/g, ' ');
-
-        return (specialties || []).find(s => {
-            const nameLower = s.name.toLowerCase();
-            const nameWithoutCode = nameLower.replace(/^[a-z]{1,2}-[0-9]{3}\s+/i, '').trim();
-
-            if (cleanDesc.trim() === nameWithoutCode) return true;
-
-            const prefixes = ["especialidade de ", "especialidade em ", "especialidade de: ", "completar a especialidade "];
-            if (prefixes.some(p => lowerDesc.includes(p + nameWithoutCode))) return true;
-
-            // We only do this if the specialty name is long enough or unique
-            const escapedName = nameWithoutCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`\\b${escapedName}\\b`, 'i');
-
-            // If it's a common word, we require one of the prefixes above
-            const commonWords = ["temperança", "daniel", "saúde", "arte"];
-            if (commonWords.includes(nameWithoutCode)) {
-                return false; // Already handled by prefix check
-            }
-
-            return regex.test(cleanDesc);
-        });
-    }
+    // Heuristic linking removed to avoid unwanted ghost links as requested by user.
+    // Links must now be explicit.
 
     return (
         <Accordion type="single" collapsible className="w-full">
@@ -61,7 +36,6 @@ export function RequirementsList({ sections, onGenerateClick }: RequirementsList
                                     key={req.id}
                                     req={req}
                                     onGenerateClick={onGenerateClick}
-                                    findSpecialtyInDescription={findSpecialtyInDescription}
                                 />
                             ))}
                         </div>
@@ -72,7 +46,7 @@ export function RequirementsList({ sections, onGenerateClick }: RequirementsList
     )
 }
 
-function RequirementItem({ req, onGenerateClick, findSpecialtyInDescription, isSub = false, parentDescription }: any) {
+function RequirementItem({ req, onGenerateClick, level = 0, parentDescription }: any) {
     if (!req) return null
 
     // Explicit link has priority
@@ -81,15 +55,11 @@ function RequirementItem({ req, onGenerateClick, findSpecialtyInDescription, isS
         linkedSpecialty = specialties.find(s => s.id === req.linkedSpecialtyId);
     }
 
-    // Fallback to heuristic if no explicit link
-    if (!linkedSpecialty) {
-        linkedSpecialty = findSpecialtyInDescription(req.description || "");
-    }
-
     return (
         <div className="space-y-3">
             <div
-                className={`flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${isSub ? 'ml-6 bg-accent/20' : ''}`}
+                className={`flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${level > 0 ? 'bg-accent/20' : ''}`}
+                style={level > 0 ? { marginLeft: `${level * 1.5}rem` } : {}}
             >
                 <div className="space-y-1">
                     <p className="font-medium text-sm text-muted-foreground">
@@ -123,9 +93,8 @@ function RequirementItem({ req, onGenerateClick, findSpecialtyInDescription, isS
                 <RequirementItem
                     key={sub.id}
                     req={sub}
-                    isSub={true}
+                    level={level + 1}
                     onGenerateClick={onGenerateClick}
-                    findSpecialtyInDescription={findSpecialtyInDescription}
                     parentDescription={req.description}
                 />
             ))}
