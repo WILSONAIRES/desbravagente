@@ -33,14 +33,28 @@ function sanitizeSections(sections: any[]): any[] {
 }
 
 // Helper: retry a Supabase operation with 1 automatic retry on failure
-async function withRetry(fn: () => PromiseLike<{ error: any }>): Promise<{ error: any }> {
-    const result = await fn()
-    if (!result.error) return result
+async function withRetry(tableName: string, fn: () => PromiseLike<{ error: any }>): Promise<{ error: any }> {
+    console.log(`[StorageService] Attempting operation on ${tableName}...`);
+    let result = await fn()
+    if (!result.error) {
+        console.log(`[StorageService] Success on ${tableName}`);
+        return result
+    }
 
-    // Wait 1.5s then retry
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    console.warn('[StorageService] Retrying after error:', result.error.message)
-    return fn()
+    console.warn(`[StorageService] Error on ${tableName}:`, result.error.message);
+
+    // Wait 1.5s then retry once
+    console.log(`[StorageService] Waiting 1s before retry for ${tableName}...`);
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    console.log(`[StorageService] Retrying operation on ${tableName}...`);
+    result = await fn()
+    if (!result.error) {
+        console.log(`[StorageService] Success on retry for ${tableName}`);
+    } else {
+        console.error(`[StorageService] Final failure on ${tableName}:`, result.error.message);
+    }
+    return result
 }
 
 export const storageService = {
@@ -409,8 +423,8 @@ export const storageService = {
         const payloadSize = JSON.stringify(payload).length;
         console.log(`[StorageService] Payload size: ${(payloadSize / 1024).toFixed(2)} KB`);
 
-        console.log(`[StorageService] UPSERT starting...`);
-        const { error } = await withRetry(async () =>
+        console.log(`[StorageService] UPSERT starting for class...`);
+        const { error } = await withRetry('pathfinder_classes', async () =>
             supabase.from('pathfinder_classes').upsert(payload)
         )
         console.log(`[StorageService] UPSERT finished`);
@@ -504,8 +518,8 @@ export const storageService = {
         const payloadSize = JSON.stringify(payload).length;
         console.log(`[StorageService] Payload size: ${(payloadSize / 1024).toFixed(2)} KB`);
 
-        console.log(`[StorageService] UPSERT starting...`);
-        const { error } = await withRetry(async () =>
+        console.log(`[StorageService] UPSERT starting for specialty...`);
+        const { error } = await withRetry('pathfinder_specialties', async () =>
             supabase.from('pathfinder_specialties').upsert(payload)
         )
         console.log(`[StorageService] UPSERT finished`);

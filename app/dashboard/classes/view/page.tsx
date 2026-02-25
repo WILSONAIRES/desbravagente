@@ -112,7 +112,7 @@ const SpecialtySearchDialog = ({
     );
 };
 
-const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, specialties?: any[], level?: number }) => {
+const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, specialties?: any[], level?: number }) => {
     const [localDescription, setLocalDescription] = useState(requirement.description);
     const [localComplement, setLocalComplement] = useState(requirement.promptComplement || "");
 
@@ -150,7 +150,13 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onM
             ...requirement,
             subRequirements: [
                 ...(requirement.subRequirements || []),
-                { id: newId, description: "Novo Sub-item", noGeneration: false, subRequirements: [] }
+                {
+                    id: newId,
+                    description: "Novo Sub-item",
+                    noGeneration: false,
+                    promptComplement: "", // Ensure it exists
+                    subRequirements: []
+                }
             ]
         };
         onUpdate(updated);
@@ -282,8 +288,7 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onM
             )}
         </div>
     );
-});
-RequirementEditorItem.displayName = "RequirementEditorItem";
+};
 
 function ClassDetailsContent() {
     const searchParams = useSearchParams();
@@ -366,8 +371,16 @@ function ClassDetailsContent() {
     const handleSaveRequirements = async () => {
         if (!currentClass) return;
         setIsSaving(true);
+        console.log(`[ClassPage] Starting save for ${currentClass.id}`);
+        console.log(`[ClassPage] Edited Sections (Current State):`, editedSections);
+
         try {
+            // Give a tiny bit of time for any pending onBlur updates to settle the state
+            await new Promise(resolve => setTimeout(resolve, 50));
+
             const updatedClass = { ...currentClass, sections: editedSections };
+            console.log(`[ClassPage] Final payload for storage service:`, updatedClass);
+
             await storageService.saveClass(updatedClass);
             setCurrentClass(updatedClass);
             setIsEditing(false);
@@ -552,7 +565,13 @@ function ClassDetailsContent() {
                                                     const newId = `req-${Date.now()}`;
                                                     newSections[sIdx].requirements = [
                                                         ...(newSections[sIdx].requirements || []),
-                                                        { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
+                                                        {
+                                                            id: newId,
+                                                            description: "Novo Requisito",
+                                                            noGeneration: false,
+                                                            promptComplement: "", // Ensure it exists
+                                                            subRequirements: []
+                                                        }
                                                     ];
                                                     return newSections;
                                                 });
