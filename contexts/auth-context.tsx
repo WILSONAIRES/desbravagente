@@ -100,7 +100,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const logout = async () => {
-        await authService.logout()
+        try {
+            await authService.logout()
+            setState({
+                user: null,
+                isAuthenticated: false,
+                isLoading: false,
+            })
+            router.push("/login")
+        } catch (error) {
+            console.error("Logout error:", error)
+            // Still redirect anyway to avoid getting stuck
+            router.push("/login")
+        }
     }
 
     const updateProfile = async (data: { name: string }) => {
