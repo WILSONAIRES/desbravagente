@@ -114,11 +114,15 @@ const SpecialtySearchDialog = ({
 
 const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, specialties = [], level = 0 }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, specialties?: any[], level?: number }) => {
     const [localDescription, setLocalDescription] = useState(requirement.description);
+    const [localComplement, setLocalComplement] = useState(requirement.promptComplement || "");
 
-    // Sync local state when requirement changes from outside (e.g. undo/save)
     useEffect(() => {
         setLocalDescription(requirement.description);
     }, [requirement.description]);
+
+    useEffect(() => {
+        setLocalComplement(requirement.promptComplement || "");
+    }, [requirement.promptComplement]);
 
     const handleDescriptionBlur = () => {
         if (localDescription !== requirement.description) {
@@ -134,8 +138,10 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onM
         onUpdate({ ...requirement, linkedSpecialtyId: id });
     };
 
-    const handleComplementChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onUpdate({ ...requirement, promptComplement: e.target.value });
+    const handleComplementBlur = () => {
+        if (localComplement !== (requirement.promptComplement || "")) {
+            onUpdate({ ...requirement, promptComplement: localComplement });
+        }
     };
 
     const handleAddSub = () => {
@@ -230,8 +236,9 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onM
                     <Label className="text-[10px] uppercase font-bold text-muted-foreground">Complemento do Prompt (Admin)</Label>
                     <textarea
                         className="w-full min-h-[40px] p-2 rounded-lg border bg-muted/30 text-[11px] resize-y focus:ring-1 focus:ring-primary/50 transition-all font-mono"
-                        value={requirement.promptComplement || ""}
-                        onChange={handleComplementChange}
+                        value={localComplement}
+                        onChange={(e) => setLocalComplement(e.target.value)}
+                        onBlur={handleComplementBlur}
                         placeholder="Instruções extras para a IA (ex: Mencione textos bíblicos)..."
                     />
                 </div>

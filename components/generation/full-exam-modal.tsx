@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { storageService } from "@/services/storage-service"
+import { aiService } from "@/services/ai-service"
 import {
     Dialog,
     DialogContent,
@@ -52,59 +53,35 @@ export function FullExamModal({
         setLoading(true)
         setResult(null)
 
-        // Build requirements list for the prompt
-        const reqList = requirements.map((r, i) => `${i + 1}. ${r.description}`).join('\n')
-
         try {
-            const localKey = typeof window !== 'undefined' ? localStorage.getItem("ai_api_key") : null
-            const apiKey = localKey || ""
-
-            const storedProvider = typeof window !== 'undefined' ? localStorage.getItem("ai_provider") : null
-            const provider = storedProvider || "groq"
-
-            const storedModel = typeof window !== 'undefined' ? localStorage.getItem("ai_model") : null
-            const modelName = storedModel || "llama-3.3-70b-versatile"
-
-            const difficultyLabel = {
-                easy: "Fácil (linguagem simples, conceitos fundamentais, direta)",
-                medium: "Médio (nível padrão de clube, mesclando teoria e prática)",
-                hard: "Difícil (aprofundada, exige domínio técnico e detalhes minuciosos)"
-            }[difficulty]
-
-            const prompt = `
-Crie uma PROVA COMPLETA para a especialidade "${specialtyName}" dos Desbravadores.
-
-Nível de Dificuldade: ${difficultyLabel}
-
-A prova deve cobrir TODOS os seguintes requisitos:
-${reqList}
-
-Instruções para a prova:
-1. Inclua questões objetivas (múltipla escolha) e dissertativas
-2. Distribua as questões entre os requisitos fornecidos (máximo de 10 questões no total)
-3. Use linguagem apropriada para juvenis/adolescentes
-4. Inclua um cabeçalho apenas com campo para nome e clube (SEM DATA)
-5. Ao final, inclua o GABARITO das questões objetivas
-6. Total de questões: no MÁXIMO 10 questões
-7. Ao final da prova, adicione obrigatoriamente o seguinte aviso em itálico e separado por uma linha horizontal:
----
-*Este conteúdo foi gerado por uma inteligência artificial e pode conter falhas. Verifique sempre as informações com os manuais oficiais.*
-
-Formate a prova em Markdown.
-`
-
-            const response = await fetch("/api/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ apiKey, modelName, prompt, provider }),
+            const content = await aiService.generate({
+                type: 'specialty',
+                name: specialtyName,
+                requirement: `PROVA COMPLETA cobrindo todos os requisitos: ${requirements.map(r => r.description).join(', ')}`,
+                outputType: 'exam',
+                difficulty: difficulty
             })
 
-            const data = await response.json()
-
-            if (!response.ok) {
-                setResult(`Erro: ${data?.error || 'Falha na geração'}`)
+            if (content.startsWith("Erro:")) {
+                setResult(content)
             } else {
-                setResult(data.text || "Erro: Resposta vazia")
+                setResult(content)
+
+                // Auto-save logic
+                try {
+                    await storageService.saveContent({
+                        content: content,
+                        timestamp: new Date(),
+                        title: `Prova - ${specialtyName}`,
+                        type: "specialty",
+                        requirementId: `full-exam-${specialtyName}`,
+                    })
+
+                    // Dispatch event for UI updates (like the trial counter)
+                    window.dispatchEvent(new CustomEvent('content-generated'))
+                } catch (saveErr) {
+                    console.error("Auto-save failed for full exam:", saveErr)
+                }
             }
         } catch (error) {
             console.error(error)
@@ -170,20 +147,10 @@ Formate a prova em Markdown.
                                 Voltar
                             </Button>
                             <Button onClick={() => {
-                                if (result && !result.startsWith("Erro")) {
-                                    storageService.saveContent({
-									content: result,
-									timestamp: new Date(),
-									title: `Prova - ${specialtyName}`,
-									type: "specialty",
-									requirementId: `full-exam-${specialtyName}`,
-									})
-
-                                    onOpenChange(false)
-                                    router.refresh()
-                                }
+                                onOpenChange(false)
+                                router.refresh()
                             }}>
-                                Salvar e Fechar
+                                Fechar
                             </Button>
                         </div>
                     </div>

@@ -103,8 +103,27 @@ const SpecialtySearchDialog = ({
 
 // ---------- Requirement Editor Item ----------
 const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMoveDown, isFirst = false, isLast = false, level = 0, allSpecialties = [] }: { requirement: any, onUpdate: (req: any) => void, onRemove: () => void, onMoveUp?: () => void, onMoveDown?: () => void, isFirst?: boolean, isLast?: boolean, level?: number, allSpecialties?: any[] }) => {
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onUpdate({ ...requirement, description: e.target.value });
+    const [localDescription, setLocalDescription] = useState(requirement.description);
+    const [localComplement, setLocalComplement] = useState(requirement.promptComplement || "");
+
+    useEffect(() => {
+        setLocalDescription(requirement.description);
+    }, [requirement.description]);
+
+    useEffect(() => {
+        setLocalComplement(requirement.promptComplement || "");
+    }, [requirement.promptComplement]);
+
+    const handleDescriptionBlur = () => {
+        if (localDescription !== requirement.description) {
+            onUpdate({ ...requirement, description: localDescription });
+        }
+    };
+
+    const handleComplementBlur = () => {
+        if (localComplement !== (requirement.promptComplement || "")) {
+            onUpdate({ ...requirement, promptComplement: localComplement });
+        }
     };
 
     const handleToggleGeneration = (checked: boolean) => {
@@ -113,10 +132,6 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
 
     const handleSpecialtyChange = (id: string | undefined) => {
         onUpdate({ ...requirement, linkedSpecialtyId: id ?? null });
-    };
-
-    const handleComplementChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onUpdate({ ...requirement, promptComplement: e.target.value });
     };
 
     const handleAddSub = () => {
@@ -182,8 +197,9 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
 
                 <textarea
                     className="w-full min-h-[60px] p-3 rounded-lg border bg-background text-sm resize-y focus:ring-1 focus:ring-primary/50 transition-all font-medium"
-                    value={requirement.description}
-                    onChange={handleDescriptionChange}
+                    value={localDescription}
+                    onChange={(e) => setLocalDescription(e.target.value)}
+                    onBlur={handleDescriptionBlur}
                     placeholder="Descreva o requisito..."
                 />
 
@@ -191,8 +207,9 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                     <Label className="text-[10px] uppercase font-bold text-muted-foreground">Complemento do Prompt (Admin)</Label>
                     <textarea
                         className="w-full min-h-[40px] p-2 rounded-lg border bg-muted/30 text-[11px] resize-y focus:ring-1 focus:ring-primary/50 transition-all font-mono"
-                        value={requirement.promptComplement || ""}
-                        onChange={handleComplementChange}
+                        value={localComplement}
+                        onChange={(e) => setLocalComplement(e.target.value)}
+                        onBlur={handleComplementBlur}
                         placeholder="Instruções extras para a IA (ex: Mencione textos bíblicos)..."
                     />
                 </div>

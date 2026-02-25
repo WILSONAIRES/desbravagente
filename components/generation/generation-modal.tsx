@@ -109,7 +109,9 @@ export function GenerationModal({
                     })
                     setJustAutoSaved(true)
                     setExistingContent(content)
-                    // Optional: router.refresh() if needed, but maybe not on first auto-save to allow review
+
+                    // Dispatch event for UI updates (like the trial counter)
+                    window.dispatchEvent(new CustomEvent('content-generated'))
                 } catch (saveErr) {
                     console.error("Auto-save failed:", saveErr)
                 }
