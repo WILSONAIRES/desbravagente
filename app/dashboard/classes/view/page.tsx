@@ -525,8 +525,20 @@ function ClassDetailsContent() {
                                                 isLast={reqIdx === (section.requirements || []).length - 1}
                                                 specialties={specialties}
                                                 onUpdate={(updated) => {
+                                                    const updateRecursive = (reqs: any[]): any[] => {
+                                                        return reqs.map(r => {
+                                                            if (r.id === updated.id) return updated;
+                                                            if (r.subRequirements?.length) {
+                                                                return {
+                                                                    ...r,
+                                                                    subRequirements: updateRecursive(r.subRequirements)
+                                                                };
+                                                            }
+                                                            return r;
+                                                        });
+                                                    };
                                                     const newSections = [...editedSections];
-                                                    newSections[sIdx].requirements[reqIdx] = updated;
+                                                    newSections[sIdx].requirements = updateRecursive(newSections[sIdx].requirements);
                                                     setEditedSections(newSections);
                                                 }}
                                                 onRemove={() => {

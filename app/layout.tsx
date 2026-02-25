@@ -26,9 +26,15 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== 'undefined' && !window.__name) {
-                window.__name = function(fn) { return fn; };
-              }
+              (function() {
+                var poly = function(fn) { return fn; };
+                if (typeof window !== 'undefined') {
+                  if (!window.__name) window.__name = poly;
+                }
+                if (typeof globalThis !== 'undefined') {
+                  if (!globalThis.__name) globalThis.__name = poly;
+                }
+              })();
             `,
           }}
         />

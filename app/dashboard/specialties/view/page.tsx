@@ -548,9 +548,19 @@ function SpecialtyDetailsContent() {
                                     isFirst={idx === 0}
                                     isLast={idx === editedRequirements.length - 1}
                                     onUpdate={(updated) => {
-                                        const newReqs = [...editedRequirements];
-                                        newReqs[idx] = updated;
-                                        setEditedRequirements(newReqs);
+                                        const updateRecursive = (reqs: any[]): any[] => {
+                                            return reqs.map(r => {
+                                                if (r.id === updated.id) return updated;
+                                                if (r.subRequirements?.length) {
+                                                    return {
+                                                        ...r,
+                                                        subRequirements: updateRecursive(r.subRequirements)
+                                                    };
+                                                }
+                                                return r;
+                                            });
+                                        };
+                                        setEditedRequirements(updateRecursive(editedRequirements));
                                     }}
                                     onRemove={() => {
                                         setEditedRequirements(editedRequirements.filter((_, i) => i !== idx));
