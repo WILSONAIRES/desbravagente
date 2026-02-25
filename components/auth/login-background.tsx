@@ -9,7 +9,7 @@ interface LoginBackgroundProps {
 
 export function LoginBackground({ imagePath, blur = false }: LoginBackgroundProps) {
     return (
-        <div className="fixed inset-0 -z-10 overflow-hidden bg-zinc-950">
+        <div className="fixed inset-0 z-0 overflow-hidden bg-zinc-950">
             {/* Base Image */}
             <motion.div
                 initial={{ scale: 1.1, opacity: 0 }}

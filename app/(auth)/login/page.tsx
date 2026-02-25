@@ -36,7 +36,7 @@ const formSchema = z.object({
 })
 
 export default function LoginPage() {
-    const { login, loginWithGoogle, loginWithApple, user, isAuthenticated } = useAuth()
+    const { login, loginWithGoogle, user, isAuthenticated } = useAuth()
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [sent, setSent] = useState(false)
@@ -68,7 +68,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center p-4">
+        <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-transparent z-10">
             <LoginBackground imagePath="/images/login-bg.png" />
 
             <AnimatePresence mode="wait">
@@ -192,36 +192,21 @@ export default function LoginPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3">
-                                    <Button
-                                        variant="outline"
-                                        className="h-12 border-zinc-200 bg-white/50 hover:bg-white/80 text-zinc-700 transition-all flex items-center justify-center gap-2 font-medium active:scale-[0.98]"
-                                        type="button"
-                                        onClick={() => loginWithGoogle()}
-                                        disabled={loading}
-                                    >
-                                        <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="m23.49 12.275c0-.825-.075-1.616-.213-2.383h-11.277v4.508h6.442c-.277 1.492-1.121 2.76-2.388 3.597v2.99h3.868c2.263-2.083 3.568-5.152 3.568-8.712z" fill="#4285f4" />
-                                            <path d="m11.999 24c3.24 0 5.957-1.076 7.943-2.912l-3.868-2.99c-1.072.718-2.445 1.144-4.075 1.144-3.134 0-5.786-2.116-6.733-4.962h-3.993v3.094c1.972 3.91 5.992 6.626 10.726 6.626z" fill="#34a853" />
-                                            <path d="m5.266 14.28c-.24-.712-.375-1.474-.375-2.261 0-.787.135-1.55.375-2.261v-3.094h-3.993c-.81 1.612-1.272 3.424-1.272 5.355 0 1.93.462 3.743 1.272 5.355z" fill="#fbbc05" />
-                                            <path d="m11.999 4.745c1.762 0 3.344.606 4.587 1.794l3.44-3.44c-2.083-1.944-4.803-3.099-8.027-3.099-4.734 0-8.754 2.716-10.726 6.626l3.993 3.094c.947-2.846 3.599-4.962 6.733-4.962z" fill="#ea4335" />
-                                        </svg>
-                                        Google
-                                    </Button>
-
-                                    <Button
-                                        variant="outline"
-                                        className="h-12 border-zinc-200 bg-white/50 hover:bg-white/80 text-zinc-700 transition-all flex items-center justify-center gap-2 font-medium active:scale-[0.98]"
-                                        type="button"
-                                        onClick={() => loginWithApple()}
-                                        disabled={loading}
-                                    >
-                                        <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M12.152 6.896c-.694 0-1.311.351-1.564.351-.252 0-.846-.351-1.412-.351-1.887 0-3.589 1.428-3.589 3.93 0 2.409 1.533 5.483 3.518 5.483.743 0 1.135-.371 1.657-.371.503 0 .86.371 1.676.371 2.016 0 3.596-3.13 3.596-3.13s-1.504-.555-1.504-2.248c0-1.427 1.192-2.105 1.192-2.105-.668-.971-1.701-1.03-2.07-1.03zm-1.372-1.396c.742-.894.676-1.704.676-1.704s-1.258.077-2.112 1.09c-.681.821-.621 1.637-.621 1.637s1.312.008 2.057-1.023z" fill="currentColor" />
-                                        </svg>
-                                        Apple
-                                    </Button>
-                                </div>
+                                <Button
+                                    variant="outline"
+                                    className="w-full h-12 border-zinc-200 bg-white/50 hover:bg-white/80 text-zinc-700 transition-all flex items-center justify-center gap-3 font-medium active:scale-[0.98]"
+                                    type="button"
+                                    onClick={() => loginWithGoogle()}
+                                    disabled={loading}
+                                >
+                                    <svg height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="m23.49 12.275c0-.825-.075-1.616-.213-2.383h-11.277v4.508h6.442c-.277 1.492-1.121 2.76-2.388 3.597v2.99h3.868c2.263-2.083 3.568-5.152 3.568-8.712z" fill="#4285f4" />
+                                        <path d="m11.999 24c3.24 0 5.957-1.076 7.943-2.912l-3.868-2.99c-1.072.718-2.445 1.144-4.075 1.144-3.134 0-5.786-2.116-6.733-4.962h-3.993v3.094c1.972 3.91 5.992 6.626 10.726 6.626z" fill="#34a853" />
+                                        <path d="m5.266 14.28c-.24-.712-.375-1.474-.375-2.261 0-.787.135-1.55.375-2.261v-3.094h-3.993c-.81 1.612-1.272 3.424-1.272 5.355 0 1.93.462 3.743 1.272 5.355z" fill="#fbbc05" />
+                                        <path d="m11.999 4.745c1.762 0 3.344.606 4.587 1.794l3.44-3.44c-2.083-1.944-4.803-3.099-8.027-3.099-4.734 0-8.754 2.716-10.726 6.626l3.993 3.094c.947-2.846 3.599-4.962 6.733-4.962z" fill="#ea4335" />
+                                    </svg>
+                                    Continuar com Google
+                                </Button>
                             </CardContent>
 
                             <CardFooter className="flex flex-col gap-4 text-center text-xs text-zinc-400 pb-10 pt-4">

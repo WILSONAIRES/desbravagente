@@ -140,7 +140,13 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
             ...requirement,
             subRequirements: [
                 ...(requirement.subRequirements || []),
-                { id: newId, description: "Novo Sub-item", noGeneration: false, subRequirements: [] }
+                {
+                    id: newId,
+                    description: "Novo Sub-item",
+                    noGeneration: false,
+                    promptComplement: "", // Ensure it exists
+                    subRequirements: []
+                }
             ]
         };
         onUpdate(updated);
@@ -407,8 +413,16 @@ function SpecialtyDetailsContent() {
     const handleSaveRequirements = async () => {
         if (!specialty) return
         setIsSaving(true)
+        console.log(`[SpecialtyPage] Starting save for ${specialty.id}`);
+        console.log(`[SpecialtyPage] Edited Requirements (Current State):`, editedRequirements);
+
         try {
+            // Give a tiny bit of time for any pending onBlur updates to settle the state
+            await new Promise(resolve => setTimeout(resolve, 50));
+
             const updated = { ...specialty, requirements: editedRequirements }
+            console.log(`[SpecialtyPage] Final payload for storage service:`, updated);
+
             await storageService.saveSpecialty(updated)
             setSpecialty(updated)
             setIsEditing(false)
@@ -565,7 +579,13 @@ function SpecialtyDetailsContent() {
                                     const newId = `req-${Date.now()}`;
                                     setEditedRequirements([
                                         ...editedRequirements,
-                                        { id: newId, description: "Novo Requisito", noGeneration: false, subRequirements: [] }
+                                        {
+                                            id: newId,
+                                            description: "Novo Requisito",
+                                            noGeneration: false,
+                                            promptComplement: "", // Ensure it exists
+                                            subRequirements: []
+                                        }
                                     ]);
                                 }}
                             >
