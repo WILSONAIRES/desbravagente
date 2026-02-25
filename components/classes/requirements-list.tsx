@@ -15,7 +15,7 @@ import Link from "next/link"
 
 interface RequirementsListProps {
     sections: ClassSection[]
-    onGenerateClick: (requirementId: string, description: string, parentDescription?: string) => void
+    onGenerateClick: (requirementId: string, description: string, parentDescription?: string, promptComplement?: string) => void
 }
 
 export function RequirementsList({ sections, onGenerateClick }: RequirementsListProps) {
@@ -80,7 +80,7 @@ function RequirementItem({ req, onGenerateClick, level = 0, parentDescription }:
                             <Button
                                 size="sm"
                                 variant="secondary"
-                                onClick={() => onGenerateClick(req.id, req.description, parentDescription)}
+                                onClick={() => onGenerateClick(req.id, req.description, parentDescription, req.promptComplement)}
                             >
                                 <Wand2 className="mr-2 h-3 w-3" />
                                 Gerar Conteúdo

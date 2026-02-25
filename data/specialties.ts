@@ -3,6 +3,7 @@ export interface SpecialtyRequirement {
     description: string
     noGeneration?: boolean
     linkedSpecialtyId?: string | null
+    promptComplement?: string
     subRequirements?: SpecialtyRequirement[]
 }
 

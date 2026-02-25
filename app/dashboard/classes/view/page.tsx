@@ -134,6 +134,10 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onM
         onUpdate({ ...requirement, linkedSpecialtyId: id });
     };
 
+    const handleComplementChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        onUpdate({ ...requirement, promptComplement: e.target.value });
+    };
+
     const handleAddSub = () => {
         const newId = `${requirement.id}-${Date.now()}`;
         const updated = {
@@ -222,6 +226,16 @@ const RequirementEditorItem = React.memo(({ requirement, onUpdate, onRemove, onM
                     placeholder="Descreva o requisito..."
                 />
 
+                <div className="space-y-2 px-1">
+                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Complemento do Prompt (Admin)</Label>
+                    <textarea
+                        className="w-full min-h-[40px] p-2 rounded-lg border bg-muted/30 text-[11px] resize-y focus:ring-1 focus:ring-primary/50 transition-all font-mono"
+                        value={requirement.promptComplement || ""}
+                        onChange={handleComplementChange}
+                        placeholder="Instruções extras para a IA (ex: Mencione textos bíblicos)..."
+                    />
+                </div>
+
                 <div className="flex items-center justify-between gap-2 mt-1">
                     <SpecialtySearchDialog
                         specialties={specialties}
@@ -271,7 +285,7 @@ function ClassDetailsContent() {
     const [currentClass, setCurrentClass] = useState<any>(null);
     const [notFound, setNotFound] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
-    const [selectedReq, setSelectedReq] = useState<{ id: string; description: string } | null>(null);
+    const [selectedReq, setSelectedReq] = useState<{ id: string; description: string; promptComplement?: string } | null>(null);
     const [activeTab, setActiveTab] = useState("requirements");
     const [isAdmin, setIsAdmin] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -359,8 +373,8 @@ function ClassDetailsContent() {
         }
     };
 
-    const handleGenerateContent = (id: string, description: string, parentDescription?: string) => {
-        setSelectedReq({ id, description });
+    const handleGenerateContent = (id: string, description: string, parentDescription?: string, promptComplement?: string) => {
+        setSelectedReq({ id, description, promptComplement });
         setSelectedParentDesc(parentDescription);
         setModalOpen(true);
     };
@@ -585,6 +599,7 @@ function ClassDetailsContent() {
                     requirementDescription={selectedReq.description}
                     className={currentClass.name}
                     parentDescription={selectedParentDesc}
+                    promptComplement={selectedReq.promptComplement}
                 />
             )}
         </div>

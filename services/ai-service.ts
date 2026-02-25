@@ -8,6 +8,7 @@ export interface ContentGenerationRequest {
     difficulty?: 'easy' | 'medium' | 'hard'
     outputType: 'explanation' | 'activity' | 'quiz' | 'exam'
     refinement?: 'simpler' | 'complex'
+    promptComplement?: string
 }
 
 export interface GeneratedContent {
@@ -34,6 +35,7 @@ Requisito: ${request.requirement}
 ${request.difficulty ? `Nível de Dificuldade: ${difficultyMap[request.difficulty]}` : ''}
 ${request.refinement === 'simpler' ? 'OBJETIVO: Simplificar ao máximo, usando linguagem lúdica e conceitos fundamentais.' : ''}
 ${request.refinement === 'complex' ? 'OBJETIVO: Aprofundar tecnicamente, trazendo detalhes avançados e curiosidades históricas/científicas.' : ''}
+${request.promptComplement ? `INSTRUÇÕES ADICIONAIS IMPORTANTES (Admin): ${request.promptComplement}` : ''}
 
 Diretrizes:
 1. Seja fiel aos manuais oficiais e doutrinas da IASD.

@@ -4,6 +4,7 @@ export interface Requirement {
   completed?: boolean
   subRequirements?: Requirement[]
   noGeneration?: boolean
+  promptComplement?: string
 }
 
 export interface ClassSection {

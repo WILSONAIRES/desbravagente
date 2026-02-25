@@ -17,6 +17,7 @@ function sanitizeRequirements(reqs: any[]): any[] {
         description: req.description,
         noGeneration: req.noGeneration ?? false,
         linkedSpecialtyId: req.linkedSpecialtyId ?? null,
+        promptComplement: req.promptComplement ?? null,
         subRequirements: req.subRequirements ? sanitizeRequirements(req.subRequirements) : []
     }))
 }
@@ -275,7 +276,7 @@ export const storageService = {
                 custom_monthly_amount: user.subscription?.customMonthlyAmount,
                 club_name: user.clubName
             })
-            .eq('email', user.email)
+            .eq('id', user.id)
 
         if (error) {
             console.error("Error saving user record:", error)

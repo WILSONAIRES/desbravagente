@@ -115,6 +115,10 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
         onUpdate({ ...requirement, linkedSpecialtyId: id ?? null });
     };
 
+    const handleComplementChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        onUpdate({ ...requirement, promptComplement: e.target.value });
+    };
+
     const handleAddSub = () => {
         const newId = `${requirement.id}-${Date.now()}`;
         const updated = {
@@ -183,6 +187,16 @@ const RequirementEditorItem = ({ requirement, onUpdate, onRemove, onMoveUp, onMo
                     placeholder="Descreva o requisito..."
                 />
 
+                <div className="space-y-2 px-1">
+                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Complemento do Prompt (Admin)</Label>
+                    <textarea
+                        className="w-full min-h-[40px] p-2 rounded-lg border bg-muted/30 text-[11px] resize-y focus:ring-1 focus:ring-primary/50 transition-all font-mono"
+                        value={requirement.promptComplement || ""}
+                        onChange={handleComplementChange}
+                        placeholder="Instruções extras para a IA (ex: Mencione textos bíblicos)..."
+                    />
+                </div>
+
                 <div className="flex items-center justify-between gap-2 mt-1">
                     <div className="flex items-center gap-2">
                         <Label className="text-[10px] uppercase font-bold text-muted-foreground whitespace-nowrap shrink-0">PrÃ©-requisito</Label>
@@ -232,7 +246,7 @@ const SpecialtyRequirementViewItem = ({
     requirement: any,
     level?: number,
     allSpecialties: any[],
-    onGenerate: (id: string, desc: string) => void
+    onGenerate: (id: string, desc: string, promptComplement?: string) => void
 }) => {
     return (
         <div className="space-y-4">
@@ -266,7 +280,7 @@ const SpecialtyRequirementViewItem = ({
                             size="sm"
                             variant="secondary"
                             className="shrink-0"
-                            onClick={() => onGenerate(requirement.id, requirement.description)}
+                            onClick={() => onGenerate(requirement.id, requirement.description, requirement.promptComplement)}
                         >
                             <Sparkles className="mr-2 h-3 w-3" />
                             Gerar
@@ -301,7 +315,7 @@ function SpecialtyDetailsContent() {
     const [notFound, setNotFound] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [examModalOpen, setExamModalOpen] = useState(false)
-    const [selectedReq, setSelectedReq] = useState<{ id: string, description: string } | null>(null)
+    const [selectedReq, setSelectedReq] = useState<{ id: string; description: string; promptComplement?: string } | null>(null)
     const [activeTab, setActiveTab] = useState("requirements")
     const [isLoading, setIsLoading] = useState(true)
     const [isAdmin, setIsAdmin] = useState(false)
@@ -412,8 +426,8 @@ function SpecialtyDetailsContent() {
 
     if (!specialty) return null
 
-    const handleGenerateContent = (id: string, description: string) => {
-        setSelectedReq({ id, description })
+    const handleGenerateContent = (id: string, description: string, promptComplement?: string) => {
+        setSelectedReq({ id, description, promptComplement })
         setModalOpen(true)
     }
 
@@ -592,6 +606,7 @@ function SpecialtyDetailsContent() {
                     requirementDescription={selectedReq.description}
                     className={specialty.name}
                     type="specialty"
+                    promptComplement={selectedReq.promptComplement}
                 />
             )}
 
