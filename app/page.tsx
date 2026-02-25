@@ -8,24 +8,28 @@ import { useEffect } from "react";
 
 const HomeBackground = ({ imagePath }: { imagePath: string }) => {
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-zinc-950">
+    <div className="fixed inset-0 z-0 overflow-hidden bg-slate-200">
       <motion.div
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${imagePath})` }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, ease: "easeOut" }}
+        className="absolute inset-0"
       >
-        <div className="absolute inset-0 bg-black/40" />
+        <img
+          src={imagePath}
+          alt="Background"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            console.error(`[HomeBackground] Failed to load image: ${imagePath}`);
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
+        <div className="absolute inset-0 bg-black/30" />
       </motion.div>
 
       {/* Artistic Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-200 via-transparent to-transparent opacity-80" />
       <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
-
-      {/* Particles/Light Dust simulated with blurs */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] mix-blend-screen animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px] mix-blend-screen animate-pulse delay-700" />
     </div>
   )
 }
@@ -45,7 +49,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm font-medium shadow-2xl"
           >
             <Sparkles className="w-4 h-4 text-primary" />
-            <span>A Nova Era da Gestão de Clubes</span>
+            <span>Gestão Eficiente e com Propósito</span>
           </motion.div>
 
           {/* Logo/Title Section */}
@@ -68,7 +72,7 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto font-medium leading-relaxed"
             >
-              O assistente inteligente <span className="text-white font-bold underline decoration-primary decoration-4 underline-offset-4">sempre Alerta</span> para servir Diretores e Instrutores de Desbravadores.
+              O assistente inteligente <span className="text-white font-bold underline decoration-primary decoration-4 underline-offset-4">sempre Avante</span> para servir Diretores e Instrutores de Desbravadores.
             </motion.p>
           </div>
 
