@@ -53,7 +53,6 @@ const LoginBackground = ({ imagePath, blur = false }: { imagePath: string, blur?
         </div>
     )
 }
-import { motion, AnimatePresence } from "framer-motion"
 
 const formSchema = z.object({
     email: z.string().email({
@@ -95,7 +94,7 @@ export default function LoginPage() {
 
     return (
         <>
-            <LoginBackground imagePath="/assets/bg-login.png" />
+            <LoginBackground imagePath={bgLoginB64} />
             <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-transparent z-10">
 
                 <AnimatePresence mode="wait">

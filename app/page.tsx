@@ -23,10 +23,12 @@ const HomeBackground = ({ imagePath }: { imagePath: string }) => {
   )
 }
 
+import { bgHomeB64 } from "@/components/auth/bg-home-b64"
+
 export default function Home() {
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center p-4 overflow-hidden">
-      <HomeBackground imagePath="/bg-home.png" />
+      <HomeBackground imagePath={bgHomeB64} />
 
       <main className="relative z-10 w-full max-w-4xl">
         <div className="flex flex-col items-center text-center space-y-8">
