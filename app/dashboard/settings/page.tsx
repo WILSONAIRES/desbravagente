@@ -43,6 +43,7 @@ function SettingsContent() {
     const [stripeKey, setStripeKey] = useState("")
     const [stripeSecret, setStripeSecret] = useState("")
     const [isUpdatingUser, setIsUpdatingUser] = useState<string | null>(null)
+    const [defaultExempt, setDefaultExempt] = useState(true)
     const isAdmin = user?.role === 'admin' || user?.email === 'waisilva@gmail.com'
 
     useEffect(() => {
@@ -56,8 +57,16 @@ function SettingsContent() {
         if (isAdmin) {
             loadAllUsers()
             loadFinancialConfig()
+            loadRegistrationConfig()
         }
     }, [user, isAdmin])
+
+    const loadRegistrationConfig = async () => {
+        const exempt = await storageService.getGlobalConfig("default_new_user_exempt")
+        if (exempt !== null) {
+            setDefaultExempt(exempt === true || exempt === 'true')
+        }
+    }
 
     const loadAIConfig = async () => {
         const [dbKey, dbProvider, dbModel] = await Promise.all([
@@ -123,7 +132,8 @@ function SettingsContent() {
             await Promise.all([
                 storageService.saveGlobalConfig("subscription_monthly_amount", subAmount.trim()),
                 storageService.saveGlobalConfig("stripe_publishable_key", stripeKey.trim()),
-                storageService.saveGlobalConfig("stripe_secret_key", stripeSecret.trim())
+                storageService.saveGlobalConfig("stripe_secret_key", stripeSecret.trim()),
+                storageService.saveGlobalConfig("default_new_user_exempt", defaultExempt)
             ])
             setStatus("saved")
         } catch (err: any) {
@@ -363,6 +373,30 @@ function SettingsContent() {
                                         onChange={(e) => setSubAmount(e.target.value)}
                                     />
                                     <p className="text-[10px] text-muted-foreground">Use ponto para decimais (ex: 29.90)</p>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t">
+                                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Configurações de Cadastro</h3>
+                                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border">
+                                        <div className="space-y-0.5">
+                                            <Label>Novos usuários entram como isentos</Label>
+                                            <p className="text-[10px] text-muted-foreground">
+                                                Se ativado, novas contas terão acesso total sem cobrança imediata.
+                                            </p>
+                                        </div>
+                                        <Select
+                                            value={defaultExempt ? "true" : "false"}
+                                            onValueChange={(v) => setDefaultExempt(v === "true")}
+                                        >
+                                            <SelectTrigger className="w-[120px] h-8 text-xs">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="true">Ativo</SelectItem>
+                                                <SelectItem value="false">Inativo (Trial)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-4 pt-4 border-t">

@@ -83,6 +83,17 @@ export const authService = {
             const isEmailAdmin = user.email === 'waisilva@gmail.com'
             const sevenDaysFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
 
+            // Fetch default exemption setting
+            const { data: configData } = await supabase
+                .from('global_config')
+                .select('value')
+                .eq('id', 'default_new_user_exempt')
+                .maybeSingle()
+
+            // If not set, default to true as per user request
+            const defaultExempt = configData ? (configData.value === true || configData.value === 'true') : true
+            const isExempt = isEmailAdmin || defaultExempt
+
             const { data: newProfile, error: insertError } = await supabase
                 .from('profiles')
                 .upsert({
@@ -90,10 +101,10 @@ export const authService = {
                     email: user.email,
                     name: user.user_metadata?.name || user.email?.split('@')[0],
                     role: isEmailAdmin ? 'admin' : 'director',
-                    subscription_status: isEmailAdmin ? 'exempt' : 'trial',
+                    subscription_status: isExempt ? 'exempt' : 'trial',
                     subscription_plan: 'free',
-                    is_exempt: isEmailAdmin,
-                    trial_ends_at: isEmailAdmin ? null : sevenDaysFromNow
+                    is_exempt: isExempt,
+                    trial_ends_at: isExempt ? null : sevenDaysFromNow
                 }, { onConflict: 'id' })
                 .select()
                 .single()
@@ -107,10 +118,10 @@ export const authService = {
                     name: user.user_metadata?.name || 'Usuário',
                     role: 'director',
                     subscription: {
-                        status: 'trial',
+                        status: defaultExempt ? 'exempt' : 'trial',
                         plan: 'free',
-                        isExempt: false,
-                        trialEndsAt: sevenDaysFromNow
+                        isExempt: defaultExempt,
+                        trialEndsAt: defaultExempt ? undefined : sevenDaysFromNow
                     }
                 }
             }
@@ -130,7 +141,7 @@ export const authService = {
                 status: profile.subscription_status,
                 plan: profile.subscription_plan,
                 isExempt: profile.is_exempt,
-                trialEndsAt: profile.trial_ends_at
+                trialEndsAt: profile.trial_ends_at || undefined
             }
         }
     },
