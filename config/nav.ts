@@ -1,4 +1,4 @@
-import { Award, BookOpen, Home, FileText, Settings, Users, User as UserIcon } from "lucide-react"
+import { Award, BookOpen, Home, FileText, Settings, Users, User as UserIcon, Mail } from "lucide-react"
 
 export const navItems = [
     {
@@ -36,5 +36,10 @@ export const navItems = [
         href: "/dashboard/settings",
         icon: Settings,
         isAdminOnly: true,
+    },
+    {
+        title: "Suporte Técnico",
+        href: "mailto:waisilva@gmail.com?subject=Suporte Desbravagente",
+        icon: Mail,
     },
 ]

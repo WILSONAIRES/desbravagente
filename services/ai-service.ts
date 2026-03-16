@@ -70,7 +70,9 @@ Diretrizes:
                 return "Erro: Resposta vazia da API. Verifique o modelo configurado."
             }
 
-            return data.text
+            const providerInfo = data.provider ? `\n\n*(via: ${data.provider})*` : ''
+
+            return data.text + providerInfo
         } catch (error) {
             console.error("Erro na geração:", error)
             return "Erro ao gerar conteúdo. Verifique sua conexão ou a chave da API."

@@ -32,7 +32,7 @@ const LoginBackground = ({ imagePath, blur = false }: { imagePath: string, blur?
     }, [imagePath]);
 
     return (
-        <div className="fixed inset-0 z-0 overflow-hidden bg-zinc-950">
+        <div className="fixed inset-0 z-[-1] overflow-hidden bg-zinc-950">
             <motion.div
                 initial={{ scale: 1.1, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -93,7 +93,7 @@ export default function LoginPage() {
     }
 
     return (
-        <>
+        <div className="bg-transparent! min-h-screen">
             <LoginBackground imagePath={bgLoginB64} />
             <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-transparent z-10">
 
@@ -246,6 +246,6 @@ export default function LoginPage() {
                     )}
                 </AnimatePresence>
             </div>
-        </>
+        </div>
     )
 }
