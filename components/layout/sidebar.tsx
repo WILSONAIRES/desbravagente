@@ -7,7 +7,6 @@ import { navItems } from "@/config/nav"
 import { useAuth } from "@/contexts/auth-context"
 import { storageService } from "@/services/storage-service"
 import { useEffect, useState } from "react"
-import { TrialUsageCounter } from "@/components/dashboard/trial-usage-counter"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
 
@@ -67,10 +66,6 @@ export function Sidebar({ className }: SidebarProps) {
                             </Link>
                         ))}
                     </div>
-                </div>
-
-                <div className="px-7 py-2">
-                    <TrialUsageCounter />
                 </div>
             </div>
         </div>

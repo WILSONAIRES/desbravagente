@@ -1,11 +1,11 @@
-﻿"use client"
+"use client"
 
 import React, { Suspense, useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { specialties as staticSpecialties, specialtyCategories, getSpecialtyImage } from "@/data/specialties"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown, Award, Search } from "lucide-react"
+import { ChevronLeft, Wand2, FileText, RefreshCw, Pencil, Save, X, Trash2, Plus, Sparkles, ArrowUp, ArrowDown, Award, Search, Download, CheckSquare, Square, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { GenerationModal } from "@/components/generation/generation-modal"
@@ -18,6 +18,9 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import JSZip from "jszip"
+import { saveAs } from "file-saver"
 
 // ---------- Specialty Search Dialog (same UX as classes view) ----------
 const SpecialtySearchDialog = ({
@@ -264,37 +267,60 @@ const SpecialtyRequirementViewItem = ({
     requirement,
     level = 0,
     allSpecialties,
-    onGenerate
+    onGenerate,
+    selectedReqs = [],
+    onToggleSelect,
+    existingContents = {}
 }: {
     requirement: any,
     level?: number,
     allSpecialties: any[],
-    onGenerate: (id: string, desc: string, promptComplement?: string) => void
+    onGenerate: (id: string, desc: string, promptComplement?: string) => void,
+    selectedReqs?: string[],
+    onToggleSelect?: (id: string, selected: boolean) => void,
+    existingContents?: Record<string, boolean>
 }) => {
+    const isSelected = selectedReqs.includes(requirement.id)
+    const hasContent = existingContents[requirement.id] === true
+
     return (
         <div className="space-y-4">
             <div
                 className={`flex items-start justify-between gap-4 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors ${level > 0 ? 'ml-6' : ''}`}
                 style={level > 0 ? { marginLeft: `${level * 1.5}rem` } : {}}
             >
-                <div className="space-y-1 flex-1 min-w-0">
-                    <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-widest">
-                        {requirement.id}
-                    </p>
-                    <p className="text-sm md:text-base leading-relaxed">{requirement.description}</p>
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                    {!requirement.noGeneration && onToggleSelect && (
+                        <div className="pt-1">
+                            <Checkbox 
+                                checked={isSelected}
+                                onCheckedChange={(c) => onToggleSelect(requirement.id, !!c)}
+                                id={`check-${requirement.id}`}
+                            />
+                        </div>
+                    )}
+                    <div className="space-y-1 flex-1 min-w-0">
+                        <p className="font-medium text-[10px] text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                            <label htmlFor={`check-${requirement.id}`} className="cursor-pointer">{requirement.id}</label>
+                            {hasContent && (
+                                <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20 text-[9px] py-0 px-1">Gerado</Badge>
+                            )}
+                        </p>
+                        <p className="text-sm md:text-base leading-relaxed">{requirement.description}</p>
 
-                    {/* Prerequisite specialty link */}
-                    {requirement.linkedSpecialtyId && (() => {
-                        const linked = allSpecialties.find((s: any) => s.id === requirement.linkedSpecialtyId)
-                        return linked ? (
-                            <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
-                                <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
-                                    <Award className="mr-2 h-4 w-4" />
-                                    Ver Especialidade
-                                </Badge>
-                            </Link>
-                        ) : null
-                    })()}
+                        {/* Prerequisite specialty link */}
+                        {requirement.linkedSpecialtyId && (() => {
+                            const linked = allSpecialties.find((s: any) => s.id === requirement.linkedSpecialtyId)
+                            return linked ? (
+                                <Link href={`/dashboard/specialties/view?id=${linked.id}`} className="inline-flex">
+                                    <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors py-1.5 px-3 cursor-pointer">
+                                        <Award className="mr-2 h-4 w-4" />
+                                        Ver Especialidade
+                                    </Badge>
+                                </Link>
+                            ) : null
+                        })()}
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-2 shrink-0">
@@ -321,6 +347,9 @@ const SpecialtyRequirementViewItem = ({
                             level={level + 1}
                             allSpecialties={allSpecialties}
                             onGenerate={onGenerate}
+                            selectedReqs={selectedReqs}
+                            onToggleSelect={onToggleSelect}
+                            existingContents={existingContents}
                         />
                     ))}
                 </div>
@@ -346,6 +375,25 @@ function SpecialtyDetailsContent() {
     const [editedRequirements, setEditedRequirements] = useState<any[]>([])
     const [isSaving, setIsSaving] = useState(false)
     const [allSpecialties, setAllSpecialties] = useState<any[]>(staticSpecialties)
+
+    const [existingContents, setExistingContents] = useState<Record<string, boolean>>({})
+    const [selectedReqs, setSelectedReqs] = useState<string[]>([])
+    const [isBatchGenerating, setIsBatchGenerating] = useState(false)
+    const [batchProgress, setBatchProgress] = useState(0)
+    const [batchTotal, setBatchTotal] = useState(0)
+
+    const loadExistingContents = async () => {
+        try {
+            const allContent = await storageService.getAllContent()
+            const mapping: Record<string, boolean> = {}
+            allContent.forEach(c => {
+                if (c.requirementId) mapping[c.requirementId] = true
+            })
+            setExistingContents(mapping)
+        } catch (e) {
+            console.error("Error loading contents:", e)
+        }
+    }
 
     // Load all specialties from DB (for prerequisite picker/badge)
     useEffect(() => {
@@ -408,6 +456,7 @@ function SpecialtyDetailsContent() {
         }
 
         loadSpecialty()
+        loadExistingContents()
     }, [specialtyId])
 
     const handleSaveRequirements = async () => {
@@ -460,6 +509,140 @@ function SpecialtyDetailsContent() {
     const handleGenerateContent = (id: string, description: string, promptComplement?: string) => {
         setSelectedReq({ id, description, promptComplement })
         setModalOpen(true)
+    }
+
+    const getAllRequirementIds = (reqs: any[]): string[] => {
+        let ids: string[] = []
+        reqs.forEach(r => {
+            if (!r.noGeneration) ids.push(r.id)
+            if (r.subRequirements?.length) {
+                ids = [...ids, ...getAllRequirementIds(r.subRequirements)]
+            }
+        })
+        return ids
+    }
+
+    const handleToggleSelect = (id: string, selected: boolean) => {
+        setSelectedReqs(prev => selected ? [...prev, id] : prev.filter(x => x !== id))
+    }
+
+    const handleSelectAll = () => {
+        setSelectedReqs(getAllRequirementIds(specialty.requirements || []))
+    }
+
+    const handleDeselectAll = () => {
+        setSelectedReqs([])
+    }
+
+    const handleBatchGenerate = async () => {
+        if (selectedReqs.length === 0) return
+        
+        setIsBatchGenerating(true)
+        setBatchTotal(selectedReqs.length)
+        setBatchProgress(0)
+
+        let skipped = 0
+
+        // Need to flatten all requirements to find their descriptions
+        const allFlat: any[] = []
+        const flatten = (arr: any[]) => {
+            arr.forEach(a => {
+                allFlat.push(a)
+                if (a.subRequirements) flatten(a.subRequirements)
+            })
+        }
+        flatten(specialty.requirements || [])
+
+        for (let i = 0; i < selectedReqs.length; i++) {
+            const reqId = selectedReqs[i]
+            
+            if (existingContents[reqId]) {
+                skipped++
+                setBatchProgress(i + 1)
+                continue
+            }
+
+            const reqObj = allFlat.find(r => r.id === reqId)
+            if (!reqObj) continue
+
+            try {
+                // Call AI Service
+                const content = await aiService.generate({
+                    type: 'specialty',
+                    name: specialty.name,
+                    requirement: reqObj.description,
+                    outputType: 'topic',
+                    promptComplement: reqObj.promptComplement
+                })
+
+                if (!content.startsWith("Erro:")) {
+                    await storageService.saveContent({
+                        content: content,
+                        timestamp: new Date(),
+                        title: `${reqId} - ${reqObj.description.substring(0, 50)}...`,
+                        type: 'specialty',
+                        requirementId: reqId,
+                    })
+                    // Update local existing mapping so we know it's generated
+                    setExistingContents(prev => ({ ...prev, [reqId]: true }))
+                }
+            } catch (err) {
+                console.error(`Erro ao gerar ${reqId}:`, err)
+            }
+
+            setBatchProgress(i + 1)
+        }
+
+        setIsBatchGenerating(false)
+        if (skipped > 0) {
+            alert(`Geração em lote concluída! ${skipped} itens foram ignorados pois já possuíam conteúdo.`)
+        } else {
+            alert("Geração em lote concluída com sucesso!")
+        }
+        
+        window.dispatchEvent(new CustomEvent('content-generated'))
+        setSelectedReqs([])
+    }
+
+    const handleDownloadZIP = async () => {
+        if (!specialty) return
+        
+        const zip = new JSZip()
+        const folder = zip.folder(`NotebookLM - ${specialty.name}`)
+        
+        if (!folder) return
+
+        let hasFiles = false
+        const allContent = await storageService.getAllContent()
+        
+        // Flatten
+        const allFlat: any[] = []
+        const flatten = (arr: any[]) => {
+            arr.forEach(a => {
+                allFlat.push(a)
+                if (a.subRequirements) flatten(a.subRequirements)
+            })
+        }
+        flatten(specialty.requirements || [])
+
+        allFlat.forEach(req => {
+            // Find content
+            const contentObj = allContent.find(c => c.requirementId === req.id)
+            if (contentObj && contentObj.content) {
+                hasFiles = true
+                const fileName = `${req.id.replace(/[^a-zA-Z0-9]/g, '_')}.txt`
+                const fileContent = `ESPECIALIDADE: ${specialty.name}\nREQUISITO: ${req.id} - ${req.description}\n\n${contentObj.content}`
+                folder.file(fileName, fileContent)
+            }
+        })
+
+        if (!hasFiles) {
+            alert("Nenhum conteúdo gerado encontrado para esta especialidade. Gere os conteúdos antes de baixar o ZIP.")
+            return
+        }
+
+        const blob = await zip.generateAsync({ type: "blob" })
+        saveAs(blob, `NotebookLM_${specialty.name.replace(/\\s+/g, '_')}.zip`)
     }
 
     return (
@@ -605,14 +788,57 @@ function SpecialtyDetailsContent() {
                         </div>
                     ) : (
                         <Card>
-                            <CardHeader className="flex flex-row items-center justify-between">
-                                <CardTitle>Requisitos</CardTitle>
-                                {specialty.requirements?.length > 0 && (
-                                    <Button onClick={() => setExamModalOpen(true)} variant="default">
-                                        <FileText className="mr-2 h-4 w-4" />
-                                        Gerar Prova Completa
+                            <CardHeader className="flex flex-col gap-4">
+                                <div className="flex flex-row items-center justify-between">
+                                    <CardTitle>Requisitos</CardTitle>
+                                    <div className="flex items-center gap-2">
+                                        <Button onClick={handleDownloadZIP} variant="secondary" size="sm" className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20">
+                                            <Download className="mr-2 h-4 w-4" />
+                                            Baixar para NotebookLM
+                                        </Button>
+                                        {specialty.requirements?.length > 0 && (
+                                            <Button onClick={() => setExamModalOpen(true)} variant="default" size="sm">
+                                                <FileText className="mr-2 h-4 w-4" />
+                                                Gerar Prova Completa
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2 bg-muted/30 p-2 rounded-lg border border-border/50">
+                                    <Button variant="ghost" size="sm" onClick={handleSelectAll} className="h-8 text-[11px]">
+                                        <CheckSquare className="mr-2 h-3.5 w-3.5" />
+                                        Selecionar Todos
                                     </Button>
-                                )}
+                                    <Button variant="ghost" size="sm" onClick={handleDeselectAll} className="h-8 text-[11px]">
+                                        <Square className="mr-2 h-3.5 w-3.5" />
+                                        Desmarcar
+                                    </Button>
+                                    <div className="flex-1" />
+                                    {selectedReqs.length > 0 && (
+                                        <span className="text-[11px] text-muted-foreground mr-2 font-medium">
+                                            {selectedReqs.length} selecionado(s)
+                                        </span>
+                                    )}
+                                    <Button 
+                                        variant="default" 
+                                        size="sm" 
+                                        onClick={handleBatchGenerate}
+                                        disabled={isBatchGenerating || selectedReqs.length === 0}
+                                        className="h-8 text-[11px]"
+                                    >
+                                        {isBatchGenerating ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                                                Gerando {batchProgress}/{batchTotal}...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Sparkles className="mr-2 h-3.5 w-3.5" />
+                                                Gerar Selecionados
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {specialty.requirements?.length > 0 ? (
@@ -622,6 +848,9 @@ function SpecialtyDetailsContent() {
                                             requirement={req}
                                             allSpecialties={allSpecialties}
                                             onGenerate={handleGenerateContent}
+                                            selectedReqs={selectedReqs}
+                                            onToggleSelect={handleToggleSelect}
+                                            existingContents={existingContents}
                                         />
                                     ))
                                 ) : (

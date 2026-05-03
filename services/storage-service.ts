@@ -60,30 +60,10 @@ async function withRetry(tableName: string, fn: () => PromiseLike<{ error: any }
 export const storageService = {
     // Usage Tracking
     async getTrialUsage(): Promise<{ count: number, limit: number, isTrial: boolean }> {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return { count: 0, limit: 10, isTrial: false }
-
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('subscription_status, is_exempt')
-            .eq('id', user.id)
-            .single()
-
-        const isTrial = profile?.subscription_status === 'trial' && !profile?.is_exempt
-
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-
-        const { count } = await supabase
-            .from('generation_logs')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', user.id)
-            .gte('created_at', today.toISOString())
-
         return {
-            count: count || 0,
-            limit: 10,
-            isTrial: !!isTrial
+            count: 0,
+            limit: 999999,
+            isTrial: false
         }
     },
     // Content Storage (AI Generated)

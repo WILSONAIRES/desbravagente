@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { AnimatePresence, motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -32,7 +33,7 @@ const LoginBackground = ({ imagePath, blur = false }: { imagePath: string, blur?
     }, [imagePath]);
 
     return (
-        <div className="fixed inset-0 z-[-1] overflow-hidden bg-zinc-950">
+        <div className="fixed inset-0 z-0 overflow-hidden bg-zinc-950">
             <motion.div
                 initial={{ scale: 1.1, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -94,7 +95,7 @@ export default function LoginPage() {
 
     return (
         <div className="bg-transparent! min-h-screen">
-            <LoginBackground imagePath={bgLoginB64} />
+            <LoginBackground imagePath="" />
             <div className="relative min-h-screen w-full flex items-center justify-center p-4 bg-transparent z-10">
 
                 <AnimatePresence mode="wait">
