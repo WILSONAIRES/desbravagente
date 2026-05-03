@@ -595,10 +595,12 @@ function SpecialtyDetailsContent() {
                 })
 
                 if (!content.startsWith("Erro:")) {
+                    // Title MUST match GenerationModal's expectedTitle: `${className} - ${reqId.toUpperCase()}`
+                    const saveTitle = `${specialty.name} - ${reqId.toUpperCase()}`
                     await storageService.saveContent({
                         content: content,
                         timestamp: new Date(),
-                        title: `${reqId} - ${reqObj.description.substring(0, 50)}`,
+                        title: saveTitle,
                         type: 'specialty',
                         requirementId: reqId,
                     })
