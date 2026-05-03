@@ -13,6 +13,7 @@ import { FullExamModal } from "@/components/generation/full-exam-modal"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ActivityStudentManager } from "@/components/club/activity-student-manager"
 import { storageService } from "@/services/storage-service"
+import { aiService } from "@/services/ai-service"
 import { supabase } from "@/lib/supabase"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
@@ -381,6 +382,7 @@ function SpecialtyDetailsContent() {
     const [isBatchGenerating, setIsBatchGenerating] = useState(false)
     const [batchProgress, setBatchProgress] = useState(0)
     const [batchTotal, setBatchTotal] = useState(0)
+    const [batchLog, setBatchLog] = useState<{ id: string; status: 'pending' | 'generating' | 'done' | 'skipped' | 'error'; label: string }[]>([])
 
     const loadExistingContents = async () => {
         try {
@@ -541,9 +543,7 @@ function SpecialtyDetailsContent() {
         setBatchTotal(selectedReqs.length)
         setBatchProgress(0)
 
-        let skipped = 0
-
-        // Need to flatten all requirements to find their descriptions
+        // Flatten requirements
         const allFlat: any[] = []
         const flatten = (arr: any[]) => {
             arr.forEach(a => {
@@ -553,25 +553,44 @@ function SpecialtyDetailsContent() {
         }
         flatten(specialty.requirements || [])
 
+        // Build initial log
+        const initialLog = selectedReqs.map(id => {
+            const req = allFlat.find(r => r.id === id)
+            return {
+                id,
+                status: 'pending' as const,
+                label: req ? `${id} — ${req.description.substring(0, 60)}` : id
+            }
+        })
+        setBatchLog(initialLog)
+
+        let skipped = 0
+
         for (let i = 0; i < selectedReqs.length; i++) {
             const reqId = selectedReqs[i]
-            
+
+            // Mark as generating
+            setBatchLog(prev => prev.map(l => l.id === reqId ? { ...l, status: 'generating' } : l))
+
             if (existingContents[reqId]) {
                 skipped++
                 setBatchProgress(i + 1)
+                setBatchLog(prev => prev.map(l => l.id === reqId ? { ...l, status: 'skipped' } : l))
                 continue
             }
 
             const reqObj = allFlat.find(r => r.id === reqId)
-            if (!reqObj) continue
+            if (!reqObj) {
+                setBatchLog(prev => prev.map(l => l.id === reqId ? { ...l, status: 'error' } : l))
+                continue
+            }
 
             try {
-                // Call AI Service
                 const content = await aiService.generate({
                     type: 'specialty',
                     name: specialty.name,
                     requirement: reqObj.description,
-                    outputType: 'topic',
+                    outputType: 'explanation',
                     promptComplement: reqObj.promptComplement
                 })
 
@@ -579,27 +598,24 @@ function SpecialtyDetailsContent() {
                     await storageService.saveContent({
                         content: content,
                         timestamp: new Date(),
-                        title: `${reqId} - ${reqObj.description.substring(0, 50)}...`,
+                        title: `${reqId} - ${reqObj.description.substring(0, 50)}`,
                         type: 'specialty',
                         requirementId: reqId,
                     })
-                    // Update local existing mapping so we know it's generated
                     setExistingContents(prev => ({ ...prev, [reqId]: true }))
+                    setBatchLog(prev => prev.map(l => l.id === reqId ? { ...l, status: 'done' } : l))
+                } else {
+                    setBatchLog(prev => prev.map(l => l.id === reqId ? { ...l, status: 'error' } : l))
                 }
             } catch (err) {
                 console.error(`Erro ao gerar ${reqId}:`, err)
+                setBatchLog(prev => prev.map(l => l.id === reqId ? { ...l, status: 'error' } : l))
             }
 
             setBatchProgress(i + 1)
         }
 
         setIsBatchGenerating(false)
-        if (skipped > 0) {
-            alert(`Geração em lote concluída! ${skipped} itens foram ignorados pois já possuíam conteúdo.`)
-        } else {
-            alert("Geração em lote concluída com sucesso!")
-        }
-        
         window.dispatchEvent(new CustomEvent('content-generated'))
         setSelectedReqs([])
     }
@@ -839,6 +855,66 @@ function SpecialtyDetailsContent() {
                                         )}
                                     </Button>
                                 </div>
+
+                                {/* Batch Progress Log */}
+                                {batchLog.length > 0 && (
+                                    <div className="rounded-lg border border-border/50 bg-muted/20 overflow-hidden">
+                                        {/* Header bar */}
+                                        <div className="flex items-center justify-between px-3 py-2 border-b border-border/50 bg-muted/30">
+                                            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                                Status da Geração em Lote
+                                            </span>
+                                            <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                                                <span className="flex items-center gap-1">
+                                                    <span className="w-2 h-2 rounded-full bg-green-500 inline-block" /> Gerado: {batchLog.filter(l => l.status === 'done').length}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <span className="w-2 h-2 rounded-full bg-yellow-500 inline-block" /> Pulado: {batchLog.filter(l => l.status === 'skipped').length}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <span className="w-2 h-2 rounded-full bg-destructive inline-block" /> Erro: {batchLog.filter(l => l.status === 'error').length}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {/* Progress bar */}
+                                        {isBatchGenerating && (
+                                            <div className="h-1 bg-muted">
+                                                <div
+                                                    className="h-full bg-primary transition-all duration-500"
+                                                    style={{ width: `${batchTotal > 0 ? (batchProgress / batchTotal) * 100 : 0}%` }}
+                                                />
+                                            </div>
+                                        )}
+                                        {/* Item list */}
+                                        <div className="divide-y divide-border/30 max-h-52 overflow-y-auto">
+                                            {batchLog.map(item => (
+                                                <div key={item.id} className="flex items-center gap-3 px-3 py-2">
+                                                    <div className="shrink-0">
+                                                        {item.status === 'pending' && <span className="w-2 h-2 rounded-full bg-muted-foreground/40 inline-block" />}
+                                                        {item.status === 'generating' && <Loader2 className="w-3.5 h-3.5 text-primary animate-spin" />}
+                                                        {item.status === 'done' && <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />}
+                                                        {item.status === 'skipped' && <span className="w-2 h-2 rounded-full bg-yellow-500 inline-block" />}
+                                                        {item.status === 'error' && <span className="w-2 h-2 rounded-full bg-destructive inline-block" />}
+                                                    </div>
+                                                    <span className="text-[11px] flex-1 truncate text-foreground/80">{item.label}</span>
+                                                    <span className={`text-[10px] font-medium shrink-0 ${
+                                                        item.status === 'done' ? 'text-green-600' :
+                                                        item.status === 'skipped' ? 'text-yellow-600' :
+                                                        item.status === 'error' ? 'text-destructive' :
+                                                        item.status === 'generating' ? 'text-primary' :
+                                                        'text-muted-foreground'
+                                                    }`}>
+                                                        {item.status === 'pending' ? 'Aguardando' :
+                                                         item.status === 'generating' ? 'Gerando...' :
+                                                         item.status === 'done' ? '✓ Concluído' :
+                                                         item.status === 'skipped' ? '⟳ Já existia' :
+                                                         '✗ Erro'}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {specialty.requirements?.length > 0 ? (
