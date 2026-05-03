@@ -86,41 +86,12 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Missing prompt" }, { status: 400 })
         }
 
-        // --- AUTH & TRIAL LIMITS CHECK ---
+        // --- AUTH CHECK (require login) ---
         const supabase = await createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
             return NextResponse.json({ error: "User authentication required to generate content." }, { status: 401 });
-        }
-
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('subscription_status, is_exempt, trial_ends_at')
-            .eq('id', user.id)
-            .single();
-
-        if (profile) {
-            const isExempt = profile.is_exempt || profile.subscription_status === 'active' || profile.subscription_status === 'exempt';
-
-            if (!isExempt && profile.subscription_status === 'trial') {
-                if (profile.trial_ends_at && new Date(profile.trial_ends_at) < new Date()) {
-                    return NextResponse.json({ error: "Trial_Expired", message: "Seu período de teste de 7 dias acabou. Por favor, assine para continuar gerando conteúdo." }, { status: 403 });
-                }
-
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                const { count, error: countError } = await supabase
-                    .from('generation_logs')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', user.id)
-                    .gte('created_at', today.toISOString());
-
-                if (!countError && count !== null && count >= 10) {
-                    return NextResponse.json({ error: "Rate_Limit_Exceeded", message: "Você atingiu o limite de 10 conteúdos gerados por dia durante o teste. Assine para criar mais ou tente amanhã." }, { status: 429 });
-                }
-            }
         }
         // --- END AUTH CHECK ---
 
