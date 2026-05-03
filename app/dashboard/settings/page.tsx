@@ -8,18 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/contexts/auth-context"
 import {
-    Eye,
-    EyeOff,
     Save,
-    CreditCard,
     CheckCircle2,
     Users,
-    Gift,
-    Ban,
-    ExternalLink,
     Loader2
 } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { storageService } from "@/services/storage-service"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -27,23 +20,13 @@ import { useSearchParams } from "next/navigation"
 
 function SettingsContent() {
     const searchParams = useSearchParams()
-    const { user, updateProfile, updateSubscription } = useAuth()
+    const { user, updateProfile } = useAuth()
     const [name, setName] = useState(user?.name || "")
     const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "profile")
-    const [apiKey, setApiKey] = useState("")
-    const [provider, setProvider] = useState("groq")
-    const [modelName, setModelName] = useState("")
-    const [showKey, setShowKey] = useState(false)
     const [status, setStatus] = useState<"idle" | "saved" | "loading">("idle")
-    const [isCheckingOut, setIsCheckingOut] = useState(false)
 
     // Admin specific state
     const [allUsers, setAllUsers] = useState<any[]>([])
-    const [subAmount, setSubAmount] = useState("29.90")
-    const [stripeKey, setStripeKey] = useState("")
-    const [stripeSecret, setStripeSecret] = useState("")
-    const [isUpdatingUser, setIsUpdatingUser] = useState<string | null>(null)
-    const [defaultExempt, setDefaultExempt] = useState(true)
     const isAdmin = user?.role === 'admin' || user?.email === 'waisilva@gmail.com'
 
     useEffect(() => {
@@ -53,44 +36,10 @@ function SettingsContent() {
 
     useEffect(() => {
         if (user) setName(user.name)
-        loadAIConfig()
         if (isAdmin) {
             loadAllUsers()
-            loadFinancialConfig()
-            loadRegistrationConfig()
         }
     }, [user, isAdmin])
-
-    const loadRegistrationConfig = async () => {
-        const exempt = await storageService.getGlobalConfig("default_new_user_exempt")
-        if (exempt !== null) {
-            setDefaultExempt(exempt === true || exempt === 'true')
-        }
-    }
-
-    const loadAIConfig = async () => {
-        const [dbKey, dbProvider, dbModel] = await Promise.all([
-            storageService.getGlobalConfig("ai_api_key"),
-            storageService.getGlobalConfig("ai_provider"),
-            storageService.getGlobalConfig("ai_model")
-        ])
-
-        if (dbKey) setApiKey(dbKey)
-        if (dbProvider) setProvider(dbProvider)
-        if (dbModel) setModelName(dbModel)
-    }
-
-    const loadFinancialConfig = async () => {
-        const [amount, key, secret] = await Promise.all([
-            storageService.getGlobalConfig("subscription_monthly_amount"),
-            storageService.getGlobalConfig("stripe_publishable_key"),
-            storageService.getGlobalConfig("stripe_secret_key")
-        ])
-
-        if (amount) setSubAmount(amount)
-        if (key) setStripeKey(key)
-        if (secret) setStripeSecret(secret)
-    }
 
     const loadAllUsers = async () => {
         const users = await storageService.getAllUsers()
@@ -109,111 +58,13 @@ function SettingsContent() {
         setTimeout(() => setStatus("idle"), 2000)
     }
 
-    const handleSaveAI = async () => {
-        setStatus("loading")
-        try {
-            await Promise.all([
-                storageService.saveGlobalConfig("ai_api_key", apiKey.trim()),
-                storageService.saveGlobalConfig("ai_provider", provider),
-                storageService.saveGlobalConfig("ai_model", modelName.trim())
-            ])
-            setStatus("saved")
-        } catch (err: any) {
-            console.error(err)
-            alert(`Erro ao salvar configurações: ${err.message || 'Erro desconhecido'}`)
-            setStatus("idle")
-        }
-        setTimeout(() => setStatus("idle"), 2000)
-    }
-
-    const handleSaveFinancial = async () => {
-        setStatus("loading")
-        try {
-            await Promise.all([
-                storageService.saveGlobalConfig("subscription_monthly_amount", subAmount.trim()),
-                storageService.saveGlobalConfig("stripe_publishable_key", stripeKey.trim()),
-                storageService.saveGlobalConfig("stripe_secret_key", stripeSecret.trim()),
-                storageService.saveGlobalConfig("default_new_user_exempt", defaultExempt)
-            ])
-            setStatus("saved")
-        } catch (err: any) {
-            console.error(err)
-            alert(`Erro ao salvar configurações financeiras: ${err.message || 'Erro desconhecido'}`)
-            setStatus("idle")
-        }
-        setTimeout(() => setStatus("idle"), 2000)
-    }
-
-    const handleMockCheckout = async () => {
-        setIsCheckingOut(true)
-        // Simulate Stripe Redirect
-        setTimeout(async () => {
-            await updateSubscription({
-                status: 'active',
-                plan: 'monthly'
-            })
-            setIsCheckingOut(false)
-            alert("Pagamento processado com sucesso! (Simulação Stripe Checkout)")
-        }, 2000)
-    }
-
-    const handleUpdateUserSub = async (email: string, updates: any) => {
-        const targetUser = allUsers.find(u => u.email === email)
-        if (targetUser) {
-            setIsUpdatingUser(email)
-            try {
-                // Determine if we are tearing down exemption
-                let finalUpdates = { ...updates }
-                if (updates.status === 'trial') {
-                    // Calculate fresh trial ends at 7 days from now
-                    const sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-                    finalUpdates = {
-                        ...finalUpdates,
-                        plan: 'free',
-                        isExempt: false,
-                        trialEndsAt: sevenDays
-                    }
-                }
-
-                const updatedUser = {
-                    ...targetUser,
-                    subscription: { ...targetUser.subscription, ...finalUpdates }
-                }
-                await storageService.saveUserRecord(updatedUser)
-                await loadAllUsers()
-
-                // If we are updating ourselves, sync local auth state
-                if (user?.email === email) {
-                    await updateSubscription(updatedUser.subscription)
-                }
-            } catch (err) {
-                console.error(err)
-                alert("Erro ao atualizar usuário. Certifique-se de que rodou o script SQL de permissão.")
-            } finally {
-                setIsUpdatingUser(null)
-            }
-        }
-    }
-
-    const [editingCustomAmount, setEditingCustomAmount] = useState<string | null>(null)
-    const [customAmountValue, setCustomAmountValue] = useState<string>("")
-
-    const handleSaveCustomAmount = async (email: string) => {
-        await handleUpdateUserSub(email, { customMonthlyAmount: customAmountValue })
-        setEditingCustomAmount(null)
-        setCustomAmountValue("")
-    }
-
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold tracking-tight">Painel de Controle</h1>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full max-w-[800px] grid-cols-5">
+                <TabsList className={`grid w-full max-w-[500px] ${isAdmin ? 'grid-cols-2' : 'grid-cols-1'}`}>
                     <TabsTrigger value="profile">Perfil</TabsTrigger>
-                    <TabsTrigger value="subscription">Assinatura</TabsTrigger>
-                    {isAdmin && <TabsTrigger value="ia">IA Config</TabsTrigger>}
-                    {isAdmin && <TabsTrigger value="finance">Financeiro</TabsTrigger>}
                     {isAdmin && <TabsTrigger value="users">Usuários</TabsTrigger>}
                 </TabsList>
 
@@ -257,222 +108,22 @@ function SettingsContent() {
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="subscription" className="space-y-4 pt-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Plano e Pagamento</CardTitle>
-                            <CardDescription>Gerencie sua assinatura do Desbravagente.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex flex-col md:flex-row items-center justify-between p-6 border-2 border-primary/10 rounded-xl bg-muted/20 gap-6">
-                                <div className="flex items-center gap-5">
-                                    <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
-                                        <CreditCard className="h-7 w-7 text-primary" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-bold text-lg capitalize">{user?.subscription?.status}</p>
-                                            <Badge variant={user?.subscription?.status === 'active' || user?.subscription?.status === 'exempt' ? 'default' : 'secondary'}>
-                                                {user?.subscription?.status === 'active' ? 'Ativo' : user?.subscription?.status === 'trial' ? 'Período de Teste' : user?.subscription?.status === 'exempt' ? 'Isento' : 'Inativo'}
-                                            </Badge>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground">Plano {user?.subscription?.plan === 'free' ? 'Básico/Grátis' : 'Profissional'}</p>
-                                    </div>
-                                </div>
-                                {user?.subscription?.status !== 'active' && user?.subscription?.status !== 'exempt' && (
-                                    <Button onClick={handleMockCheckout} disabled={isCheckingOut} className="w-full md:w-auto">
-                                        {isCheckingOut ? (
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <ExternalLink className="mr-2 h-4 w-4" />
-                                        )}
-                                        {isCheckingOut ? "Redirecionando..." : "Assinar com Stripe"}
-                                    </Button>
-                                )}
-                            </div>
-
-                            <div className="grid gap-4">
-                                <h3 className="font-semibold text-lg">Detalhes da Assinatura</h3>
-                                <div className="space-y-3">
-                                    <div className="flex justify-between text-sm py-2 border-b">
-                                        <span className="text-muted-foreground">Valor mensal</span>
-                                        <span className="font-medium">R$ {user?.subscription?.customMonthlyAmount || subAmount}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm py-2 border-b">
-                                        <span className="text-muted-foreground">Status do Pagamento</span>
-                                        <span className="font-medium text-green-500 flex items-center gap-1">
-                                            <CheckCircle2 className="h-3 w-3" /> Regular
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between text-sm py-2 border-b">
-                                        <span className="text-muted-foreground">Próxima Cobrança</span>
-                                        <span className="font-medium">10/03/2026</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-
-                {isAdmin && (
-                    <TabsContent value="ia" className="space-y-4 pt-4">
-                        <Card className="border-primary/20 shadow-lg">
-                            <CardHeader className="bg-primary/5">
-                                <CardTitle className="flex items-center gap-2">
-                                    <Badge>Admin Only</Badge>
-                                    Configuração Global de IA
-                                </CardTitle>
-                                <CardDescription>Os parâmetros de IA agora são gerenciados de forma centralizada.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6 pt-6">
-                                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
-                                    <p className="font-bold mb-1">Gerenciado via Cloudflare</p>
-                                    <p>Por questões de segurança e estabilidade, as chaves de API e modelos agora são configurados diretamente no painel do Cloudflare.</p>
-                                </div>
-                                <div className="space-y-2 opacity-50 pointer-events-none">
-                                    <Label>Configurações Atuais (Servidor)</Label>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-3 bg-muted rounded border text-xs">
-                                            <p className="text-muted-foreground uppercase font-bold text-[10px]">Provedor</p>
-                                            <p className="font-medium">Em uso no servidor</p>
-                                        </div>
-                                        <div className="p-3 bg-muted rounded border text-xs">
-                                            <p className="text-muted-foreground uppercase font-bold text-[10px]">Modelo</p>
-                                            <p className="font-medium">Em uso no servidor</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="bg-muted/5 border-t py-4">
-                                <p className="text-xs text-muted-foreground italic">
-                                    Para alterar a chave de API ou o modelo, acesse o painel Cloudflare Pages -&gt; Settings -&gt; Environment Variables.
-                                </p>
-                            </CardFooter>
-                        </Card>
-                    </TabsContent>
-                )}
-
-                {isAdmin && (
-                    <TabsContent value="finance" className="space-y-4 pt-4">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-primary">
-                                    <Badge>Admin Only</Badge>
-                                    Configurações Financeiras
-                                </CardTitle>
-                                <CardDescription>Parametrize os valores e chaves de integração do Stripe.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="subAmount">Valor Mensal (R$)</Label>
-                                    <Input
-                                        id="subAmount"
-                                        type="text"
-                                        placeholder="29.90"
-                                        value={subAmount}
-                                        onChange={(e) => setSubAmount(e.target.value)}
-                                    />
-                                    <p className="text-[10px] text-muted-foreground">Use ponto para decimais (ex: 29.90)</p>
-                                </div>
-
-                                <div className="space-y-4 pt-4 border-t">
-                                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Configurações de Cadastro</h3>
-                                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border">
-                                        <div className="space-y-0.5">
-                                            <Label>Novos usuários entram como isentos</Label>
-                                            <p className="text-[10px] text-muted-foreground">
-                                                Se ativado, novas contas terão acesso total sem cobrança imediata.
-                                            </p>
-                                        </div>
-                                        <Select
-                                            value={defaultExempt ? "true" : "false"}
-                                            onValueChange={(v) => setDefaultExempt(v === "true")}
-                                        >
-                                            <SelectTrigger className="w-[120px] h-8 text-xs">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="true">Ativo</SelectItem>
-                                                <SelectItem value="false">Inativo (Trial)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4 pt-4 border-t">
-                                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Stripe Keys</h3>
-                                    <div className="grid gap-4">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="stripeKey">Publishable Key (pk_...)</Label>
-                                            <div className="relative">
-                                                <Input
-                                                    id="stripeKey"
-                                                    type={showKey ? "text" : "password"}
-                                                    value={stripeKey}
-                                                    onChange={(e) => setStripeKey(e.target.value)}
-                                                    className="font-mono text-xs pr-10"
-                                                />
-                                                <Button
-                                                    size="icon"
-                                                    variant="ghost"
-                                                    className="absolute right-0 top-0 h-full"
-                                                    onClick={() => setShowKey(!showKey)}
-                                                >
-                                                    {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                                </Button>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="stripeSecret">Secret Key (sk_...)</Label>
-                                            <div className="relative">
-                                                <Input
-                                                    id="stripeSecret"
-                                                    type={showKey ? "text" : "password"}
-                                                    value={stripeSecret}
-                                                    onChange={(e) => setStripeSecret(e.target.value)}
-                                                    className="font-mono text-xs pr-10"
-                                                />
-                                                <Button
-                                                    size="icon"
-                                                    variant="ghost"
-                                                    className="absolute right-0 top-0 h-full"
-                                                    onClick={() => setShowKey(!showKey)}
-                                                >
-                                                    {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={handleSaveFinancial} disabled={status !== "idle"}>
-                                    {status === "loading" && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    {status === "saved" ? <CheckCircle2 className="mr-2 h-4 w-4" /> : <Save className="mr-2 h-4 w-4" />}
-                                    {status === "saved" ? "Configurações Salvas!" : "Salvar Parâmetros"}
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    </TabsContent>
-                )}
-
                 {isAdmin && (
                     <TabsContent value="users" className="space-y-4 pt-4">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2 text-primary">
                                     <Users className="h-5 w-5" />
-                                    Central de Clientes e Cobranças
+                                    Usuários
                                 </CardTitle>
-                                <CardDescription>Gestão manual de assinaturas para casos especiais.</CardDescription>
+                                <CardDescription>Lista de usuários registrados no sistema.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="divide-y">
                                     {allUsers.map((u) => (
-                                        <div key={u.email} className="py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div key={u.email} className="py-4 flex items-center justify-between gap-4">
                                             <div className="flex items-center gap-4">
-                                                <Avatar className="h-12 w-12 ring-2 ring-muted">
+                                                <Avatar className="h-10 w-10 ring-2 ring-muted">
                                                     <AvatarFallback className="bg-primary/5 text-primary font-bold">
                                                         {u.name?.substring(0, 2).toUpperCase() || "??"}
                                                     </AvatarFallback>
@@ -480,100 +131,20 @@ function SettingsContent() {
                                                 <div>
                                                     <p className="font-bold flex items-center gap-2">
                                                         {u.name}
-                                                        {u.role === 'admin' && <Badge className="bg-amber-500 scale-75 origin-left">SuperAdmin</Badge>}
+                                                        {u.role === 'admin' && <Badge className="bg-amber-500 scale-75 origin-left">Admin</Badge>}
                                                     </p>
                                                     <p className="text-sm text-muted-foreground">{u.email}</p>
-                                                    <div className="flex gap-2 mt-2">
+                                                    <div className="flex gap-2 mt-1">
                                                         <Badge variant="outline" className="text-[10px] uppercase">{u.role}</Badge>
-                                                        <Badge variant={u.subscription?.status === 'active' ? 'default' : u.subscription?.status === 'exempt' ? 'secondary' : 'outline'} className="text-[10px] capitalize">
-                                                            {u.subscription?.status}
-                                                        </Badge>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="flex gap-2 flex-wrap items-center">
-                                                <div className="hidden lg:block text-right mr-4">
-                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground">Plano Atual</p>
-                                                    <p className="text-xs font-medium">
-                                                        {u.subscription?.plan === 'free'
-                                                            ? 'Free/Trial'
-                                                            : `Mensal R$ ${u.subscription?.customMonthlyAmount || subAmount}`}
-                                                    </p>
-                                                    {editingCustomAmount === u.email ? (
-                                                        <div className="flex items-center gap-1 mt-1 justify-end">
-                                                            <Input
-                                                                className="h-6 w-16 text-[10px] p-1"
-                                                                value={customAmountValue}
-                                                                onChange={(e) => setCustomAmountValue(e.target.value)}
-                                                                placeholder={subAmount}
-                                                            />
-                                                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleSaveCustomAmount(u.email)}>
-                                                                <Save className="h-3 w-3" />
-                                                            </Button>
-                                                        </div>
-                                                    ) : (
-                                                        <Button
-                                                            variant="link"
-                                                            className="h-auto p-0 text-[10px] text-muted-foreground hover:text-primary"
-                                                            onClick={() => {
-                                                                setEditingCustomAmount(u.email)
-                                                                setCustomAmountValue(u.subscription?.customMonthlyAmount || subAmount)
-                                                            }}
-                                                        >
-                                                            Editar Valor
-                                                        </Button>
-                                                    )}
-                                                </div>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="h-9 px-3 text-xs gap-2 border-primary/20 hover:bg-primary/5"
-                                                    onClick={() => handleUpdateUserSub(u.email, { status: 'courtesy', plan: 'free', courtesyEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() })}
-                                                    disabled={isUpdatingUser === u.email}
-                                                >
-                                                    <Gift className="h-4 w-4 text-primary" />
-                                                    {isUpdatingUser === u.email ? "..." : "Cortesia 30d"}
-                                                </Button>
-                                                {u.subscription?.status === 'exempt' ? (
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="h-9 px-3 text-xs gap-2 border-amber-200 hover:bg-amber-50"
-                                                        onClick={() => handleUpdateUserSub(u.email, { status: 'trial' })}
-                                                        disabled={isUpdatingUser === u.email}
-                                                    >
-                                                        <Ban className="h-4 w-4 text-amber-600" />
-                                                        {isUpdatingUser === u.email ? "..." : "Revogar Isenção"}
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="h-9 px-3 text-xs gap-2 border-green-200 hover:bg-green-50"
-                                                        onClick={() => handleUpdateUserSub(u.email, { status: 'exempt', plan: 'yearly', isExempt: true })}
-                                                        disabled={isUpdatingUser === u.email}
-                                                    >
-                                                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                                        {isUpdatingUser === u.email ? "..." : "Isentar"}
-                                                    </Button>
-                                                )}
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    className="h-9 px-3 text-xs gap-2 text-destructive hover:bg-destructive/10"
-                                                    onClick={() => handleUpdateUserSub(u.email, { status: 'inactive' })}
-                                                    disabled={isUpdatingUser === u.email}
-                                                >
-                                                    <Ban className="h-4 w-4" />
-                                                    {isUpdatingUser === u.email ? "..." : "Bloquear"}
-                                                </Button>
                                             </div>
                                         </div>
                                     ))}
                                     {allUsers.length === 0 && (
                                         <div className="text-center py-20 bg-muted/10 rounded-lg border-2 border-dashed">
                                             <Users className="h-10 w-10 mx-auto text-muted-foreground opacity-20 mb-3" />
-                                            <p className="text-muted-foreground">Nenhum administrador ou diretor registrado no DB global.</p>
+                                            <p className="text-muted-foreground">Nenhum usuário registrado.</p>
                                         </div>
                                     )}
                                 </div>
