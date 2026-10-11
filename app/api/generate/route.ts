@@ -37,26 +37,46 @@ async function generateWithProvider(provider: string, modelName: string | undefi
     }
 
     if (provider === "groq") {
-        const model = modelName || "llama-3.3-70b-versatile"
-        const url = "https://api.groq.com/openai/v1/chat/completions"
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: model,
-                messages: [
-                    { role: "system", content: "Você é um instrutor experiente de Desbravadores da Igreja Adventista do Sétimo Dia. Seja fiel aos manuais oficiais. Responda sempre em português brasileiro." },
-                    { role: "user", content: prompt }
-                ],
-                temperature: 0.7,
-            }),
-        })
-        const data = await response.json()
-        if (!response.ok) throw new Error(data?.error?.message || `Groq Error ${response.status}`)
-        return data?.choices?.[0]?.message?.content || ""
+        const candidateModels = [
+            modelName,
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
+            "qwen/qwen3.8-27b",
+            "llama-3.3-70b-versatile"
+        ].filter(Boolean) as string[]
+
+        const uniqueModels = Array.from(new Set(candidateModels))
+        let lastError: any = null
+
+        for (const model of uniqueModels) {
+            try {
+                const url = "https://api.groq.com/openai/v1/chat/completions"
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: "system", content: "Você é um instrutor experiente de Desbravadores da Igreja Adventista do Sétimo Dia. Seja fiel aos manuais oficiais. Responda sempre em português brasileiro." },
+                            { role: "user", content: prompt }
+                        ],
+                        temperature: 0.7,
+                    }),
+                })
+                const data = await response.json()
+                if (!response.ok) throw new Error(data?.error?.message || `Groq Error ${response.status}`)
+                const content = data?.choices?.[0]?.message?.content || ""
+                if (content) return content
+            } catch (err: any) {
+                console.warn(`[Groq] Modelo ${model} falhou:`, err?.message)
+                lastError = err
+            }
+        }
+
+        throw lastError || new Error("Nenhum modelo do Groq disponível conseguiu responder.")
     }
 
     if (provider === "gemini") {
@@ -96,6 +116,8 @@ export async function POST(request: NextRequest) {
         // --- END AUTH CHECK ---
 
         // Define fallback strategy
+        const groqKey = process.env.GROQ_API_KEY || (process.env.AI_PROVIDER === "groq" || !process.env.AI_PROVIDER ? process.env.AI_API_KEY : undefined) || process.env.AI_API_KEY;
+
         const providers = [
             {
                 id: process.env.AI_PROVIDER || "groq",
@@ -104,8 +126,23 @@ export async function POST(request: NextRequest) {
             },
             {
                 id: "groq",
+                model: "openai/gpt-oss-120b",
+                key: groqKey
+            },
+            {
+                id: "groq",
+                model: "openai/gpt-oss-20b",
+                key: groqKey
+            },
+            {
+                id: "groq",
+                model: "qwen/qwen3.8-27b",
+                key: groqKey
+            },
+            {
+                id: "groq",
                 model: "llama-3.3-70b-versatile",
-                key: process.env.GROQ_API_KEY
+                key: groqKey
             },
             {
                 id: "openai",
